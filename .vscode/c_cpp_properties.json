@@ -1,0 +1,55 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "c:/Users/Klemen/Documents/Klemen/Programming/C++/SDL_test/**",
+                "C:/ProgLangs/cpp_libs/SDL2-2.28.5/x86_64-w64-mingw32/include/**",
+                "C:/ProgLangs/cpp_libs/SDL2-2.28.5/x86_64-w64-mingw32/include/SDL2/**",
+                "C:/ProgLangs/cpp_libs/SDL2_net-2.2.0/x86_64-w64-mingw32/include/**",
+                "C:/ProgLangs/cpp_libs/SDL2_net-2.2.0/x86_64-w64-mingw32/include/SDL2/**",
+                "C:/ProgLangs/cpp_libs/SDL2_image-2.6.3/x86_64-w64-mingw32/include/**",
+                "C:/ProgLangs/cpp_libs/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2/**",
+                "C:/ProgLangs/cpp_libs/SDL2_ttf-2.20.0/x86_64-w64-mingw32/include/**",
+                "C:/ProgLangs/cpp_libs/SDL2_ttf-2.20.0/x86_64-w64-mingw32/include/SDL2/**",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "intelliSenseMode": "gcc-x64",
+            "mergeConfigurations": false,
+            "compilerPath": "C:/MinGW/x86_64-13.2.0-release-posix-seh-ucrt-rt_v11-rev1/mingw64/bin/g++.exe",
+            "browse": {
+                "path": [
+                    "c:/Users/Klemen/Documents/Klemen/Programming/C++/SDL_test/**",
+                    "C:/ProgLangs/cpp_libs/SDL2-2.28.5/x86_64-w64-mingw32/include/**",
+                    "C:/ProgLangs/cpp_libs/SDL2-2.28.5/x86_64-w64-mingw32/include/SDL2/**",
+                    "C:/ProgLangs/cpp_libs/SDL2_net-2.2.0/x86_64-w64-mingw32/include/**",
+                    "C:/ProgLangs/cpp_libs/SDL2_net-2.2.0/x86_64-w64-mingw32/include/SDL2/**",
+                    "C:/ProgLangs/cpp_libs/SDL2_image-2.6.3/x86_64-w64-mingw32/include/**",
+                    "C:/ProgLangs/cpp_libs/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2/**",
+                    "C:/ProgLangs/cpp_libs/SDL2_ttf-2.20.0/x86_64-w64-mingw32/include/**",
+                    "C:/ProgLangs/cpp_libs/SDL2_ttf-2.20.0/x86_64-w64-mingw32/include/SDL2/**",
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
+}
