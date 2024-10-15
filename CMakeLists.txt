@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #                                                                                               #
 #################################################################################################
 #                                                                                               #
-## (enter the folder containing the include, bin and lib subfolders)                                  #
+## (enter the folder containing the include, bin and lib subfolders)                            #
 set(SDL2_PATH "C:/ProgLangs/cpp_libs/SDL2-2.28.5/x86_64-w64-mingw32")                           #
 set(SDL2_IMAGE_PATH "C:/ProgLangs/cpp_libs/SDL2_image-2.6.3/x86_64-w64-mingw32")                #
 set(SDL2_TTF_PATH "C:/ProgLangs/cpp_libs/SDL2_ttf-2.20.0/x86_64-w64-mingw32")                   #
