@@ -1,15 +1,17 @@
 
 #pragma once
 
-#include "Config/Config.hpp"
+#include "Config.hpp"
+#include <iostream>
 
 #ifdef SPDLOG
+#define SPDLOG_HEADER_ONLY
 #include <spdlog/spdlog.h>
 #endif
 
 class Logger {
 public:
-    // support all spdlog overloads
+    // support (almost) all spdlog overloads
 
     // single argument overloads
     template<typename T>
@@ -17,7 +19,7 @@ public:
 #ifdef SPDLOG
         spdlog::info(msg);
 #else
-        printf("%s\n", msg);
+        std::cout << "[info] " << msg << '\n';
 #endif
     }
         
@@ -26,7 +28,7 @@ public:
 #ifdef SPDLOG
         spdlog::error(msg);
 #else
-        fprintf(stderr, "%s\n", msg);
+        std::cout << "[error] " << msg << '\n';
 #endif
     }
 
@@ -35,7 +37,7 @@ public:
 #ifdef SPDLOG
         spdlog::warn(msg);
 #else
-        printf("%s\n", msg);
+        std::cout << "[warning] " << msg << '\n';
 #endif
     }
 
@@ -44,7 +46,7 @@ public:
 #ifdef SPDLOG
         spdlog::debug(msg);
 #else
-        printf("%s\n", msg);
+        std::cout << "[debug] " << msg << '\n';
 #endif
     }
 
@@ -56,8 +58,7 @@ public:
 #ifdef SPDLOG
         spdlog::info(fmt, args...);
 #else
-        printf(fmt);
-        printf("\n");
+        std::cout << "[info] " << fmt << '\n';
 #endif
     }
 
@@ -66,8 +67,7 @@ public:
 #ifdef SPDLOG
         spdlog::error(fmt, args...);
 #else
-        fprintf(stderr, fmt, args...);
-        fprintf(stderr, "\n");
+        std::cout << "[error] " << fmt << '\n';
 #endif
     }
 
@@ -76,8 +76,7 @@ public:
 #ifdef SPDLOG
         spdlog::warn(fmt, args...);
 #else
-        printf(fmt, args...);
-        printf("\n");
+        std::cout << "[warning] " << fmt << '\n';
 #endif
     }
 
@@ -86,8 +85,7 @@ public:
 #ifdef SPDLOG
         spdlog::debug(fmt, args...);
 #else
-        printf(fmt, args...);
-        printf("\n");
+        std::cout << "[debug] " << fmt << '\n';
 #endif
     }
     

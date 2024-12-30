@@ -4,6 +4,7 @@
         "iostream": "cpp",
         "numbers": "cpp",
         "*.tcc": "cpp",
-        "exception": "cpp"
+        "exception": "cpp",
+        "stdexcept": "cpp"
     }
 }
