@@ -11,6 +11,9 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_net.h>
 
+#include "include/Logger.hpp"
+
+
 #define MAX_BUFFER_SIZE 512
 
 const int SCREEN_WIDTH = 640;

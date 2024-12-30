@@ -2,6 +2,8 @@
     "files.associations": {
         "*.embeddedhtml": "html",
         "iostream": "cpp",
-        "numbers": "cpp"
+        "numbers": "cpp",
+        "*.tcc": "cpp",
+        "exception": "cpp"
     }
 }
