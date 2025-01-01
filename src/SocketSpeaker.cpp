@@ -35,7 +35,6 @@ void SocketSpeaker::Start() {
     }
 
     SocketSpeaker::worker = std::make_unique<std::thread>(&SocketSpeaker::Speak, socket);
-
 }
 
 // stop and close thread
@@ -65,28 +64,38 @@ void SocketSpeaker::Speak(UDPsocket socket) noexcept {
     SocketSpeaker::_running = true;
     while(SocketSpeaker::_running) {
         
-        // check for new packets
-        if (!sendQueue.empty()) {
-            // wait for the mutex to unlock
-            std::lock_guard<std::mutex> lock(sendq_mutex); // ta mutex blocka, ampak ni treba bufferja
+        std::unique_ptr<UDPmessage> msg = nullptr;
 
-            do {
-                auto msg = std::move(sendQueue.front());
+        {
+            std::lock_guard<std::mutex> lock(sendq_mutex);
+            if(!sendQueue.empty()) {
+                msg = std::move(sendQueue.front());
                 sendQueue.pop();
+            }
+        }
 
-                // copy the message to the packet
-                packet->channel = msg.get()->channel; // server uporablja channele, zato ga je treba poslat zraven
-                packet->len = msg.get()->len;
-                packet->data = msg.get()->data.get();
-                packet->address.host = msg.get()->ip->host; // IP address
-                packet->address.port = msg.get()->ip->port; // port
+        // check for a new packet
+        if (msg) {
+            // copy the message to the packet
+            packet->channel = msg.get()->channel; // server uporablja channele, zato ga je treba poslat zraven
+            packet->len = msg.get()->len;
+            packet->address = *msg.get()->ip.get();
 
-                // send the packet
-                if(SDLNet_UDP_Send(socket, packet->channel, packet) == 0) {
-                    Logger::error((std::string("SDLNet_UDP_Send error: ") + SDLNet_GetError()).c_str());
-                }
+            // alternative je std::move na shared pointer
+            packet->data = msg.get()->data.get();
+            msg.get()->data.release();
+            
+            //std::cout << "Posiljam paket na naslov " << formatIP(packet->address.host) << ':' << packet->address.port << '\n';
+            //std::cout << "Sporocilo v paketu: " << packet->data << '\n';
 
-            } while(!sendQueue.empty());
+            // send the packet
+            if(SDLNet_UDP_Send(socket, packet->channel, packet) == 0) {
+                Logger::error((std::string("SDLNet_UDP_Send error: ") + SDLNet_GetError()).c_str());
+            }
+
+            delete[] packet->data; // ! nujno
+            Logger::info("Poslal brez napak!");
+
         }
     }
 
