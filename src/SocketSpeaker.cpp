@@ -19,7 +19,7 @@
 // -------------------------------------------------//
 
 bool SocketSpeaker::_running = false;
-
+UDPsocket SocketSpeaker::socket = nullptr;
 std::unique_ptr<std::thread> SocketSpeaker::worker = nullptr;
 
 std::queue<std::unique_ptr<UDPmessage>> sendQueue;
@@ -33,6 +33,7 @@ void SocketSpeaker::Start() {
     if (!socket) {
         throw std::runtime_error(SDLNet_GetError());
     }
+    SocketSpeaker::socket = socket;
 
     SocketSpeaker::worker = std::make_unique<std::thread>(&SocketSpeaker::Speak, socket);
 }
@@ -79,30 +80,34 @@ void SocketSpeaker::Speak(UDPsocket socket) noexcept {
             // copy the message to the packet
             packet->channel = msg.get()->channel; // server uporablja channele, zato ga je treba poslat zraven
             packet->len = msg.get()->len;
-            packet->address = *msg.get()->ip.get();
+            if(packet->channel == -1) {
+                packet->address = *msg.get()->ip.get();
+            }
 
             // alternative je std::move na shared pointer
             packet->data = msg.get()->data.get();
             msg.get()->data.release();
             
-            //std::cout << "Posiljam paket na naslov " << formatIP(packet->address.host) << ':' << packet->address.port << '\n';
-            //std::cout << "Sporocilo v paketu: " << packet->data << '\n';
-
             // send the packet
             if(SDLNet_UDP_Send(socket, packet->channel, packet) == 0) {
                 Logger::error((std::string("SDLNet_UDP_Send error: ") + SDLNet_GetError()).c_str());
             }
 
+            //std::cout << "Vsebina paketa: " << packet->data << "\n\n";
             delete[] packet->data; // ! nujno
-            Logger::info("Poslal brez napak!");
+            //Logger::info("Poslal brez napak!");
 
         }
     }
 
     // sleep to reduce CPU usage (1ms)
-    std::this_thread::sleep_for(std::chrono::microseconds(10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     // cleannup
     SDLNet_FreePacket(packet);
     SDLNet_UDP_Close(socket);
+}
+
+UDPsocket SocketSpeaker::getSocket() noexcept {
+    return SocketSpeaker::socket;
 }

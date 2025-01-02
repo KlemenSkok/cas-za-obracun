@@ -11,7 +11,7 @@
 #include <SDL2/SDL_net.h>
 
 // za UDPmessage
-#include "Structs.hpp"
+#include "Containers.hpp"
 
 
 extern std::queue<std::unique_ptr<UDPmessage>> sendQueue;
@@ -30,10 +30,12 @@ class SocketSpeaker {
 
     // pointer to the speaker thread
     static std::unique_ptr<std::thread> worker;
+    static UDPsocket socket;
 
 public:
     static bool _running;
     static void Start();
     static void Speak(UDPsocket) noexcept;
     static void Stop() noexcept;
+    static UDPsocket getSocket() noexcept;
 };

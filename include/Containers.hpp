@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 #include <cstring>
+#include <vector>
 
 // tukaj so definirane strukture za celoten server
 
@@ -28,6 +29,7 @@ struct UDPmessage {
         channel(packet->channel), 
         len(packet->len) 
     {
+        // kopiramo podatke
         data = std::make_unique<Uint8[]>(len);
         std::memcpy(data.get(), packet->data, len);
 
@@ -57,4 +59,31 @@ struct UDPmessage {
     // default destructor, ker se pointerji pobrisejo avtomatsko
     ~UDPmessage() = default;
 
+};
+
+
+class PacketData {
+    std::vector<Uint8> data;
+
+public:
+    PacketData(); // nov prazen paket
+    PacketData(const Uint8* data, int len); // nov paket iz raw sporocila
+
+    std::unique_ptr<Uint8[]> getRawData(); // vrne Uint8* kazalec na podatke
+    size_t size(); // vrne dolzino podatkov
+    void clear(); // izbrise vse podatke
+    
+    // adding data
+    template<typename T>
+    void append(T data);  // doda podatke na konec paketa
+    void append(const Uint8* data, int len);
+
+    // accessing data
+    Uint8& flags(); // vrne prvi byte (server flags)
+    Uint8& operator[](int i); // vrne i-ti byte
+    template<typename T>
+    T getByOffset(size_t offset, size_t size, T sample); // vrne podatek tipa T na offsetu
+
+    // izbrisemo default kopirni konstruktor, da uporabi zgornjega
+    PacketData(const PacketData&) = delete;
 };

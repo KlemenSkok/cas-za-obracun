@@ -5,6 +5,9 @@
 #include "Logging/Logger.hpp"
 #include "Utility.hpp"
 
+#define SERVER_IP "192.168.64.110"
+#define SERVER_PORT 42069
+
 
 int main(int argc, char *argv[]) {
 
@@ -14,10 +17,12 @@ int main(int argc, char *argv[]) {
 
     try {
         Game::Setup();
+        Game::setServerIP(SERVER_IP, SERVER_PORT);
     }
     catch(std::runtime_error &e) {
         Logger::error(e.what());
         SDLUtils::cleanup();
+        Game::Cleanup();
 
         return 1;
     }

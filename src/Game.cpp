@@ -6,11 +6,14 @@
 #include "Communication/SocketListener.hpp"
 #include "Communication/SocketSpeaker.hpp"
 #include "Logging/Logger.hpp"
+#include "Containers.hpp"
 
 #include <iostream>
 #include <stdexcept>
 
 
+IPaddress Game::server_addr;
+int Game::server_channel = 0;
 
 void Game::Setup() {
     try {
@@ -31,21 +34,12 @@ void Game::Setup() {
 }
 
 void Game::Run() {
-
-    IPaddress server_ip;
-    if(SDLNet_ResolveHost(&server_ip, "127.0.0.1", 42069) == -1) {
-        Logger::error((std::string("Failed to resolve host: ") + SDLNet_GetError()).c_str());
-        return;
-    }
-    Logger::info("Server IP resolved.");
-    Logger::info((formatIP(server_ip.host) + ":" + std::to_string(server_ip.port) + '\n').c_str());
-
-
     bool quit = false;
+    int cnt = 0;
 
     while(!quit) {
         
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
         if(!recievedQueue.empty()) {
             std::lock_guard<std::mutex> lock(recvq_mutex);
@@ -59,23 +53,40 @@ void Game::Run() {
         }
 
         // send a message to the server
-        std::unique_ptr<UDPmessage> msg = std::make_unique<UDPmessage>();
-        msg->ip = std::make_unique<IPaddress>(server_ip);
-        msg->channel = -1;
-        msg->len = 19;
-        msg->data = std::make_unique<Uint8[]>(msg->len);
-        std::memcpy(msg->data.get(), "hello from client!", msg->len);
+        PacketData msg((Uint8*)"hello from client!", 19);
+        addMessageToQueue(msg);
         
-        {
-            std::lock_guard<std::mutex> lock(sendq_mutex);
-            sendQueue.push(std::move(msg));
-        }
-        
+        cnt++;
+
     }
 }
 
 void Game::Cleanup() {
 
     SocketListener::Stop();
-    //SocketSpeaker::Stop();    
+    SocketSpeaker::Stop();    
+}
+
+void Game::setServerIP(const char* ip, uint16_t port) {
+    if(SDLNet_ResolveHost(&Game::server_addr, ip, port) == -1) {
+        throw std::runtime_error("Failed to resolve host.");
+    }
+    Logger::info("Server IP resolved.");
+    Logger::info((formatIP(Game::server_addr.host) + ":" + std::to_string(Game::server_addr.port) + '\n').c_str());
+
+    SDLNet_UDP_Bind(SocketSpeaker::getSocket(), server_channel, &server_addr);
+
+}
+
+void Game::addMessageToQueue(PacketData& data) {
+    std::unique_ptr<UDPmessage> msg = std::make_unique<UDPmessage>();
+    //msg->ip = std::make_unique<IPaddress>(server_addr);
+    msg->channel = server_channel;
+    msg->len = data.size();
+    msg->data = data.getRawData();
+
+    {
+        std::lock_guard<std::mutex> lock(sendq_mutex);
+        sendQueue.push(std::move(msg));
+    }
 }
