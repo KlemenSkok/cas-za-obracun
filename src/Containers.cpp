@@ -10,8 +10,10 @@
 //                                                  //
 // -------------------------------------------------//
 
-PacketData::PacketData() {
-    data.push_back(0); // first byte for server flags
+PacketData::PacketData(bool set_flags) {
+    if(set_flags) {
+        data.push_back(0); // first byte for server flags
+    }
 }
 
 PacketData::PacketData(const Uint8* data, int len) {
@@ -38,6 +40,10 @@ size_t PacketData::size() {
 }
 
 void PacketData::clear() {
+    data.clear();
+}
+
+void PacketData::reset() {
     data.clear();
     data.push_back(0); // vedno imamo vsaj en byte
 }

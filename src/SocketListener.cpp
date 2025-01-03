@@ -9,12 +9,32 @@
 #include <utility>
 #include <chrono>
 
-
 #define MAX_PACKET_SIZE 512
 
 
+// -------------------------------------------------//
+//                                                  //
+//                  RECIEVED QUEUE                  //
+//                                                  //
+// -------------------------------------------------//
+
 std::queue<std::unique_ptr<UDPmessage>> recievedQueue;
 std::mutex recvq_mutex;
+
+
+bool getMessageFromQueue(PacketData& data) {
+    data.clear();
+    if(!recievedQueue.empty()) {
+        std::lock_guard<std::mutex> lock(recvq_mutex);
+
+        std::unique_ptr<UDPmessage> msg = std::move(recievedQueue.front());
+        recievedQueue.pop();
+        data = PacketData(msg->data.get(), msg->len);
+
+        return true;
+    }
+    return false;
+}
 
 
 // -------------------------------------------------//
@@ -22,6 +42,7 @@ std::mutex recvq_mutex;
 //                  SOCKET LISTENER                 //
 //                                                  //
 // -------------------------------------------------//
+
 bool SocketListener::_running = false;
 std::unique_ptr<std::thread> SocketListener::worker = nullptr;
 
@@ -30,7 +51,7 @@ std::unique_ptr<std::thread> SocketListener::worker = nullptr;
 void SocketListener::Start() {
 
     // open the passed port (0 for dynamic port assignment)
-    UDPsocket socket = SDLNet_UDP_Open(0);
+    UDPsocket socket = SDLNet_UDP_Open(42069);
     if (!socket) {
         throw std::runtime_error(SDLNet_GetError());
     }
@@ -48,7 +69,7 @@ void SocketListener::Stop() noexcept {
     Logger::info("Socket listener closed.");
 }
 
-
+// listen for new packets
 void SocketListener::Listen(UDPsocket socket) noexcept {
 
     // allocate a packet
@@ -75,7 +96,7 @@ void SocketListener::Listen(UDPsocket socket) noexcept {
             {
                 std::lock_guard<std::mutex> lock(recvq_mutex); // ta mutex blocka, ampak ni treba bufferja
                 recievedQueue.push(std::move(msg));
-                //std::cout << "Prejel sem paket!\n";
+                //std::cout << " [SocketListener] Prejel sem paket: " << recievedQueue.back()->data.get() << '\n';
             }
         }
         else if (numReceived < 0) {
@@ -83,9 +104,12 @@ void SocketListener::Listen(UDPsocket socket) noexcept {
             continue; // skip this loop
         }
 
+        if(!SocketListener::_running) {
+            break;
+        }
+
         // sleep to reduce CPU usage (1ms)
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
-
     }
 
     // cleannup

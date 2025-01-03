@@ -9,8 +9,32 @@
 #include <utility>
 #include <chrono>
 
-
 #define MAX_PACKET_SIZE 512
+
+
+// -------------------------------------------------//
+//                                                  //
+//                     SEND QUEUE                   //
+//                                                  //
+// -------------------------------------------------//
+
+std::queue<std::unique_ptr<UDPmessage>> sendQueue;
+std::mutex sendq_mutex;
+
+
+void addMessageToQueue(PacketData& data, int channel) {
+    std::unique_ptr<UDPmessage> msg = std::make_unique<UDPmessage>();
+    //msg->ip = std::make_unique<IPaddress>(server_addr);
+    msg->channel = channel;
+    msg->len = data.size();
+    msg->data = data.getRawData();
+
+    {
+        std::lock_guard<std::mutex> lock(sendq_mutex);
+        sendQueue.push(std::move(msg));
+    }
+}
+
 
 // -------------------------------------------------//
 //                                                  //
@@ -22,8 +46,6 @@ bool SocketSpeaker::_running = false;
 UDPsocket SocketSpeaker::socket = nullptr;
 std::unique_ptr<std::thread> SocketSpeaker::worker = nullptr;
 
-std::queue<std::unique_ptr<UDPmessage>> sendQueue;
-std::mutex sendq_mutex;
 
 // open socket and start thread
 void SocketSpeaker::Start() {
@@ -48,7 +70,7 @@ void SocketSpeaker::Stop() noexcept {
     Logger::info("Socket speaker closed.");
 }
 
-
+// send pending packets
 void SocketSpeaker::Speak(UDPsocket socket) noexcept {
 
     // allocate a packet
@@ -84,9 +106,8 @@ void SocketSpeaker::Speak(UDPsocket socket) noexcept {
                 packet->address = *msg.get()->ip.get();
             }
 
-            // alternative je std::move na shared pointer
-            packet->data = msg.get()->data.get();
-            msg.get()->data.release();
+            // alternativa je std::move na shared pointer
+            packet->data = msg.get()->data.release();
             
             // send the packet
             if(SDLNet_UDP_Send(socket, packet->channel, packet) == 0) {
@@ -98,10 +119,15 @@ void SocketSpeaker::Speak(UDPsocket socket) noexcept {
             //Logger::info("Poslal brez napak!");
 
         }
+        
+        if(!SocketSpeaker::_running) {
+            break;
+        }
+        
+        // sleep to reduce CPU usage (1ms)
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
-    // sleep to reduce CPU usage (1ms)
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     // cleannup
     SDLNet_FreePacket(packet);

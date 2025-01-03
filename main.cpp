@@ -5,7 +5,10 @@
 #include "Logging/Logger.hpp"
 #include "Utility.hpp"
 
-#define SERVER_IP "192.168.64.110"
+#include <chrono>
+#include <iostream>
+
+#define SERVER_IP "localhost"
 #define SERVER_PORT 42069
 
 
@@ -27,11 +30,16 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-
+    auto start = std::chrono::high_resolution_clock::now();
     Game::Run();
-    Game::Cleanup();
-
-
+    auto end = std::chrono::high_resolution_clock::now();
     
+    Game::Cleanup();
+    SDLUtils::cleanup();
+
+    std::chrono::duration<double, std::milli> elapsed = end - start;
+    std::cout << "Duration: " << elapsed.count() << " milliseconds" << std::endl;
+
+
     return 0;
 }

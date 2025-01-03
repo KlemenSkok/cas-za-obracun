@@ -20,7 +20,5 @@ public:
     static void Cleanup();
     static void setServerIP(const char* ip, uint16_t port);
 
-    static void addMessageToQueue(PacketData& data);
-    static PacketData getMessageFromQueue();
-
+    static void processNewPackets();
 };

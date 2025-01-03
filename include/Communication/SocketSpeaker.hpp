@@ -14,8 +14,18 @@
 #include "Containers.hpp"
 
 
+// -------------------------------------------------//
+//                                                  //
+//                     SEND QUEUE                   //
+//                                                  //
+// -------------------------------------------------//
+
+// Queue with messages that need to be sent and its mutex
 extern std::queue<std::unique_ptr<UDPmessage>> sendQueue;
 extern std::mutex sendq_mutex;
+
+// function that add a message to the send queue
+void addMessageToQueue(PacketData& data, int channel);
 
 
 // -------------------------------------------------//
@@ -37,5 +47,5 @@ public:
     static void Start();
     static void Speak(UDPsocket) noexcept;
     static void Stop() noexcept;
-    static UDPsocket getSocket() noexcept;
+    static UDPsocket getSocket() noexcept; // da se lahko binda na server ip
 };

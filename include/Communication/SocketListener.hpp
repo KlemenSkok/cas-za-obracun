@@ -14,8 +14,18 @@
 #include "Containers.hpp"
 
 
+// -------------------------------------------------//
+//                                                  //
+//                  RECIEVED QUEUE                  //
+//                                                  //
+// -------------------------------------------------//
+
+// Queue with recieved messages and its mutex
 extern std::queue<std::unique_ptr<UDPmessage>> recievedQueue;
 extern std::mutex recvq_mutex;
+
+// function that retrieves a message from the recieved queue
+bool getMessageFromQueue(PacketData& data);
 
 
 // -------------------------------------------------//

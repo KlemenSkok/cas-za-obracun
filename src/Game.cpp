@@ -39,32 +39,25 @@ void Game::Run() {
 
     while(!quit) {
         
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
 
-        if(!recievedQueue.empty()) {
-            std::lock_guard<std::mutex> lock(recvq_mutex);
-            do {
-                std::unique_ptr<UDPmessage> msg = std::move(recievedQueue.front());
-                //std::cout << formatIP(msg->ip->host) << '\n';
-                std::cout << "Prejeto sporocilo: " << msg->data.get() << '\n';
-                recievedQueue.pop();
-
-            } while(!recievedQueue.empty());
-        }
+        processNewPackets();
 
         // send a message to the server
-        PacketData msg((Uint8*)"hello from client!", 19);
-        addMessageToQueue(msg);
+        PacketData send_msg((Uint8*)"Hello from client!", 20);
+        addMessageToQueue(send_msg, server_channel);
         
         cnt++;
-
     }
 }
 
 void Game::Cleanup() {
-
     SocketListener::Stop();
-    SocketSpeaker::Stop();    
+    SocketSpeaker::Stop();
+
+    SDLNet_UDP_Unbind(SocketSpeaker::getSocket(), server_channel);
+    SDLNet_UDP_Close(SocketSpeaker::getSocket());
+
 }
 
 void Game::setServerIP(const char* ip, uint16_t port) {
@@ -78,15 +71,25 @@ void Game::setServerIP(const char* ip, uint16_t port) {
 
 }
 
-void Game::addMessageToQueue(PacketData& data) {
-    std::unique_ptr<UDPmessage> msg = std::make_unique<UDPmessage>();
-    //msg->ip = std::make_unique<IPaddress>(server_addr);
-    msg->channel = server_channel;
-    msg->len = data.size();
-    msg->data = data.getRawData();
+void Game::processNewPackets() {
 
-    {
-        std::lock_guard<std::mutex> lock(sendq_mutex);
-        sendQueue.push(std::move(msg));
+    // omejimo stevilo paketov, ki jih obdelamo naenkrat,
+    // da ne blokiramo glavne niti
+    const uint8_t max_packets = 100;
+    uint8_t num_packets = 0;
+
+    // check for recieved messages
+    PacketData recv_msg;
+    while(getMessageFromQueue(recv_msg) && num_packets < max_packets) {
+        
+        // handle the message
+        // --------------------------------------
+
+        std::cout << "[" << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << "] " << recv_msg.getRawData().get() << '\n';
+
+        // --------------------------------------
+
+        num_packets++;
     }
+
 }

@@ -66,12 +66,15 @@ class PacketData {
     std::vector<Uint8> data;
 
 public:
-    PacketData(); // nov prazen paket
+    PacketData() = default; // prazen paket
+    PacketData(const PacketData&) = default; // kopirni konstruktor
+    PacketData(bool set_flags); // nov prazen paket
     PacketData(const Uint8* data, int len); // nov paket iz raw sporocila
 
     std::unique_ptr<Uint8[]> getRawData(); // vrne Uint8* kazalec na podatke
     size_t size(); // vrne dolzino podatkov
     void clear(); // izbrise vse podatke
+    void reset();
     
     // adding data
     template<typename T>
@@ -84,6 +87,4 @@ public:
     template<typename T>
     T getByOffset(size_t offset, size_t size, T sample); // vrne podatek tipa T na offsetu
 
-    // izbrisemo default kopirni konstruktor, da uporabi zgornjega
-    PacketData(const PacketData&) = delete;
 };
