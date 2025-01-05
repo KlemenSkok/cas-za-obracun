@@ -37,4 +37,6 @@
 ## Knjižnice
 - **SDL2:** Prikaz igre v oknu
 - **SDL2_net:** Komunikacija s strežnikom
+- **SDL2_image:** Prikaz slik na zaslon
 - **spdlog:** Pisanje log dnevnikov
+- (**SDL2_mixer:** Predvajanje zvoka)

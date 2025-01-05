@@ -1,1 +1,6 @@
 build/
+
+# Word temporary files
+~$*.docx
+~$*.doc
+~*.tmp
