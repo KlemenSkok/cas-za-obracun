@@ -8,7 +8,7 @@
 #include <chrono>
 #include <iostream>
 
-#define SERVER_IP "localhost"
+#define SERVER_IP "192.168.64.110"
 #define SERVER_PORT 42069
 
 

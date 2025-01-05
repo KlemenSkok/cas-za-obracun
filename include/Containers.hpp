@@ -68,11 +68,11 @@ class PacketData {
 public:
     PacketData() = default; // prazen paket
     PacketData(const PacketData&) = default; // kopirni konstruktor
-    PacketData(bool set_flags); // nov prazen paket
+    PacketData(bool set_flags) : data(set_flags ? std::vector<Uint8>{0} : std::vector<Uint8>{}) {}
     PacketData(const Uint8* data, int len); // nov paket iz raw sporocila
 
     std::unique_ptr<Uint8[]> getRawData(); // vrne Uint8* kazalec na podatke
-    size_t size(); // vrne dolzino podatkov
+    size_t size() const; // vrne dolzino podatkov
     void clear(); // izbrise vse podatke
     void reset();
     

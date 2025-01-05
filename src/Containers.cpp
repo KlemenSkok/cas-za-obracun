@@ -10,12 +10,6 @@
 //                                                  //
 // -------------------------------------------------//
 
-PacketData::PacketData(bool set_flags) {
-    if(set_flags) {
-        data.push_back(0); // first byte for server flags
-    }
-}
-
 PacketData::PacketData(const Uint8* data, int len) {
     if(data == nullptr || len < 1) {
         return; // ignore empty data
@@ -35,7 +29,7 @@ std::unique_ptr<Uint8[]> PacketData::getRawData() {
     return std::unique_ptr<Uint8[]>(out);
 }
 
-size_t PacketData::size() {
+size_t PacketData::size() const {
     return data.size();
 }
 
@@ -50,6 +44,10 @@ void PacketData::reset() {
 
 Uint8& PacketData::flags() {
     return data[0];
+}
+
+Uint8& PacketData::operator[](int i) {
+    return data[i];
 }
 
 template<typename T>

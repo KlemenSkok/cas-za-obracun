@@ -37,7 +37,7 @@ void Game::Run() {
     bool quit = false;
     int cnt = 0;
 
-    while(!quit) {
+    while(!quit && cnt < 100) {
         
         std::this_thread::sleep_for(std::chrono::microseconds(1));
 
@@ -52,6 +52,7 @@ void Game::Run() {
 }
 
 void Game::Cleanup() {
+    Logger::info("Cleaning up...");
     SocketListener::Stop();
     SocketSpeaker::Stop();
 
@@ -64,8 +65,7 @@ void Game::setServerIP(const char* ip, uint16_t port) {
     if(SDLNet_ResolveHost(&Game::server_addr, ip, port) == -1) {
         throw std::runtime_error("Failed to resolve host.");
     }
-    Logger::info("Server IP resolved.");
-    Logger::info((formatIP(Game::server_addr.host) + ":" + std::to_string(Game::server_addr.port) + '\n').c_str());
+    Logger::info(("Server IP resolved: " + formatIP(Game::server_addr.host) + ":" + std::to_string(Game::server_addr.port)).c_str());
 
     SDLNet_UDP_Bind(SocketSpeaker::getSocket(), server_channel, &server_addr);
 

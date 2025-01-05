@@ -42,7 +42,8 @@ void addMessageToQueue(PacketData& data, int channel) {
 //                                                  //
 // -------------------------------------------------//
 
-bool SocketSpeaker::_running = false;
+std::atomic<bool> SocketSpeaker::_running = false;
+std::atomic<bool> SocketSpeaker::_shutdown = false;
 UDPsocket SocketSpeaker::socket = nullptr;
 std::unique_ptr<std::thread> SocketSpeaker::worker = nullptr;
 
@@ -62,9 +63,13 @@ void SocketSpeaker::Start() {
 
 // stop and close thread
 void SocketSpeaker::Stop() noexcept {
-        SocketSpeaker::_running = false;
+    SocketSpeaker::_running = false;
+    SocketSpeaker::_shutdown = true;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     if(SocketSpeaker::worker && SocketSpeaker::worker->joinable()) {
+        Logger::info("Waiting for socket speaker to close...");
         SocketSpeaker::worker->join();
     }
     Logger::info("Socket speaker closed.");
@@ -85,7 +90,7 @@ void SocketSpeaker::Speak(UDPsocket socket) noexcept {
 
     // start after successful initialization
     SocketSpeaker::_running = true;
-    while(SocketSpeaker::_running) {
+    while(SocketSpeaker::_running && !SocketSpeaker::_shutdown) {
         
         std::unique_ptr<UDPmessage> msg = nullptr;
 
@@ -116,6 +121,7 @@ void SocketSpeaker::Speak(UDPsocket socket) noexcept {
 
             //std::cout << "Vsebina paketa: " << packet->data << "\n\n";
             delete[] packet->data; // ! nujno
+            packet->data = nullptr;
             //Logger::info("Poslal brez napak!");
 
         }

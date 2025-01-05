@@ -9,6 +9,7 @@
 #include <queue>
 #include <mutex>
 #include <SDL2/SDL_net.h>
+#include <atomic>
 
 // za UDPmessage
 #include "Containers.hpp"
@@ -43,7 +44,8 @@ class SocketSpeaker {
     static UDPsocket socket;
 
 public:
-    static bool _running;
+    static std::atomic<bool> _shutdown;
+    static std::atomic<bool> _running;
     static void Start();
     static void Speak(UDPsocket) noexcept;
     static void Stop() noexcept;

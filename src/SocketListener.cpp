@@ -43,7 +43,8 @@ bool getMessageFromQueue(PacketData& data) {
 //                                                  //
 // -------------------------------------------------//
 
-bool SocketListener::_running = false;
+std::atomic<bool> SocketListener::_running = false;
+std::atomic<bool> SocketListener::_shutdown = false;
 std::unique_ptr<std::thread> SocketListener::worker = nullptr;
 
 
@@ -62,8 +63,12 @@ void SocketListener::Start() {
 // stop and close thread
 void SocketListener::Stop() noexcept {
     SocketListener::_running = false;
+    SocketListener::_shutdown = true;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     if(SocketListener::worker && SocketListener::worker->joinable()) {
+        Logger::info("Waiting for socket listener to close...");
         SocketListener::worker->join();
     }
     Logger::info("Socket listener closed.");
@@ -84,7 +89,7 @@ void SocketListener::Listen(UDPsocket socket) noexcept {
 
     // start after successful initialization
     SocketListener::_running = true;
-    while(SocketListener::_running) {
+    while(SocketListener::_running && !SocketListener::_shutdown) {
         
         // check for new packets
         int numReceived = SDLNet_UDP_Recv(socket, packet);
