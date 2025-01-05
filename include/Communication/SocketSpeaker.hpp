@@ -14,6 +14,7 @@
 // za UDPmessage
 #include "Containers.hpp"
 
+#define LOOP_DELAY 1000 // 1000us = 1ms
 
 // -------------------------------------------------//
 //                                                  //
@@ -44,8 +45,9 @@ class SocketSpeaker {
     static UDPsocket socket;
 
 public:
-    static std::atomic<bool> _shutdown;
+    static std::atomic<bool> _shutdown; // atomic za thread safety
     static std::atomic<bool> _running;
+
     static void Start();
     static void Speak(UDPsocket) noexcept;
     static void Stop() noexcept;

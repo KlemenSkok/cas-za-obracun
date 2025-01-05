@@ -122,7 +122,7 @@ void SocketSpeaker::Speak(UDPsocket socket) noexcept {
             //std::cout << "Vsebina paketa: " << packet->data << "\n\n";
             delete[] packet->data; // ! nujno
             packet->data = nullptr;
-            //Logger::info("Poslal brez napak!");
+            //std::cout << "Poslano: [" << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << "]\n";
 
         }
         
@@ -131,7 +131,7 @@ void SocketSpeaker::Speak(UDPsocket socket) noexcept {
         }
         
         // sleep to reduce CPU usage (1ms)
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::microseconds(LOOP_DELAY));
     }
 
 

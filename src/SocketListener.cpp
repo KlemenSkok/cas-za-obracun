@@ -45,6 +45,7 @@ bool getMessageFromQueue(PacketData& data) {
 
 std::atomic<bool> SocketListener::_running = false;
 std::atomic<bool> SocketListener::_shutdown = false;
+UDPsocket SocketListener::socket = nullptr;
 std::unique_ptr<std::thread> SocketListener::worker = nullptr;
 
 
@@ -52,10 +53,11 @@ std::unique_ptr<std::thread> SocketListener::worker = nullptr;
 void SocketListener::Start() {
 
     // open the passed port (0 for dynamic port assignment)
-    UDPsocket socket = SDLNet_UDP_Open(42069);
+    UDPsocket socket = SDLNet_UDP_Open(0);
     if (!socket) {
         throw std::runtime_error(SDLNet_GetError());
     }
+    SocketListener::socket = socket;
 
     SocketListener::worker = std::make_unique<std::thread>(&SocketListener::Listen, socket);
 }
@@ -102,6 +104,8 @@ void SocketListener::Listen(UDPsocket socket) noexcept {
                 std::lock_guard<std::mutex> lock(recvq_mutex); // ta mutex blocka, ampak ni treba bufferja
                 recievedQueue.push(std::move(msg));
                 //std::cout << " [SocketListener] Prejel sem paket: " << recievedQueue.back()->data.get() << '\n';
+                //std::cout << "Prejeto: [" << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << "]\n";
+
             }
         }
         else if (numReceived < 0) {
@@ -114,10 +118,15 @@ void SocketListener::Listen(UDPsocket socket) noexcept {
         }
 
         // sleep to reduce CPU usage (1ms)
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::microseconds(LOOP_DELAY));
     }
 
     // cleannup
     SDLNet_FreePacket(packet);
     SDLNet_UDP_Close(socket);
+}
+
+
+UDPsocket SocketListener::getSocket() noexcept {
+    return SocketListener::socket;
 }

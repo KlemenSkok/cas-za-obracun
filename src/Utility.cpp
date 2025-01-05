@@ -1,8 +1,8 @@
 
 // Utility.cpp
 
-#include "../include/Utility.hpp"
-#include "../include/Logging/Logger.hpp"
+#include "Utility.hpp"
+#include "Logging/Logger.hpp"
 #include <iostream>
 
 namespace SDLUtils {

@@ -14,6 +14,8 @@
 // za UDPmessage
 #include "Containers.hpp"
 
+#define LOOP_DELAY 1000 // 1000us = 1ms
+
 
 // -------------------------------------------------//
 //                                                  //
@@ -41,11 +43,14 @@ class SocketListener {
 
     // pointer to the listener thread
     static std::unique_ptr<std::thread> worker;
+    static UDPsocket socket;
 
 public:
-    static std::atomic<bool> _shutdown;
+    static std::atomic<bool> _shutdown; // atomic za thread safety
     static std::atomic<bool> _running;
+
     static void Start();
     static void Listen(UDPsocket) noexcept;
     static void Stop() noexcept;
+    static UDPsocket getSocket() noexcept;
 };

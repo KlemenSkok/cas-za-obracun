@@ -38,27 +38,26 @@ void Game::Run() {
     int cnt = 0;
 
     while(!quit && cnt < 100) {
-        
-        std::this_thread::sleep_for(std::chrono::microseconds(1));
 
         processNewPackets();
 
         // send a message to the server
-        PacketData send_msg((Uint8*)"Hello from client!", 20);
+        PacketData send_msg((Uint8*)("Hello from client! [" + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) + "]").c_str(), 40);
         addMessageToQueue(send_msg, server_channel);
-        
+         
         cnt++;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
 void Game::Cleanup() {
     Logger::info("Cleaning up...");
+
     SocketListener::Stop();
     SocketSpeaker::Stop();
 
-    SDLNet_UDP_Unbind(SocketSpeaker::getSocket(), server_channel);
     SDLNet_UDP_Close(SocketSpeaker::getSocket());
-
+    SDLNet_UDP_Close(SocketListener::getSocket());
 }
 
 void Game::setServerIP(const char* ip, uint16_t port) {
