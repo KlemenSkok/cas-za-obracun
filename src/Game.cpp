@@ -11,7 +11,25 @@
 #include <iostream>
 #include <stdexcept>
 
+// header flags
+#define NUM_FLAGS 8
 
+#define FLAG_ACK 7
+#define FLAG_FIN 6
+#define FLAG_SYN 5
+#define FLAG_KEEPALIVE 4
+#define FLAG_DATA 3
+#define FLAG_PULL 2
+#define FLAG_PUSH 1
+
+// data offsets in packets [B]
+#define OFFSET_FLAGS 0
+#define OFFSET_SESSION_ID 1
+#define OFFSET_CLIENT_ID 2
+#define OFFSET_DATA 4
+
+
+// static members
 IPaddress Game::server_addr;
 int Game::server_channel = 0;
 
@@ -33,23 +51,6 @@ void Game::Setup() {
     }
 }
 
-void Game::Run() {
-    bool quit = false;
-    int cnt = 0;
-
-    while(!quit && cnt < 100) {
-
-        processNewPackets();
-
-        // send a message to the server
-        PacketData send_msg((Uint8*)("Hello from client! [" + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) + "]").c_str(), 40);
-        addMessageToQueue(send_msg, server_channel);
-         
-        cnt++;
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-}
-
 void Game::Cleanup() {
     Logger::info("Cleaning up...");
 
@@ -68,6 +69,21 @@ void Game::setServerIP(const char* ip, uint16_t port) {
 
     SDLNet_UDP_Bind(SocketSpeaker::getSocket(), server_channel, &server_addr);
 
+}
+
+void Game::Run() {
+    bool quit = false;
+
+    while(!quit) {
+
+        processNewPackets();
+
+        // send a message to the server
+        //PacketData send_msg((Uint8*)("Hello from client! [" + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) + "]").c_str(), 40);
+        //addMessageToQueue(send_msg, server_channel);
+         
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
 }
 
 void Game::processNewPackets() {
