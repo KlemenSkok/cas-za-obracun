@@ -3,7 +3,7 @@
 
 #include "Game.hpp"
 #include "Logging/Logger.hpp"
-#include "Utility.hpp"
+#include "Utilities/Utility.hpp"
 
 #include <iostream>
 

@@ -2,7 +2,7 @@
 // SocketSpeaker.cpp
 
 #include "Communication/SocketSpeaker.hpp"
-#include "Utility.hpp"
+#include "Utilities/Utility.hpp"
 #include "Logging/Logger.hpp"
 
 #include <cstring>

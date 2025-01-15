@@ -2,7 +2,7 @@
 // Game.cpp
 
 #include "Game.hpp"
-#include "Utility.hpp"
+#include "Utilities/Utility.hpp"
 #include "Communication/SocketListener.hpp"
 #include "Communication/SocketSpeaker.hpp"
 #include "Logging/Logger.hpp"
@@ -11,22 +11,6 @@
 #include <iostream>
 #include <stdexcept>
 
-// header flags
-#define NUM_FLAGS 8
-
-#define FLAG_ACK 7
-#define FLAG_FIN 6
-#define FLAG_SYN 5
-#define FLAG_KEEPALIVE 4
-#define FLAG_DATA 3
-#define FLAG_PULL 2
-#define FLAG_PUSH 1
-
-// data offsets in packets [B]
-#define OFFSET_FLAGS 0
-#define OFFSET_SESSION_ID 1
-#define OFFSET_CLIENT_ID 2
-#define OFFSET_DATA 4
 
 
 // static members
@@ -72,18 +56,44 @@ void Game::setServerIP(const char* ip, uint16_t port) {
 }
 
 void Game::Run() {
+    Window::Open();
     bool quit = false;
 
     while(!quit) {
 
         processNewPackets();
 
+        // LOOP IDEA:
+        // process server updates
+        // process user input
+        // send updates to the server
+        // show the game state
+        // repeat
+
+
+
         // send a message to the server
         //PacketData send_msg((Uint8*)("Hello from client! [" + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) + "]").c_str(), 40);
         //addMessageToQueue(send_msg, server_channel);
+
+        SDL_SetRenderDrawColor(Window::renderer, 0x00, 0x00, 0x00, 255);
+        SDL_RenderClear(Window::renderer);
+        SDL_SetRenderDrawColor(Window::renderer, 0xFF, 0xFF, 0xFF, 255);
+        SDL_RenderDrawLine(Window::renderer, 0, 0, Window::Width(), Window::Height());
+        SDL_RenderDrawLine(Window::renderer, Window::Width(), 0, 0, Window::Height());
+        SDL_RenderPresent(Window::renderer);
+        
+
+        SDL_Event e;
+        while(SDL_PollEvent(&e) != 0) {
+            if(e.type == SDL_QUIT) {
+                quit = true;
+            }
+        }
          
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+    Window::Close();
 }
 
 void Game::processNewPackets() {

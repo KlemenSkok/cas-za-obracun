@@ -25,6 +25,22 @@ namespace SDLUtils {
     void cleanup();
 }
 
+// namespace for dealing with SDL window and renderer
+namespace Window {
+    extern SDL_Window *window;
+    extern SDL_Renderer *renderer;
+
+    void Open();
+    void Close();
+    void Clear();
+
+    void Maximize();
+    void Fullscreen();
+
+    int Width();
+    int Height();
+}
+
 
 
 std::string formatIP(Uint32 ip);

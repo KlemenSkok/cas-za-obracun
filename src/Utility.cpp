@@ -1,7 +1,8 @@
 
 // Utility.cpp
 
-#include "Utility.hpp"
+#include "Utilities/Utility.hpp"
+#include "Utilities/Constants.hpp"
 #include "Logging/Logger.hpp"
 #include <iostream>
 
@@ -26,6 +27,50 @@ namespace SDLUtils {
         SDLNet_Quit();
         SDL_Quit();
     }
+}
+
+namespace Window {
+
+    SDL_Window *window = nullptr;
+    SDL_Renderer *renderer = nullptr;
+
+    void Open() {
+        window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF); // black
+        SDL_RenderClear(renderer);
+        SDL_RenderPresent(Window::renderer);
+    }
+
+    void Close() {
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+    }
+
+    void Clear() {
+        SDL_RenderClear(renderer);
+    }
+
+    void Maximize() {
+        SDL_MaximizeWindow(window);
+    }
+
+    void Fullscreen() {
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    }
+
+    int Width() {
+        int w;
+        SDL_GetWindowSize(window, &w, nullptr);
+        return w;
+    }
+
+    int Height() {
+        int h;
+        SDL_GetWindowSize(window, nullptr, &h);
+        return h;
+    }
+
 }
 
 std::string formatIP(Uint32 ip) {
