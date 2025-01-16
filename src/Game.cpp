@@ -3,6 +3,7 @@
 
 #include "Game.hpp"
 #include "Utilities/Utility.hpp"
+#include "Utilities/Constants.hpp"
 #include "Communication/SocketListener.hpp"
 #include "Communication/SocketSpeaker.hpp"
 #include "Logging/Logger.hpp"
@@ -59,6 +60,12 @@ void Game::Run() {
     Window::Open();
     bool quit = false;
 
+    PacketData m(true);
+    m.flags() |= (1 << FLAG_SYN);
+    addMessageToQueue(m, server_channel);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
     while(!quit) {
 
         processNewPackets();
@@ -94,6 +101,10 @@ void Game::Run() {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     Window::Close();
+
+    m.reset();
+    m.flags() |= (1 << FLAG_FIN);
+    addMessageToQueue(m, server_channel);
 }
 
 void Game::processNewPackets() {
