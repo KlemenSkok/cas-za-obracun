@@ -1,12 +1,14 @@
 
 // Containers.cpp
 
-#include "Containers.hpp"
-#include "Logging/Logger.hpp"
+#include "../include/Containers.hpp"
+#include "../include/Logging/Logger.hpp"
+
+#include <sstream>
 
 // -------------------------------------------------//
 //                                                  //
-//                   UDP MESSAGE                    //
+//                  UDP MESSAGE                     //
 //                                                  //
 // -------------------------------------------------//
 
@@ -43,6 +45,8 @@ void PacketData::reset() {
 }
 
 Uint8& PacketData::flags() {
+    if(data.size() < 0)
+        data.push_back(0);
     return data[0];
 }
 
@@ -50,6 +54,28 @@ Uint8& PacketData::operator[](int i) {
     return data[i];
 }
 
+void PacketData::append(const Uint8* data, int len) {
+    this->data.insert(this->data.end(), data, data + len);
+}
+
+std::string PacketData::dump() {
+    std::ostringstream oss;
+    oss << "[";
+
+    for (size_t i = 0; i < data.size(); ++i) {
+        oss << static_cast<int>(data.data()[i]); // Cast to int for proper representation
+        if (i < data.size() - 1) {
+            oss << ", ";
+        }
+    }
+
+    oss << "]";
+    return oss.str();
+}
+
+
+// template funkcije premaknjene direkt v header
+/*
 template<typename T>
 void PacketData::append(T data) {
     // resize the vector and append the data
@@ -57,19 +83,15 @@ void PacketData::append(T data) {
     this->data.resize(current_size + sizeof(T)); // resize vector
     std::memcpy(&this->data[current_size], &data, sizeof(T)); // append data
 }
-
-void PacketData::append(const Uint8* data, int len) {
-    this->data.insert(this->data.end(), data, data + len);
-}
-
+*/
+/*
 template<typename T>
-T PacketData::getByOffset(size_t offset, size_t size, T sample) {
+void PacketData::getByOffset(size_t offset, size_t size, T& target) {
     if(offset + size > data.size()) {
         Logger::warn("Offset out of bounds - PacketData::getByOffset().");
-        return sample;
+        return;
     }
 
-    T result;
-    std::memcpy(&result, &data[offset], size);
-    return result;
+    std::memcpy(&target, &data[offset], size);
 }
+*/

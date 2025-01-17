@@ -14,6 +14,9 @@ class Game {
     static IPaddress server_addr;
     static int server_channel;
 
+    static uint8_t session_id;
+    static uint16_t client_id;
+
 public:
     static void Setup();
     static void Run();

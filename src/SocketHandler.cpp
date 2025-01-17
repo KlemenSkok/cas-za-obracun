@@ -96,8 +96,12 @@ void SocketHandler::Start() {
         throw std::runtime_error(SDLNet_GetError());
     }
     SocketHandler::socket = socket;
+    
+    IPaddress *localAddr = SDLNet_UDP_GetPeerAddress(socket, -1);
+    Logger::info(("Socket opened on port [" + std::to_string(SDLNet_Read16(&localAddr->port)) + "]").c_str());
 
     SocketHandler::worker = std::make_unique<std::thread>(&SocketHandler::Work, socket);
+    SocketHandler::worker->detach(); // detach, da ne caka na join pri zapiranju
 }
 
 // stop and close thread
@@ -106,12 +110,6 @@ void SocketHandler::Stop() noexcept {
     SocketHandler::_shutdown = true;
 
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-    if(SocketHandler::worker && SocketHandler::worker->joinable()) {
-        Logger::info("Waiting for socket listener to close...");
-        SocketHandler::worker->join();
-    }
-    Logger::info("Socket handler closed.");
 }
 
 UDPsocket SocketHandler::getSocket() noexcept {
@@ -120,9 +118,16 @@ UDPsocket SocketHandler::getSocket() noexcept {
 
 void SocketHandler::Work(UDPsocket socket) noexcept {
 
-    // allocate a packet
-    UDPpacket* packet = SDLNet_AllocPacket(MAX_PACKET_SIZE);
-    if (!packet) {
+    // allocate a packet for recieving
+    UDPpacket* recieve_packet = SDLNet_AllocPacket(MAX_PACKET_SIZE);
+    if (!recieve_packet) {
+        Logger::error((std::string("Failed to allocate packet: ") + SDLNet_GetError()).c_str());
+        SocketHandler::_running = false;
+        return;
+    }
+    // allocate a packet for sending
+    UDPpacket* send_packet = SDLNet_AllocPacket(MAX_PACKET_SIZE);
+    if (!send_packet) {
         Logger::error((std::string("Failed to allocate packet: ") + SDLNet_GetError()).c_str());
         SocketHandler::_running = false;
         return;
@@ -139,10 +144,12 @@ void SocketHandler::Work(UDPsocket socket) noexcept {
         // ------------------------------------------------- //
         // formerly known as SocketListener
         // check for new packets TO RECIEVE
-        int numReceived = SDLNet_UDP_Recv(socket, packet);
+        int numReceived = SDLNet_UDP_Recv(socket, recieve_packet);
         if (numReceived > 0) {
             // copy the packet contents
-            auto msg = std::make_unique<UDPmessage>(packet);
+            auto msg = std::make_unique<UDPmessage>(recieve_packet);
+
+            //std::cout << "Prejel sem paket: " << msg->data.get() << '\n';
 
             // add the packet to queue
             {
@@ -156,6 +163,8 @@ void SocketHandler::Work(UDPsocket socket) noexcept {
             Logger::error((std::string("SDLNet_UDP_Recv error: ") + SDLNet_GetError()).c_str());
             continue; // skip this loop
         }
+
+        //std::cout << "loopam...\n";
 
         // ------------------------------------------------- //
         //                  SENDING PACKETS                  //
@@ -175,23 +184,23 @@ void SocketHandler::Work(UDPsocket socket) noexcept {
         // check for a new packet
         if (msg) {
             // copy the message to the packet
-            packet->channel = msg.get()->channel; // server uporablja channele, zato ga je treba poslat zraven
-            packet->len = msg.get()->len;
-            if(packet->channel == -1) {
-                packet->address = *msg.get()->ip.get();
+            send_packet->channel = msg.get()->channel; // server uporablja channele, zato ga je treba poslat zraven
+            send_packet->len = msg.get()->len;
+            if(send_packet->channel == -1) {
+                send_packet->address = *msg.get()->ip.get();
             }
 
             // alternativa je std::move na shared pointer
-            packet->data = msg.get()->data.release();
+            send_packet->data = msg.get()->data.release();
             
             // send the packet
-            if(SDLNet_UDP_Send(socket, packet->channel, packet) == 0) {
+            if(SDLNet_UDP_Send(socket, send_packet->channel, send_packet) == 0) {
                 Logger::error((std::string("SDLNet_UDP_Send error: ") + SDLNet_GetError()).c_str());
             }
 
             //std::cout << "Vsebina paketa: " << packet->data << "\n\n";
-            delete[] packet->data; // ! nujno
-            packet->data = nullptr;
+            delete[] send_packet->data; // ! nujno
+            send_packet->data = nullptr;
             //std::cout << "Poslano: [" << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << "]\n";
         }
 
@@ -203,5 +212,10 @@ void SocketHandler::Work(UDPsocket socket) noexcept {
         std::this_thread::sleep_for(std::chrono::microseconds(LOOP_DELAY));
 
     }
+
+    SDLNet_FreePacket(recieve_packet);
+    SDLNet_FreePacket(send_packet);
+    SDLNet_UDP_Close(socket);
+    Logger::info("Socket handler stopped.");
 
 }

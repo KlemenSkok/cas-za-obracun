@@ -4,8 +4,7 @@
 #include "Game.hpp"
 #include "Utilities/Utility.hpp"
 #include "Utilities/Constants.hpp"
-#include "Communication/SocketListener.hpp"
-#include "Communication/SocketSpeaker.hpp"
+#include "Communication/SocketHandler.hpp"
 #include "Logging/Logger.hpp"
 #include "Containers.hpp"
 
@@ -21,38 +20,28 @@ int Game::server_channel = 0;
 void Game::Setup() {
     try {
         // pass 0 for dynamic port assignment
-        SocketListener::Start();
+        SocketHandler::Start();
     }
     catch (std::runtime_error &e) {
-        throw std::runtime_error(std::string("Failed to start listening thread: ") + e.what());
+        throw std::runtime_error(std::string("Failed to start communication thread: ") + e.what());
     }
 
-    try {
-        // pass 0 for dynamic port assignment
-        SocketSpeaker::Start();
-    }
-    catch (std::runtime_error &e) {
-        throw std::runtime_error(std::string("Failed to start speaking thread: ") + e.what());
-    }
 }
 
 void Game::Cleanup() {
     Logger::info("Cleaning up...");
 
-    SocketListener::Stop();
-    SocketSpeaker::Stop();
-
-    SDLNet_UDP_Close(SocketSpeaker::getSocket());
-    SDLNet_UDP_Close(SocketListener::getSocket());
+    SocketHandler::Stop();
+    SDLNet_UDP_Close(SocketHandler::getSocket());
 }
 
 void Game::setServerIP(const char* ip, uint16_t port) {
     if(SDLNet_ResolveHost(&Game::server_addr, ip, port) == -1) {
         throw std::runtime_error("Failed to resolve host.");
     }
-    Logger::info(("Server IP resolved: " + formatIP(Game::server_addr.host) + ":" + std::to_string(Game::server_addr.port)).c_str());
+    Logger::info(("Server IP resolved: " + formatIP(Game::server_addr.host) + ":" + std::to_string(SDLNet_Read16(&Game::server_addr.port))).c_str());
 
-    SDLNet_UDP_Bind(SocketSpeaker::getSocket(), server_channel, &server_addr);
+    SDLNet_UDP_Bind(SocketHandler::getSocket(), server_channel, &server_addr);
 
 }
 
@@ -64,7 +53,6 @@ void Game::Run() {
     m.flags() |= (1 << FLAG_SYN);
     addMessageToQueue(m, server_channel);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     while(!quit) {
 
@@ -105,6 +93,8 @@ void Game::Run() {
     m.reset();
     m.flags() |= (1 << FLAG_FIN);
     addMessageToQueue(m, server_channel);
+    
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 void Game::processNewPackets() {
