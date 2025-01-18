@@ -105,22 +105,59 @@ public:
 // template void PacketData::getByOffset<unsigned char>(size_t, size_t, unsigned char&);
 // template void PacketData::getByOffset<unsigned short>(size_t, size_t, unsigned short&);
 
+
+// prebere podatek tipa T iz podatkov na offsetu
+// v paketu je podatek zapisan v network order (big endian)
+// ce je offset izven meja, vrze std::out_of_range
 template<typename T>
 void PacketData::getByOffset(size_t offset, size_t size, T& target) {
-    if(offset + size > data.size()) {
-        //Logger::warn("Offset out of bounds - PacketData::getByOffset().");
-        return;
+    static_assert(std::is_integral<T>::value, "Only integral types are supported.");
+
+    if (offset + size > data.size()) {
+        throw std::out_of_range("Offset out of bounds in PacketData::getByOffset.");
     }
 
-    std::memcpy(&target, &data[offset], size);
+    if constexpr (sizeof(T) == 1) {
+        // For 1-byte types, no need for endianness conversion
+        target = static_cast<T>(data[offset]);
+    } else if constexpr (sizeof T) == 2) {
+        // Use SDLNet_Read16 for 2-byte types
+        Uint16 network_order;
+        std::memcpy(&network_order, &data[offset], sizeof(Uint16));
+        target = SDLNet_Read16(&network_order);
+    } else if constexpr (sizeof(T) == 4) {
+        // Use SDLNet_Read32 for 4-byte types
+        Uint32 network_order;
+        std::memcpy(&network_order, &data[offset], sizeof(Uint32));
+        target = SDLNet_Read32(&network_order);
+    } else {
+        throw std::runtime_error("Unsupported type size for PacketData::getByOffset.");
+    }
 }
 
 
-// ta funkcija kontra zapise bajte. todo: fix
+// funkcija podatke zapise podatke v formatu BIG ENDIAN (network order) == MSB first
+// system default je little endian (x86) (LSB first)
 template<typename T>
 void PacketData::append(T data) {
-    // resize the vector and append the data
-    size_t current_size = this->data.size();
-    this->data.resize(current_size + sizeof(T)); // resize vector
-    std::memcpy(&this->data[current_size], &data, sizeof(T)); // append data
+    static_assert(std::is_integral<T>::value, "Only integral types are supported.");
+
+    if constexpr (sizeof(T) == 1) {
+        // For 1-byte types, no need for endianness conversion
+        this->data.push_back(static_cast<Uint8>(data));
+    } else if constexpr (sizeof(T) == 2) {
+        // Use SDLNet_Write16 for 2-byte types
+        Uint16 network_order;
+        SDLNet_Write16(data, &network_order);
+        this->data.insert(this->data.end(), reinterpret_cast<Uint8*>(&network_order),
+                          reinterpret_cast<Uint8*>(&network_order) + sizeof(Uint16));
+    } else if constexpr (sizeof(T) == 4) {
+        // Use SDLNet_Write32 for 4-byte types
+        Uint32 network_order;
+        SDLNet_Write32(data, &network_order);
+        this->data.insert(this->data.end(), reinterpret_cast<Uint8*>(&network_order),
+                          reinterpret_cast<Uint8*>(&network_order) + sizeof(Uint32));
+    } else {
+        throw std::runtime_error("Unsupported type size for PacketData::append.");
+    }
 }

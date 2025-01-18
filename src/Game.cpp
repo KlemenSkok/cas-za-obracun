@@ -51,7 +51,11 @@ void Game::Run() {
 
     PacketData m(true);
     m.flags() |= (1 << FLAG_SYN);
+    m.append((uint8_t)1);
+    m.append((uint16_t)14);
+
     addMessageToQueue(m, server_channel);
+
 
 
     while(!quit) {
@@ -65,7 +69,7 @@ void Game::Run() {
         // show the game state
         // repeat
 
-
+        
 
         // send a message to the server
         //PacketData send_msg((Uint8*)("Hello from client! [" + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) + "]").c_str(), 40);
@@ -112,6 +116,9 @@ void Game::processNewPackets() {
         // --------------------------------------
 
         std::cout << "[" << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << "] " << recv_msg.getRawData().get() << '\n';
+
+        
+
 
         // --------------------------------------
 
