@@ -17,6 +17,9 @@
 IPaddress Game::server_addr;
 int Game::server_channel = 0;
 
+uint8_t Game::session_id = 0;
+uint16_t Game::client_id = 0;
+
 void Game::Setup() {
     try {
         // pass 0 for dynamic port assignment
@@ -49,10 +52,15 @@ void Game::Run() {
     Window::Open();
     bool quit = false;
 
+    // request connection
     PacketData m(true);
     m.flags() |= (1 << FLAG_SYN);
-    m.append((uint8_t)1);
-    m.append((uint16_t)14);
+    //m.append((uint8_t)1);
+    //m.append((uint16_t)14);
+
+/*     uint16_t client_id = 0;
+    m.getByOffset(client_id, sizeof(client_id), OFFSET_CLIENT_ID);
+    std::cout << "Client ID: " << client_id << '\n'; */
 
     addMessageToQueue(m, server_channel);
 
@@ -94,8 +102,11 @@ void Game::Run() {
     }
     Window::Close();
 
+    // send the FIN message
     m.reset();
     m.flags() |= (1 << FLAG_FIN);
+    m.append(Game::session_id);
+    m.append(Game::client_id);
     addMessageToQueue(m, server_channel);
     
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -109,14 +120,54 @@ void Game::processNewPackets() {
     uint8_t num_packets = 0;
 
     // check for recieved messages
-    PacketData recv_msg;
-    while(getMessageFromQueue(recv_msg) && num_packets < max_packets) {
+    PacketData data;
+    while(getMessageFromQueue(data) && num_packets < max_packets) {
         
         // handle the message
         // --------------------------------------
 
-        std::cout << "[" << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << "] " << recv_msg.getRawData().get() << '\n';
+        //std::cout << "[" << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << "] " << data.getRawData().get() << '\n';
 
+        for(int i = NUM_FLAGS - 1; i >= 0; i--) {
+            if(data.flags() & (1 << i)) {
+                switch(i) {
+                        case FLAG_ACK:
+                            // look for any awaiting confirmations
+                            break;
+                        case FLAG_SYN:
+                            // start the connection (get the client id)
+                            uint16_t c_id;
+                            uint8_t s_id;
+                            try {
+                                data.getByOffset(c_id, sizeof(c_id), OFFSET_CLIENT_ID);
+                                data.getByOffset(s_id, sizeof(s_id), OFFSET_SESSION_ID);
+                            }
+                            catch (std::out_of_range &e) {
+                                Logger::error("Failed to retrieve client id or session id from the packet.");
+                                break;
+                            }
+                            Logger::info(("Client ID: " + std::to_string(c_id) + ", Session ID: " + std::to_string(s_id)).c_str());
+                            Game::client_id = c_id;
+                            Game::session_id = s_id;
+                            break;
+                        case FLAG_FIN:
+                            // close the connection
+                            break;
+                        case FLAG_KEEPALIVE:
+                            // just update timestamp of the last keepalive message
+                            break;
+                        case FLAG_DATA:
+                            // process the data and update local game state
+                            break;
+                        case FLAG_PUSH:
+                            // send back data to the server
+                            break;
+                        default:
+                            Logger::info(("A packet was ignored: " + std::string((char*)data.getRawData().get())).c_str());
+                            // ignore the packet
+                    }
+            }
+        }
         
 
 

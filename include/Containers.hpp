@@ -91,7 +91,7 @@ public:
     Uint8& flags(); // vrne prvi byte (server flags)
     Uint8& operator[](int i); // vrne i-ti byte
     template<typename T>
-    void getByOffset(size_t offset, size_t size, T& target); // vrne podatek tipa T na offsetu
+    void getByOffset(T& target, size_t size, size_t offset); // vrne podatek tipa T na offsetu
 
 };
 
@@ -106,11 +106,16 @@ public:
 // template void PacketData::getByOffset<unsigned short>(size_t, size_t, unsigned short&);
 
 
-// prebere podatek tipa T iz podatkov na offsetu
-// v paketu je podatek zapisan v network order (big endian)
-// ce je offset izven meja, vrze std::out_of_range
+/**
+ * Prebere podatek tipa T iz podatkov na offsetu. 
+ * V paketu je podatek zapisan v network order (big endian)
+ @attention Ce je offset izven meja, vrze std::out_of_range
+ @param target Spremenljivka, v katero prepisemo data
+ @param size Velikost podatka [B]
+ @param offset Polozaj podatka v paketu (odmik prvega bajta [B])
+ */
 template<typename T>
-void PacketData::getByOffset(size_t offset, size_t size, T& target) {
+void PacketData::getByOffset(T& target, size_t size, size_t offset) {
     static_assert(std::is_integral<T>::value, "Only integral types are supported.");
 
     if (offset + size > data.size()) {
@@ -120,7 +125,7 @@ void PacketData::getByOffset(size_t offset, size_t size, T& target) {
     if constexpr (sizeof(T) == 1) {
         // For 1-byte types, no need for endianness conversion
         target = static_cast<T>(data[offset]);
-    } else if constexpr (sizeof T) == 2) {
+    } else if constexpr (sizeof (T) == 2) {
         // Use SDLNet_Read16 for 2-byte types
         Uint16 network_order;
         std::memcpy(&network_order, &data[offset], sizeof(Uint16));
@@ -136,8 +141,11 @@ void PacketData::getByOffset(size_t offset, size_t size, T& target) {
 }
 
 
-// funkcija podatke zapise podatke v formatu BIG ENDIAN (network order) == MSB first
-// system default je little endian (x86) (LSB first)
+/**
+ * Funkcija podatke zapise podatke v formatu BIG ENDIAN (network order) == MSB first
+ * (system default je little endian (x86), LSB first)
+ * @param data poljuben (naceloma primitiven) podatkovni tip velikosti 1, 2 ali 4B
+ */
 template<typename T>
 void PacketData::append(T data) {
     static_assert(std::is_integral<T>::value, "Only integral types are supported.");

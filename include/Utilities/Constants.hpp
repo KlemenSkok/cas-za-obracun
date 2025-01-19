@@ -30,4 +30,5 @@
 #define OFFSET_FLAGS 0
 #define OFFSET_SESSION_ID 1
 #define OFFSET_CLIENT_ID 2
-#define OFFSET_DATA 4
+#define OFFSET_PACKET_ID 4
+#define OFFSET_DATA 8
