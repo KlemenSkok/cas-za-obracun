@@ -11,7 +11,17 @@
 #define INITIAL_WINDOW_HEIGHT 600
 
 
+// CONNECTION CONSTANTS
+enum class ConnectionState: uint8_t {
+    DISCONNECTED = 0,
+    CONNECTING,
+    CONNECTED,
+    DISCONNECTING
+};
 
+#define CONNECTION_REQUEST_INTERVAL 1000 // [ms]
+#define DISCONNECTION_REQUEST_INTERVAL 1000 // [ms]
+#define KEEPALIVE_INTERVAL 5000 // [ms]
 
 // PACKET HEADER CONSTANTS
 
@@ -32,3 +42,12 @@
 #define OFFSET_CLIENT_ID 2
 #define OFFSET_PACKET_ID 4
 #define OFFSET_DATA 8
+
+// game info constants
+
+enum class GameState: uint8_t {
+    WAITING_FOR_PLAYERS = 0,
+    ROUND_PAUSED,
+    ROUND_RUNNING,
+    GAME_FINISHED
+};
