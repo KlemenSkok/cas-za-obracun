@@ -189,6 +189,8 @@ void Game::manageConnection() {
                 // send a keepalive message
                 PacketData m(true);
                 m.flags() |= (1 << FLAG_KEEPALIVE);
+                m.append(Game::session_id);
+                m.append(Game::client_id);
                 addMessageToQueue(m, server_channel);
                 lastPacketTime = std::chrono::steady_clock::now();
 
