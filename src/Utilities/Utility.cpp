@@ -92,3 +92,15 @@ void dumpPacket(UDPpacket *packet) {
         "\tMaxLen: " << packet->maxlen << "\n";
     std::cout << "\n";
 }
+
+void DrawFillCircleF(SDL_Renderer* renderer, float x, float y, int r) {
+    for(int w = 0; w < r; w++) {
+        for(int h = 0; h < r; h++) {
+            int dx = r - w;
+            int dy = r - h;
+            if((dx * dx + dy * dy) <= (r * r)) {
+                SDL_RenderDrawPointF(renderer, x + dx, y + dy);
+            }
+        }
+    }
+}

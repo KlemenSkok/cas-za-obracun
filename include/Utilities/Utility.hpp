@@ -45,3 +45,6 @@ namespace Window {
 
 std::string formatIP(Uint32 ip);
 void dumpPacket(UDPpacket *packet);
+
+// Draw a filled circle with center at (x, y) and radius r
+void DrawFillCircleF(SDL_Renderer* renderer, float x, float y, int r);
