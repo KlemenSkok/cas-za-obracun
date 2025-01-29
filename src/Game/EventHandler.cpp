@@ -29,22 +29,22 @@ void EventHandler::HandleEvents() {
                 case SDLK_w:
                     // move the player up
                     keyStates.w = 1;
-                    Game::player->velocity.y = -PLAYER_SPEED;
+                    Game::player->acceleration.y = -PLAYER_ACCELERATION;
                     break;
                 case SDLK_s:
                     // move the player down
                     keyStates.s = 1;
-                    Game::player->velocity.y = PLAYER_SPEED;
+                    Game::player->acceleration.y = PLAYER_ACCELERATION;
                     break;
                 case SDLK_a:
                     // move the player left
                     keyStates.a = 1;
-                    Game::player->velocity.x = -PLAYER_SPEED;
+                    Game::player->acceleration.x = -PLAYER_ACCELERATION;
                     break;
                 case SDLK_d:
                     // move the player right
                     keyStates.d = 1;
-                    Game::player->velocity.x = PLAYER_SPEED;
+                    Game::player->acceleration.x = PLAYER_ACCELERATION;
                     break;
                 default:
                     // do nothing
@@ -57,22 +57,22 @@ void EventHandler::HandleEvents() {
                 case SDLK_w:
                     // move the player up
                     keyStates.w = 0;
-                    Game::player->velocity.y = (keyStates.s) ? PLAYER_SPEED : 0.0f;
+                    Game::player->acceleration.y = (keyStates.s) ? PLAYER_ACCELERATION : 0.0f;
                     break;
                 case SDLK_s:
                     // move the player down
                     keyStates.s = 0;
-                    Game::player->velocity.y = (keyStates.w) ? -PLAYER_SPEED : 0.0f;
+                    Game::player->acceleration.y = (keyStates.w) ? -PLAYER_ACCELERATION : 0.0f;
                     break;
                 case SDLK_a:
                     // move the player left
                     keyStates.a = 0;
-                    Game::player->velocity.x = (keyStates.d) ? PLAYER_SPEED : 0.0f;
+                    Game::player->acceleration.x = (keyStates.d) ? PLAYER_ACCELERATION : 0.0f;
                     break;
                 case SDLK_d:
                     // move the player right
                     keyStates.d = 0;
-                    Game::player->velocity.x = (keyStates.a) ? -PLAYER_SPEED : 0.0f;
+                    Game::player->acceleration.x = (keyStates.a) ? -PLAYER_ACCELERATION : 0.0f;
                     break;
                 default:
                     // do nothing
@@ -98,7 +98,7 @@ void EventHandler::HandleEvents() {
     }
 
     // normalize the velocity vector for diagonal movement
-    if(keyStates.w && keyStates.a) {
+    /* if(keyStates.w && keyStates.a) {
         Game::player->velocity.x = -PLAYER_SPEED / 1.4142f;
         Game::player->velocity.y = -PLAYER_SPEED / 1.4142f;
     }
@@ -113,6 +113,6 @@ void EventHandler::HandleEvents() {
     if(keyStates.s && keyStates.d) {
         Game::player->velocity.x = PLAYER_SPEED / 1.4142f;
         Game::player->velocity.y = PLAYER_SPEED / 1.4142f;
-    }
+    } */
 
 }

@@ -59,4 +59,7 @@ enum class GameState: uint8_t {
 };
 
 #define MAX_PLAYERS 4
-#define PLAYER_SPEED 200.0f // [px/s]
+
+#define PLAYER_MAX_SPEED 200.0f // [px/s]
+#define PLAYER_ACCELERATION 1200.0f // [px/s^2]
+#define PLAYER_FRICTION 1500.0f // [px/s^2]

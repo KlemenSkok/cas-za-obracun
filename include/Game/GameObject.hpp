@@ -16,6 +16,7 @@ protected:
     // position ni ravno vektor, ampak vseen
     Vector2D position;
     Vector2D velocity;
+    Vector2D acceleration;
 
 public:
     GameObject(float x, float y) : position({x, y}), velocity({0, 0}) {}
