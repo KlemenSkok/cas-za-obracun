@@ -33,6 +33,7 @@ namespace Window {
     void Open();
     void Close();
     void Clear();
+    void Present();
 
     void Maximize();
     void Fullscreen();

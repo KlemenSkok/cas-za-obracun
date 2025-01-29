@@ -10,6 +10,12 @@
 #define INITIAL_WINDOW_WIDTH 800
 #define INITIAL_WINDOW_HEIGHT 600
 
+#define TICK_RATE 60 // [Hz]
+#define GAME_LOOP_DELAY 1000 / TICK_RATE // [ms]
+
+#define MAX_PACKET_SIZE 512 // [B]
+#define SOCKET_LOOP_DELAY 10 // [ms]
+
 
 // CONNECTION CONSTANTS
 enum class ConnectionState: uint8_t {
@@ -51,3 +57,6 @@ enum class GameState: uint8_t {
     ROUND_RUNNING,
     GAME_FINISHED
 };
+
+#define MAX_PLAYERS 4
+#define PLAYER_SPEED 200.0f // [px/s]

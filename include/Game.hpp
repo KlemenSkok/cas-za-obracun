@@ -11,9 +11,11 @@
 #include "Containers.hpp"
 #include "Utilities/Constants.hpp"
 #include "Game/LocalPlayer.hpp"
+#include "Game/EventHandler.hpp"
 
 // forward declaration, because LocalPlayer.hpp includes Game.hpp
 class LocalPlayer;
+class EventHandler;
 
 class Game {
 
@@ -33,7 +35,6 @@ class Game {
     static std::shared_ptr<LocalPlayer> player;
 
 
-
 public:
     static void Setup();
     static void Run();
@@ -42,5 +43,5 @@ public:
 
     static void processNewPackets();
     static void manageConnection();
-    static void manageInputEvents();
+    friend class EventHandler; // handle all events
 };

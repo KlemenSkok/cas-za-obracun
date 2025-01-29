@@ -51,6 +51,10 @@ namespace Window {
         SDL_RenderClear(renderer);
     }
 
+    void Present() {
+        SDL_RenderPresent(renderer);
+    }
+
     void Maximize() {
         SDL_MaximizeWindow(window);
     }
@@ -94,12 +98,15 @@ void dumpPacket(UDPpacket *packet) {
 }
 
 void DrawFillCircleF(SDL_Renderer* renderer, float x, float y, int r) {
-    for(int w = 0; w < r; w++) {
-        for(int h = 0; h < r; h++) {
+    for(int w = 0; w <= r; w++) {
+        for(int h = 0; h <= r; h++) {
             int dx = r - w;
             int dy = r - h;
             if((dx * dx + dy * dy) <= (r * r)) {
                 SDL_RenderDrawPointF(renderer, x + dx, y + dy);
+                SDL_RenderDrawPointF(renderer, x - dx, y + dy);
+                SDL_RenderDrawPointF(renderer, x + dx, y - dy);
+                SDL_RenderDrawPointF(renderer, x - dx, y - dy);
             }
         }
     }

@@ -62,12 +62,19 @@ void Game::Run() {
     Game::_running = true;
     // start connecting to the server
     Game::connection_state = ConnectionState::CONNECTING;
-    Uint32 lastFrameTime = SDL_GetTicks();
+    Uint32 lastUpdate = SDL_GetTicks();
 
     while(Game::_running || Game::connection_state != ConnectionState::DISCONNECTED) {
+        Uint32 now = SDL_GetTicks();
+        if(now - lastUpdate < GAME_LOOP_DELAY) {
+            continue;
+        }
+        int deltaTime = now - lastUpdate;
+        lastUpdate = now;
+
 
         processNewPackets();
-        manageInputEvents();
+        EventHandler::HandleEvents();
         manageConnection();
         // update the local game state
         // send the updates to the server
@@ -82,17 +89,15 @@ void Game::Run() {
         // repeat
 
         
+        // update the player position
+        Game::player->update(deltaTime / 1000.0f);
 
+        // render the player
+        SDL_SetRenderDrawColor(Window::renderer, 0, 0, 0, 255);
+        Window::Clear();
+        Game::player->render(Window::renderer);
+        Window::Present();
 
-        SDL_SetRenderDrawColor(Window::renderer, 0x00, 0x00, 0x00, 255);
-        SDL_RenderClear(Window::renderer);
-        SDL_SetRenderDrawColor(Window::renderer, 0xFF, 0xFF, 0xFF, 255);
-        SDL_RenderDrawLine(Window::renderer, 0, 0, Window::Width(), Window::Height());
-        SDL_RenderDrawLine(Window::renderer, Window::Width(), 0, 0, Window::Height());
-        SDL_RenderPresent(Window::renderer);
-        
-         
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     Window::Close();
 
@@ -216,87 +221,5 @@ void Game::manageConnection() {
                 Logger::info("Disconnection request sent.");
             }
             break;
-    }
-}
-
-void Game::manageInputEvents() {
-    // handle all events in the queue
-    // apply the changes to the local game state
-    // send the changes to the server
-
-    SDL_Event e;
-    while(SDL_PollEvent(&e) != 0) {
-        if(e.type == SDL_QUIT) {
-            // quit the game
-            Game::_running = false;
-            if(Game::connection_state == ConnectionState::CONNECTED)
-                Game::connection_state = ConnectionState::DISCONNECTING;
-            // dont wait for the server response if the connection hadn't been established
-            else Game::connection_state = ConnectionState::DISCONNECTED;
-        }
-        else if(e.type == SDL_KEYDOWN) {
-            // handle key presses
-            switch(e.key.keysym.sym) {
-                case SDLK_w:
-                    // move the player up
-                    player->velocity.y = -10.0f;
-                    break;
-                case SDLK_s:
-                    // move the player down
-                    player->velocity.y = 10.0f;
-                    break;
-                case SDLK_a:
-                    // move the player left
-                    player->velocity.x = -10.0f;
-                    break;
-                case SDLK_d:
-                    // move the player right
-                    player->velocity.x = 10.0f;
-                    break;
-                default:
-                    // do nothing
-                    break;
-            }
-        }
-        else if(e.type == SDL_KEYUP) {
-            // handle key releases
-            switch(e.key.keysym.sym) {
-                case SDLK_w:
-                    // move the player up
-                    player->velocity.y = 0.0f;
-                    break;
-                case SDLK_s:
-                    // move the player down
-                    player->velocity.y = 0.0f;
-                    break;
-                case SDLK_a:
-                    // move the player left
-                    player->velocity.x = 0.0f;
-                    break;
-                case SDLK_d:
-                    // move the player right
-                    player->velocity.x = 0.0f;
-                    break;
-                default:
-                    // do nothing
-                    break;
-            }
-        }
-        else if(e.type == SDL_MOUSEMOTION) {
-            // handle mouse movement
-            // rotate the player
-            // todo
-        }
-        else if(e.type == SDL_MOUSEBUTTONDOWN) {
-            // handle mouse button presses
-            // throw a projectile
-            // todo
-        }
-        else if(e.type == SDL_MOUSEBUTTONUP) {
-            // handle mouse button releases
-            // stop throwing the projectile
-            // start cooldown
-            // todo
-        }
     }
 }

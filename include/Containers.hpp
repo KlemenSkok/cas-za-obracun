@@ -13,6 +13,22 @@
 
 // tukaj so definirane strukture za celoten server
 
+// --------------------------------------- //
+//                KEY STATES               //
+// --------------------------------------- //
+
+// w,a,s,d key states
+typedef struct {
+    uint8_t w = 0, 
+            a = 0, 
+            s = 0, 
+            d = 0;
+} KeyStates;
+
+
+// ---------------------------------------- //
+//                UDP MESSAGE               //
+// ---------------------------------------- //
 
 struct UDPmessage {
     int channel; // packet channel
@@ -63,6 +79,10 @@ struct UDPmessage {
 
 };
 
+
+// ----------------------------------------- //
+//                PACKET DATA                //
+// ----------------------------------------- //
 
 class PacketData {
     std::vector<Uint8> data;

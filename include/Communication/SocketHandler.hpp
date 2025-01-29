@@ -14,9 +14,6 @@
 // za UDPmessage
 #include "Containers.hpp"
 
-#define LOOP_DELAY 1000 // 1000us = 1ms
-#define MAX_PACKET_SIZE 512
-
 
 // ------------------------------------------------- //
 //                                                   //

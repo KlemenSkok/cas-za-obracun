@@ -3,6 +3,7 @@
 
 #include "Communication/SocketHandler.hpp"
 #include "Utilities/Utility.hpp"
+#include "Utilities/Constants.hpp"
 #include "Logging/Logger.hpp"
 
 #include <cstring>
@@ -137,7 +138,14 @@ void SocketHandler::Work(UDPsocket socket) noexcept {
 
     // start after successful initialization
     SocketHandler::_running = true;
+    Uint32 lastUpdate = SDL_GetTicks();
     while(SocketHandler::_running && !SocketHandler::_shutdown) {
+        Uint32 now = SDL_GetTicks();
+        if(now - lastUpdate < SOCKET_LOOP_DELAY) {
+            std::this_thread::sleep_for(std::chrono::microseconds(100));
+            continue;
+        }
+        lastUpdate = now;
 
         // ------------------------------------------------- //
         //                  RECIEVING PACKETS                //
@@ -164,7 +172,6 @@ void SocketHandler::Work(UDPsocket socket) noexcept {
             continue; // skip this loop
         }
 
-        //std::cout << "loopam...\n";
 
         // ------------------------------------------------- //
         //                  SENDING PACKETS                  //
@@ -208,9 +215,6 @@ void SocketHandler::Work(UDPsocket socket) noexcept {
             break;
         }
         
-        // sleep to reduce CPU usage (1ms)
-        std::this_thread::sleep_for(std::chrono::microseconds(LOOP_DELAY));
-
     }
 
     SDLNet_FreePacket(recieve_packet);
