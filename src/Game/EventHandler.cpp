@@ -30,21 +30,25 @@ void EventHandler::HandleEvents() {
                     // move the player up
                     keyStates.w = 1;
                     Game::player->acceleration.y = -PLAYER_ACCELERATION;
+                    //Game::sendPlayerUpdate();
                     break;
                 case SDLK_s:
                     // move the player down
                     keyStates.s = 1;
                     Game::player->acceleration.y = PLAYER_ACCELERATION;
+                    //Game::sendPlayerUpdate();
                     break;
                 case SDLK_a:
                     // move the player left
                     keyStates.a = 1;
                     Game::player->acceleration.x = -PLAYER_ACCELERATION;
+                    //Game::sendPlayerUpdate();
                     break;
                 case SDLK_d:
                     // move the player right
                     keyStates.d = 1;
                     Game::player->acceleration.x = PLAYER_ACCELERATION;
+                    //Game::sendPlayerUpdate();
                     break;
                 default:
                     // do nothing
@@ -58,21 +62,25 @@ void EventHandler::HandleEvents() {
                     // move the player up
                     keyStates.w = 0;
                     Game::player->acceleration.y = (keyStates.s) ? PLAYER_ACCELERATION : 0.0f;
+                    //Game::sendPlayerUpdate();
                     break;
                 case SDLK_s:
                     // move the player down
                     keyStates.s = 0;
                     Game::player->acceleration.y = (keyStates.w) ? -PLAYER_ACCELERATION : 0.0f;
+                    //Game::sendPlayerUpdate();
                     break;
                 case SDLK_a:
                     // move the player left
                     keyStates.a = 0;
                     Game::player->acceleration.x = (keyStates.d) ? PLAYER_ACCELERATION : 0.0f;
+                    //Game::sendPlayerUpdate();
                     break;
                 case SDLK_d:
                     // move the player right
                     keyStates.d = 0;
                     Game::player->acceleration.x = (keyStates.a) ? -PLAYER_ACCELERATION : 0.0f;
+                    //Game::sendPlayerUpdate();
                     break;
                 default:
                     // do nothing

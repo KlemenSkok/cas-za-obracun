@@ -20,5 +20,6 @@ public:
 
     void update(float deltaTime) override;
     void render(SDL_Renderer*) override;
+    std::vector<Uint8> serialize() override;
 
 };

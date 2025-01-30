@@ -4,6 +4,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <vector>
 
 
 class GameObject {
@@ -22,5 +23,6 @@ public:
     GameObject(float x, float y) : position({x, y}), velocity({0, 0}) {}
     virtual void update(float deltaTime) = 0;
     virtual void render(SDL_Renderer*) = 0;
+    virtual std::vector<Uint8> serialize() = 0;
     virtual ~GameObject() = default;
 };

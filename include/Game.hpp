@@ -26,6 +26,7 @@ class Game {
     static IPaddress server_addr;
     static int server_channel;
     static ConnectionState connection_state;
+    static Uint32 packet_counter;
 
     // session and client id
     static uint8_t session_id;
@@ -44,4 +45,5 @@ public:
     static void processNewPackets();
     static void manageConnection();
     friend class EventHandler; // handle all events
+    static void sendPlayerUpdate(); // send after any user input regarding the player
 };

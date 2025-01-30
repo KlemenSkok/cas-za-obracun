@@ -19,6 +19,7 @@ bool Game::_running = false;
 IPaddress Game::server_addr;
 int Game::server_channel = 0;
 ConnectionState Game::connection_state = ConnectionState::DISCONNECTED;
+Uint32 Game::packet_counter = 1;
 
 uint8_t Game::session_id = 0;
 uint16_t Game::client_id = 0;
@@ -222,4 +223,23 @@ void Game::manageConnection() {
             }
             break;
     }
+}
+
+
+void Game::sendPlayerUpdate() {
+    PacketData m(true);
+    m.flags() |= (1 << FLAG_DATA);
+    m.append(Game::session_id);
+    m.append(Game::client_id);
+
+    // add packet id for duplicate packet detection
+    m.append(Game::packet_counter);
+
+    // add player data
+    auto data = Game::player->serialize();
+    m.append(data.data(), data.size());
+
+    addMessageToQueue(m, server_channel);
+    
+    Game::packet_counter++;
 }

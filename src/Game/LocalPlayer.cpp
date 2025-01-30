@@ -73,3 +73,19 @@ void LocalPlayer::render(SDL_Renderer* renderer) {
     DrawFillCircleF(renderer, position.x, position.y, this->radius);
     SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
 }
+
+std::vector<Uint8> LocalPlayer::serialize() {
+    
+    Uint8 keystates = 0;
+    if(EventHandler::keyStates.w) keystates |= 1 << 0;
+    if(EventHandler::keyStates.s) keystates |= 1 << 1;
+    if(EventHandler::keyStates.a) keystates |= 1 << 2;
+    if(EventHandler::keyStates.d) keystates |= 1 << 3;
+
+    std::vector<Uint8> data;
+    data.push_back(this->position.x);
+    data.push_back(this->position.y);
+    data.push_back(keystates);
+
+    return data;
+}
