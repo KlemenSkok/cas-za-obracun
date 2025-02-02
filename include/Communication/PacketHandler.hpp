@@ -15,4 +15,6 @@ public:
     static void processPacket(PacketData&);
     static void processPlayerUpdates(PacketData&);
     
+    static void sendPlayerUpdate();
+
 };

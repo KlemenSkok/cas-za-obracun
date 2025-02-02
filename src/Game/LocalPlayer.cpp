@@ -74,18 +74,18 @@ void LocalPlayer::render(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
 }
 
-std::vector<Uint8> LocalPlayer::serialize() {
+data_packets::PlayerData LocalPlayer::dumpMovement() {
+    data_packets::PlayerData p;
+
+    // position
+    p.position.x = this->position.x;
+    p.position.y = this->position.y;
+    // velocity
+    p.velocity.x = this->velocity.x;
+    p.velocity.y = this->velocity.y;
+    // key states
+    p.keyStates = encodeKeyStates(EventHandler::keyStates);
+    p.direction = this->direction;
     
-    Uint8 keystates = 0;
-    if(EventHandler::keyStates.w) keystates |= 1 << 0;
-    if(EventHandler::keyStates.s) keystates |= 1 << 1;
-    if(EventHandler::keyStates.a) keystates |= 1 << 2;
-    if(EventHandler::keyStates.d) keystates |= 1 << 3;
-
-    std::vector<Uint8> data;
-    data.push_back(this->position.x);
-    data.push_back(this->position.y);
-    data.push_back(keystates);
-
-    return data;
+    return p;
 }

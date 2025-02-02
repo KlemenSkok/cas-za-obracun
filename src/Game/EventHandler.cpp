@@ -13,15 +13,17 @@ void EventHandler::HandleEvents() {
     // apply the changes to the local game state
     // send the changes to the server
 
+    std::vector<PacketType> pendingPackets;
+
     SDL_Event e;
     while(SDL_PollEvent(&e) != 0) {
         if(e.type == SDL_QUIT) {
             // quit the game
             Game::_running = false;
-            if(Game::connection_state == ConnectionState::CONNECTED)
-                Game::connection_state = ConnectionState::DISCONNECTING;
+            if(Game::server_info.connection_state == ConnectionState::CONNECTED)
+                Game::server_info.connection_state = ConnectionState::DISCONNECTING;
             // dont wait for the server response if the connection hadn't been established
-            else Game::connection_state = ConnectionState::DISCONNECTED;
+            else Game::server_info.connection_state = ConnectionState::DISCONNECTED;
         }
         else if(e.type == SDL_KEYDOWN && !EventHandler::LockKeyboard) {
             // handle key presses
@@ -30,25 +32,25 @@ void EventHandler::HandleEvents() {
                     // move the player up
                     keyStates.w = 1;
                     Game::player->acceleration.y = -PLAYER_ACCELERATION;
-                    //Game::sendPlayerUpdate();
+                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_s:
                     // move the player down
                     keyStates.s = 1;
                     Game::player->acceleration.y = PLAYER_ACCELERATION;
-                    //Game::sendPlayerUpdate();
+                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_a:
                     // move the player left
                     keyStates.a = 1;
                     Game::player->acceleration.x = -PLAYER_ACCELERATION;
-                    //Game::sendPlayerUpdate();
+                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_d:
                     // move the player right
                     keyStates.d = 1;
                     Game::player->acceleration.x = PLAYER_ACCELERATION;
-                    //Game::sendPlayerUpdate();
+                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 default:
                     // do nothing
@@ -62,25 +64,25 @@ void EventHandler::HandleEvents() {
                     // move the player up
                     keyStates.w = 0;
                     Game::player->acceleration.y = (keyStates.s) ? PLAYER_ACCELERATION : 0.0f;
-                    //Game::sendPlayerUpdate();
+                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_s:
                     // move the player down
                     keyStates.s = 0;
                     Game::player->acceleration.y = (keyStates.w) ? -PLAYER_ACCELERATION : 0.0f;
-                    //Game::sendPlayerUpdate();
+                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_a:
                     // move the player left
                     keyStates.a = 0;
                     Game::player->acceleration.x = (keyStates.d) ? PLAYER_ACCELERATION : 0.0f;
-                    //Game::sendPlayerUpdate();
+                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_d:
                     // move the player right
                     keyStates.d = 0;
                     Game::player->acceleration.x = (keyStates.a) ? -PLAYER_ACCELERATION : 0.0f;
-                    //Game::sendPlayerUpdate();
+                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 default:
                     // do nothing
@@ -102,6 +104,18 @@ void EventHandler::HandleEvents() {
             // stop throwing the projectile
             // start cooldown
             // todo
+        }
+    }
+
+    // send the pending packets
+    for(auto& p : pendingPackets) {
+        switch(p) {
+            case PacketType::PLAYER_UPDATES:
+                PacketHandler::sendPlayerUpdate();
+                break;
+            default:
+                // do nothing
+                break;
         }
     }
 

@@ -16,10 +16,7 @@
 
 bool Game::_running = false;
 
-IPaddress Game::server_addr;
-int Game::server_channel = 0;
-ConnectionState Game::connection_state = ConnectionState::DISCONNECTED;
-Uint32 Game::packet_counter = 1;
+Game::ConnectionInfo Game::server_info;
 
 uint8_t Game::session_id = 0;
 uint16_t Game::client_id = 0;
@@ -46,12 +43,12 @@ void Game::Cleanup() {
 }
 
 void Game::setServerIP(const char* ip, uint16_t port) {
-    if(SDLNet_ResolveHost(&Game::server_addr, ip, port) == -1) {
+    if(SDLNet_ResolveHost(&Game::server_info.addr, ip, port) == -1) {
         throw std::runtime_error("Failed to resolve host.");
     }
-    Logger::info(("Server IP resolved: " + formatIP(Game::server_addr.host) + ":" + std::to_string(SDLNet_Read16(&Game::server_addr.port))).c_str());
+    Logger::info(("Server IP resolved: " + formatIP(Game::server_info.addr.host) + ":" + std::to_string(SDLNet_Read16(&Game::server_info.addr.port))).c_str());
 
-    SDLNet_UDP_Bind(SocketHandler::getSocket(), server_channel, &server_addr);
+    SDLNet_UDP_Bind(SocketHandler::getSocket(), Game::server_info.channel, &Game::server_info.addr);
 
 }
 
@@ -62,10 +59,10 @@ void Game::Run() {
     Window::Open();
     Game::_running = true;
     // start connecting to the server
-    Game::connection_state = ConnectionState::CONNECTING;
+    Game::server_info.connection_state = ConnectionState::CONNECTING;
     Uint32 lastUpdate = SDL_GetTicks();
 
-    while(Game::_running || Game::connection_state != ConnectionState::DISCONNECTED) {
+    while(Game::_running || Game::server_info.connection_state != ConnectionState::DISCONNECTED) {
         Uint32 now = SDL_GetTicks();
         if(now - lastUpdate < GAME_LOOP_DELAY) {
             continue;
@@ -105,6 +102,9 @@ void Game::Run() {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
+/**
+ * @brief Classify incoming packets based on flags and process them accordingly.
+ */
 void Game::processNewPackets() {
 
     // omejimo stevilo paketov, ki jih obdelamo naenkrat,
@@ -141,11 +141,11 @@ void Game::processNewPackets() {
                         Game::client_id = c_id;
                         Game::session_id = s_id;
 
-                        Game::connection_state = ConnectionState::CONNECTED;
+                        Game::server_info.connection_state = ConnectionState::CONNECTED;
                         break;
                     case FLAG_FIN:
                         // close the connection
-                        Game::connection_state = ConnectionState::DISCONNECTED;
+                        Game::server_info.connection_state = ConnectionState::DISCONNECTED;
                         break;
                     case FLAG_KEEPALIVE:
                         // just update timestamp of the last keepalive message
@@ -176,7 +176,7 @@ void Game::processNewPackets() {
 void Game::manageConnection() {
     static std::chrono::steady_clock::time_point lastPacketTime = std::chrono::steady_clock::now();
     
-    switch(connection_state) {
+    switch(Game::server_info.connection_state) {
         case ConnectionState::DISCONNECTED:
             // do nothing
             break;
@@ -187,10 +187,10 @@ void Game::manageConnection() {
                 // send a connection request
                 PacketData m(true);
                 m.flags() |= (1 << FLAG_SYN);
-                addMessageToQueue(m, server_channel);
+                addMessageToQueue(m, Game::server_info.channel);
                 lastPacketTime = std::chrono::steady_clock::now();
 
-                Game::connection_state = ConnectionState::CONNECTING;
+                Game::server_info.connection_state = ConnectionState::CONNECTING;
                 Logger::info("Connection request sent.");
             }
             break;
@@ -202,7 +202,7 @@ void Game::manageConnection() {
                 m.flags() |= (1 << FLAG_KEEPALIVE);
                 m.append(Game::session_id);
                 m.append(Game::client_id);
-                addMessageToQueue(m, server_channel);
+                addMessageToQueue(m, Game::server_info.channel);
                 lastPacketTime = std::chrono::steady_clock::now();
 
                 Logger::info("Keepalive message sent.");
@@ -217,7 +217,7 @@ void Game::manageConnection() {
                 m.flags() |= (1 << FLAG_FIN);
                 m.append(Game::session_id);
                 m.append(Game::client_id);
-                addMessageToQueue(m, server_channel);
+                addMessageToQueue(m, Game::server_info.channel);
                 lastPacketTime = std::chrono::steady_clock::now();
 
                 Logger::info("Disconnection request sent.");
@@ -225,20 +225,7 @@ void Game::manageConnection() {
             break;
     }
 }
-void Game::sendPlayerUpdate() {
-    PacketData m(true);
-    m.flags() |= (1 << FLAG_DATA);
-    m.append(Game::session_id);
-    m.append(Game::client_id);
 
-    // add packet id for duplicate packet detection
-    m.append(Game::packet_counter);
-
-    // add player data
-    auto data = Game::player->serialize();
-    m.append(data.data(), data.size());
-
-    addMessageToQueue(m, server_channel);
-    
-    Game::packet_counter++;
+void Game::sendPacket(PacketData& d) {
+    addMessageToQueue(d, Game::server_info.channel);
 }

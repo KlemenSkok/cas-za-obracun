@@ -71,14 +71,28 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
         offset += PlayerData::size();
     }
 
-    std::cout << "dumping data[0]: \n";
+/*     std::cout << "dumping data[0]: \n";
     std::cout << "id: " << players[0].id << std::endl;
     std::cout << "position: " << players[0].position.x << ", " << players[0].position.y << std::endl;
     std::cout << "velocity: " << players[0].velocity.x << ", " << players[0].velocity.y << std::endl;
     std::cout << "keyStates: " << (int)players[0].keyStates << std::endl;
     std::cout << "direction: " << players[0].direction << std::endl;
-    std::cout << "--------------------------------\n\n";
+    std::cout << "--------------------------------\n\n"; */
 
-    
 
+}
+
+void PacketHandler::sendPlayerUpdate() {
+    PacketData d(true);
+    d.flags() |= (1 << FLAG_DATA);
+    d.append(Game::session_id);
+    d.append(Game::client_id);
+    d.append(++PacketHandler::lastSentPacketID); // notice: increment the packet id
+    d.append((uint8_t)PacketType::PLAYER_UPDATES);
+
+    auto data = Game::player->dumpMovement();
+    data.id = Game::client_id;
+    data.serialize(d);
+
+    Game::sendPacket(d);
 }

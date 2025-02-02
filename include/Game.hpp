@@ -20,15 +20,18 @@ class EventHandler;
 class PacketHandler;
 
 class Game {
+    struct ConnectionInfo {
+        IPaddress addr;
+        int channel;
+        ConnectionState connection_state;
+        ConnectionInfo() : addr(), channel(0), connection_state(ConnectionState::DISCONNECTED) {}
+    };
 
     // game loop control
     static bool _running;
 
-    // server connection
-    static IPaddress server_addr;
-    static int server_channel;
-    static ConnectionState connection_state;
-    static Uint32 packet_counter;
+    // connection info
+    static ConnectionInfo server_info;
 
     // session and client id
     static uint8_t session_id;
@@ -46,8 +49,7 @@ public:
 
     static void processNewPackets();
     static void manageConnection();
+    static void sendPacket(PacketData& d);
     friend class EventHandler; // handle all events
-    friend class PacketHandler; // handle all packets
-    
-    static void sendPlayerUpdate(); // send after any user input regarding the player
+    friend class PacketHandler; // handle all packets    
 };

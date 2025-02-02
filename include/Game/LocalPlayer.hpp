@@ -6,6 +6,7 @@
 #include "Game/GameObject.hpp"
 #include "Game/EventHandler.hpp"
 #include "Game.hpp"
+#include "Communication/PacketTypes.hpp"
 
 
 class LocalPlayer : public GameObject {
@@ -20,6 +21,6 @@ public:
 
     void update(float deltaTime) override;
     void render(SDL_Renderer*) override;
-    std::vector<Uint8> serialize() override;
+    data_packets::PlayerData dumpMovement();
 
 };
