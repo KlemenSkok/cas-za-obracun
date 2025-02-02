@@ -12,10 +12,12 @@
 #include "Utilities/Constants.hpp"
 #include "Game/LocalPlayer.hpp"
 #include "Game/EventHandler.hpp"
+#include "Communication/PacketHandler.hpp"
 
-// forward declaration, because LocalPlayer.hpp includes Game.hpp
+// forward declaration because of circular dependency
 class LocalPlayer;
 class EventHandler;
+class PacketHandler;
 
 class Game {
 
@@ -45,5 +47,7 @@ public:
     static void processNewPackets();
     static void manageConnection();
     friend class EventHandler; // handle all events
+    friend class PacketHandler; // handle all packets
+    
     static void sendPlayerUpdate(); // send after any user input regarding the player
 };

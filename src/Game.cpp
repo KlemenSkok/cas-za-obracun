@@ -74,9 +74,9 @@ void Game::Run() {
         lastUpdate = now;
 
 
-        processNewPackets();
+        Game::processNewPackets();
         EventHandler::HandleEvents();
-        manageConnection();
+        Game::manageConnection();
         // update the local game state
         // send the updates to the server
         // show the game state
@@ -152,6 +152,7 @@ void Game::processNewPackets() {
                         break;
                     case FLAG_DATA:
                         // process the data and update local game state
+                        PacketHandler::processPacket(data);
                         break;
                     case FLAG_PUSH:
                         // send back data to the server
@@ -224,8 +225,6 @@ void Game::manageConnection() {
             break;
     }
 }
-
-
 void Game::sendPlayerUpdate() {
     PacketData m(true);
     m.flags() |= (1 << FLAG_DATA);

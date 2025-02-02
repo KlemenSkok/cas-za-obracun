@@ -145,7 +145,7 @@ void PacketData::getByOffset(T& target, size_t size, size_t offset) {
     if constexpr (sizeof(T) == 1) {
         // For 1-byte types, no need for endianness conversion
         target = static_cast<T>(data[offset]);
-    } else if constexpr (sizeof (T) == 2) {
+    } else if constexpr (sizeof(T) == 2) {
         // Use SDLNet_Read16 for 2-byte types
         Uint16 network_order;
         std::memcpy(&network_order, &data[offset], sizeof(Uint16));
@@ -189,3 +189,11 @@ void PacketData::append(T data) {
         throw std::runtime_error("Unsupported type size for PacketData::append.");
     }
 }
+
+
+// template overloads for float types
+template<>
+void PacketData::append(float data);
+
+template<>
+void PacketData::getByOffset(float& target, size_t size, size_t offset);
