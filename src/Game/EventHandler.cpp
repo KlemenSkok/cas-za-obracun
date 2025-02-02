@@ -30,27 +30,31 @@ void EventHandler::HandleEvents() {
             switch(e.key.keysym.sym) {
                 case SDLK_w:
                     // move the player up
+                    if(!keyStates.w) 
+                        pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.w = 1;
                     Game::player->acceleration.y = -PLAYER_ACCELERATION;
-                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_s:
                     // move the player down
+                    if(!keyStates.s) 
+                        pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.s = 1;
                     Game::player->acceleration.y = PLAYER_ACCELERATION;
-                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_a:
                     // move the player left
+                    if(!keyStates.a) 
+                        pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.a = 1;
                     Game::player->acceleration.x = -PLAYER_ACCELERATION;
-                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_d:
                     // move the player right
+                    if(!keyStates.d) 
+                        pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.d = 1;
                     Game::player->acceleration.x = PLAYER_ACCELERATION;
-                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 default:
                     // do nothing
@@ -62,27 +66,31 @@ void EventHandler::HandleEvents() {
             switch(e.key.keysym.sym) {
                 case SDLK_w:
                     // move the player up
+                    if(keyStates.w) 
+                        pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.w = 0;
                     Game::player->acceleration.y = (keyStates.s) ? PLAYER_ACCELERATION : 0.0f;
-                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_s:
                     // move the player down
+                    if(keyStates.s) 
+                        pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.s = 0;
                     Game::player->acceleration.y = (keyStates.w) ? -PLAYER_ACCELERATION : 0.0f;
-                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_a:
                     // move the player left
+                    if(keyStates.a) 
+                        pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.a = 0;
                     Game::player->acceleration.x = (keyStates.d) ? PLAYER_ACCELERATION : 0.0f;
-                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 case SDLK_d:
                     // move the player right
+                    if(keyStates.d) 
+                        pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.d = 0;
                     Game::player->acceleration.x = (keyStates.a) ? -PLAYER_ACCELERATION : 0.0f;
-                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 default:
                     // do nothing

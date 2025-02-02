@@ -84,15 +84,18 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
 
 void PacketHandler::sendPlayerUpdate() {
     PacketData d(true);
-    d.flags() |= (1 << FLAG_DATA);
-    d.append(Game::session_id);
-    d.append(Game::client_id);
+    d.flags() |= (1 << FLAG_DATA);                  // 1B
+    d.append(Game::session_id);                     // 1B
+    d.append(Game::client_id);                      // 2B
     d.append(++PacketHandler::lastSentPacketID); // notice: increment the packet id
-    d.append((uint8_t)PacketType::PLAYER_UPDATES);
+                                                    // 4B
+    d.append((uint8_t)PacketType::PLAYER_UPDATES);  // 1B
 
     auto data = Game::player->dumpMovement();
     data.id = Game::client_id;
-    data.serialize(d);
+    data.serialize(d);                              // 23B
 
     Game::sendPacket(d);
+
+    // expected packet size: 32B
 }
