@@ -7,15 +7,18 @@
 #include <SDL2/SDL.h>
 #include <cstdint>
 #include <memory>
+#include <unordered_map>
 
 #include "Containers.hpp"
 #include "Utilities/Constants.hpp"
 #include "Game/LocalPlayer.hpp"
 #include "Game/EventHandler.hpp"
 #include "Communication/PacketHandler.hpp"
+#include "Game/RemotePlayer.hpp"
 
 // forward declaration because of circular dependency
 class LocalPlayer;
+class RemotePlayer;
 class EventHandler;
 class PacketHandler;
 
@@ -39,11 +42,13 @@ class Game {
 
     // the local player
     static std::shared_ptr<LocalPlayer> player;
-
+    static std::unordered_map<uint16_t, std::shared_ptr<RemotePlayer>> remote_players;
 
 public:
     static void Setup();
     static void Run();
+    static void Update(int deltaTime);
+    static void Render();
     static void Cleanup();
     static void setServerIP(const char* ip, uint16_t port);
 

@@ -16,10 +16,10 @@ uint32_t PacketHandler::lastSentPacketID = 0;
 void PacketHandler::processPacket(PacketData& d) {  
 
     uint32_t packet_id;
-    uint8_t packetType;
+    uint8_t packet_type;
     try {
         d.getByOffset(packet_id, sizeof(uint32_t), OFFSET_PACKET_ID);
-        d.getByOffset(packetType, sizeof(uint8_t), OFFSET_PACKET_TYPE);
+        d.getByOffset(packet_type, sizeof(uint8_t), OFFSET_PACKET_TYPE);
     }
     catch(std::exception& e) {
         Logger::warn(e.what());
@@ -35,7 +35,7 @@ void PacketHandler::processPacket(PacketData& d) {
     // now we can process the packet
     PacketHandler::lastRecvPacketID = packet_id;
 
-    switch((PacketType)packetType) {
+    switch((PacketType)packet_type) {
         case PacketType::PLAYERS_IN_RANGE:
             // process players in range
             processPlayerUpdates(d);
@@ -62,14 +62,38 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
     using namespace data_packets;
 
     size_t offset = OFFSET_DATA;
-    std::vector<PlayerData> players;
+    std::unordered_map<uint16_t, PlayerData> players;
 
+    // decode players' data and store it in a map
     while(offset < d.size()) {
         PlayerData p;
         p.deserialize(d, offset);
-        players.push_back(p);
+        players[p.id] = p;
         offset += PlayerData::size();
     }
+
+    // remove players that are no longer in range
+    for(auto it = Game::remote_players.begin(); it != Game::remote_players.end();) {
+        if(players.find(it->first) == players.end()) {
+            it = Game::remote_players.erase(it);
+        } else {
+            it++;
+        }
+    }
+
+    // update the players
+    for(auto& p : players) {
+        if(p.first != Game::client_id) {
+            if(Game::remote_players.find(p.first) == Game::remote_players.end()) {
+                Game::remote_players[p.first] = std::make_shared<RemotePlayer>(p.second);
+            } else {
+                Game::remote_players[p.first]->importData(p.second);
+            }
+        }
+    }
+
+    // todo: update the local player
+
 
 /*     std::cout << "dumping data[0]: \n";
     std::cout << "id: " << players[0].id << std::endl;
@@ -78,7 +102,6 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
     std::cout << "keyStates: " << (int)players[0].keyStates << std::endl;
     std::cout << "direction: " << players[0].direction << std::endl;
     std::cout << "--------------------------------\n\n"; */
-
 
 }
 

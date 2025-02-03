@@ -4,9 +4,9 @@
 #pragma once
 
 #include "Game/GameObject.hpp"
+#include "Communication/PacketTypes.hpp"
 #include "Game/EventHandler.hpp"
 #include "Game.hpp"
-#include "Communication/PacketTypes.hpp"
 
 
 class LocalPlayer : public GameObject {

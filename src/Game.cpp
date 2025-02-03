@@ -22,6 +22,7 @@ uint8_t Game::session_id = 0;
 uint16_t Game::client_id = 0;
 
 std::shared_ptr<LocalPlayer> Game::player = nullptr;
+std::unordered_map<uint16_t, std::shared_ptr<RemotePlayer>> Game::remote_players;
 
 
 
@@ -70,13 +71,15 @@ void Game::Run() {
         int deltaTime = now - lastUpdate;
         lastUpdate = now;
 
+        // update the local game state
+        // send the updates to the server
+        // show the game state
 
         Game::processNewPackets();
         EventHandler::HandleEvents();
         Game::manageConnection();
-        // update the local game state
-        // send the updates to the server
-        // show the game state
+        Game::Update(deltaTime);
+        Game::Render();
 
 
         // LOOP IDEA:
@@ -86,21 +89,54 @@ void Game::Run() {
         // show the game state
         // repeat
 
-        
-        // update the player position
-        Game::player->update(deltaTime / 1000.0f);
 
-        // render the player
-        SDL_SetRenderDrawColor(Window::renderer, 0, 0, 0, 255);
-        Window::Clear();
-        Game::player->render(Window::renderer);
-        Window::Present();
 
     }
     Window::Close();
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
+
+/**
+ * @brief Update the game state based on the time passed since the last update.
+ * 
+ * @param deltaTime Time passed since the last update in milliseconds.
+ */
+void Game::Update(int deltaTime) {
+
+    // update the local player's position   
+    Game::player->update(deltaTime / 1000.0f);
+
+    // update remote players
+    for(auto& p : Game::remote_players) {
+        p.second->update(deltaTime / 1000.0f);
+    }
+
+}
+
+/**
+ * @brief Render the game state.
+ */
+void Game::Render() {
+
+    // clear the screen
+    SDL_SetRenderDrawColor(Window::renderer, 0, 0, 0, 255);
+    Window::Clear();
+
+    
+    // render the local player
+    Game::player->render(Window::renderer);
+    
+    // render remote players
+    for(auto& p : Game::remote_players) {
+        p.second->render(Window::renderer);
+    }
+    
+
+    // present changes    
+    Window::Present();
+}
+
 
 /**
  * @brief Classify incoming packets based on flags and process them accordingly.
