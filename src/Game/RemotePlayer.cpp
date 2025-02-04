@@ -13,9 +13,6 @@ void RemotePlayer::update(float deltaTime) {
     this->velocity.x += this->acceleration.x * deltaTime;
     this->velocity.y += this->acceleration.y * deltaTime;
 
-    this->position.x += this->velocity.x * deltaTime;
-    this->position.y += this->velocity.y * deltaTime;
-
     // apply friction if no keys are pressed
     if(!this->keyStates.a && !this->keyStates.d) {
         if(this->velocity.x > 0) {
@@ -82,4 +79,17 @@ void RemotePlayer::importData(const data_packets::PlayerData& data) {
     this->velocity.x = data.velocity.x;
     this->velocity.y = data.velocity.y;
     decodeKeyStates(data.keyStates, this->keyStates);
+
+    // reset acceleration
+    this->acceleration.x = 0.0f;
+    this->acceleration.y = 0.0f;
+
+    // apply acceleration based on key states
+    if(this->keyStates.w) this->acceleration.y -= PLAYER_ACCELERATION;
+    if(this->keyStates.s) this->acceleration.y += PLAYER_ACCELERATION;
+    if(this->keyStates.a) this->acceleration.x -= PLAYER_ACCELERATION;
+    if(this->keyStates.d) this->acceleration.x += PLAYER_ACCELERATION;
+
+    //std::cout << "Remote player updated: " << this->position.x << ", " << this->position.y << std::endl;
+
 }

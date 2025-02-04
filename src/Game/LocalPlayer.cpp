@@ -74,18 +74,26 @@ void LocalPlayer::render(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
 }
 
-data_packets::PlayerData LocalPlayer::dumpMovement() {
-    data_packets::PlayerData p;
+data_packets::PlayerKeyStates LocalPlayer::dumpKeyStates() {
+    data_packets::PlayerKeyStates pks;
 
-    // position
-    p.position.x = this->position.x;
-    p.position.y = this->position.y;
-    // velocity
-    p.velocity.x = this->velocity.x;
-    p.velocity.y = this->velocity.y;
     // key states
-    p.keyStates = encodeKeyStates(EventHandler::keyStates);
-    p.direction = this->direction;
+    pks.keyStates = encodeKeyStates(EventHandler::keyStates);
     
-    return p;
+    return pks;
+}
+
+void LocalPlayer::importData(const data_packets::PlayerData& data) {
+    if(data.keyStates != encodeKeyStates(EventHandler::keyStates)) {
+        // the recent player update was probably not received by the server
+        // resend the update
+        PacketHandler::sendPlayerUpdate();
+    }
+
+    /* this->position.x = data.position.x;
+    this->position.y = data.position.y;
+    this->velocity.x = data.velocity.x;
+    this->velocity.y = data.velocity.y;
+    this->direction = data.direction; */
+
 }

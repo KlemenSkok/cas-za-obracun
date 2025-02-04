@@ -93,6 +93,7 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
     }
 
     // todo: update the local player
+    Game::player->importData(players[Game::client_id]);
 
 
 /*     std::cout << "dumping data[0]: \n";
@@ -106,19 +107,22 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
 }
 
 void PacketHandler::sendPlayerUpdate() {
+    if(Game::server_info.connection_state != ConnectionState::CONNECTED) {
+        return;
+    }
+
     PacketData d(true);
     d.flags() |= (1 << FLAG_DATA);                  // 1B
     d.append(Game::session_id);                     // 1B
     d.append(Game::client_id);                      // 2B
-    d.append(++PacketHandler::lastSentPacketID); // notice: increment the packet id
+    d.append(++PacketHandler::lastSentPacketID);    // notice: increment the packet id
                                                     // 4B
     d.append((uint8_t)PacketType::PLAYER_UPDATES);  // 1B
 
-    auto data = Game::player->dumpMovement();
-    data.id = Game::client_id;
-    data.serialize(d);                              // 23B
+    auto data = Game::player->dumpKeyStates();
+    data.serialize(d);                              // 1B
 
     Game::sendPacket(d);
 
-    // expected packet size: 32B
+    // expected packet size: 10B
 }

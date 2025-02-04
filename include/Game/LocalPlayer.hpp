@@ -21,6 +21,8 @@ public:
 
     void update(float deltaTime) override;
     void render(SDL_Renderer*) override;
-    data_packets::PlayerData dumpMovement();
+
+    data_packets::PlayerKeyStates dumpKeyStates();
+    void importData(const data_packets::PlayerData& data);
 
 };

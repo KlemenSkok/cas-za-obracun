@@ -16,7 +16,7 @@ int PlayerData::size() {
 }
 
 PlayerData::PlayerData() 
-    : id(0), position{0, 0}, velocity{0, 0}, keyStates(0), direction(0.0f) {}
+    : id(0), position{0.0f, 0.0f}, velocity{0.0f, 0.0f}, keyStates(0), direction(0.0f) {}
 
 
 
@@ -49,4 +49,20 @@ void PlayerData::deserialize(PacketData& packet, size_t offset) {
     // direction
     packet.getByOffset(direction, sizeof(float), offset);
     offset += sizeof(float);
+}
+
+
+
+// PlayerKeyStates
+
+int PlayerKeyStates::size() {
+    return sizeof(uint8_t);
+}
+
+void PlayerKeyStates::serialize(PacketData& packet) const {
+    packet.append(keyStates);
+}
+
+void PlayerKeyStates::deserialize(PacketData& packet, size_t offset) {
+    packet.getByOffset(keyStates, sizeof(uint8_t), offset);
 }

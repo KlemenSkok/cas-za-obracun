@@ -12,12 +12,13 @@
 
 enum class PacketType: uint8_t {
     // client->server
-    PLAYER_UPDATES, // packet sent from client to update movement keys states
+    PLAYER_UPDATES, // packet sent from client to update movement keys states. a single PlayerKeyStates
     // ...
 
     // server->client
-    PLAYERS_IN_RANGE, // info about other players (and self) that are sent periodically
+    PLAYERS_IN_RANGE, // info about other players (and self) that are sent periodically. a list of PlayerData
     GAME_STATE // game state, score, time remaining etc.
+    // ...
 };
 
 
@@ -34,6 +35,14 @@ namespace data_packets {
         void serialize(PacketData&) const;
         void deserialize(PacketData&, size_t);
         PlayerData();
+    };
+
+    struct PlayerKeyStates {
+        uint8_t keyStates = 0;
+    
+        static int size();
+        void serialize(PacketData&) const;
+        void deserialize(PacketData&, size_t);
     };
 
 }
