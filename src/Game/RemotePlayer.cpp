@@ -3,11 +3,43 @@
 
 #include "Game/RemotePlayer.hpp"
 #include "Utilities/Utility.hpp"
+#include "Utilities/Constants.hpp"
 #include "Communication/PacketTypes.hpp"
 
 
 
 void RemotePlayer::update(float deltaTime) {
+
+    // interpolate the player position
+    if(!this->dataBuffer.empty() && SDL_GetTicks() - this->lastUpdateTime >= GAME_LOOP_DELAY) {
+        // get the next data packet
+        data_packets::PlayerData nextData = this->dataBuffer.front();
+        this->dataBuffer.pop();
+
+        // interpolate the position
+        float alpha = (SDL_GetTicks() - this->lastUpdateTime) / (nextData.timestamp - this->lastUpdateTime);
+        this->position.x = lerp(this->lastData.position.x, nextData.position.x, alpha);
+        this->position.y = lerp(this->lastData.position.y, nextData.position.y, alpha);
+
+        // update the last update time and data
+        this->lastUpdateTime = SDL_GetTicks();
+        this->lastData = nextData;
+
+        // update the key states
+        decodeKeyStates(nextData.keyStates, this->keyStates);
+
+        return;
+    }
+
+    // reset acceleration
+    this->acceleration.x = 0.0f;
+    this->acceleration.y = 0.0f;
+
+    // apply acceleration based on key states
+    if(this->keyStates.w) this->acceleration.y -= PLAYER_ACCELERATION;
+    if(this->keyStates.s) this->acceleration.y += PLAYER_ACCELERATION;
+    if(this->keyStates.a) this->acceleration.x -= PLAYER_ACCELERATION;
+    if(this->keyStates.d) this->acceleration.x += PLAYER_ACCELERATION;
 
     // update the player position
     this->velocity.x += this->acceleration.x * deltaTime;
@@ -74,7 +106,11 @@ void RemotePlayer::render(SDL_Renderer* renderer) {
 
 
 void RemotePlayer::importData(const data_packets::PlayerData& data) {
-    this->position.x = data.position.x;
+    
+    // push the data to the buffer
+    this->dataBuffer.push(data);
+    
+    /* this->position.x = data.position.x;
     this->position.y = data.position.y;
     this->velocity.x = data.velocity.x;
     this->velocity.y = data.velocity.y;
@@ -88,7 +124,7 @@ void RemotePlayer::importData(const data_packets::PlayerData& data) {
     if(this->keyStates.w) this->acceleration.y -= PLAYER_ACCELERATION;
     if(this->keyStates.s) this->acceleration.y += PLAYER_ACCELERATION;
     if(this->keyStates.a) this->acceleration.x -= PLAYER_ACCELERATION;
-    if(this->keyStates.d) this->acceleration.x += PLAYER_ACCELERATION;
+    if(this->keyStates.d) this->acceleration.x += PLAYER_ACCELERATION; */
 
     //std::cout << "Remote player updated: " << this->position.x << ", " << this->position.y << std::endl;
 

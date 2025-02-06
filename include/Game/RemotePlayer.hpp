@@ -5,8 +5,9 @@
 
 #include "Game/GameObject.hpp"
 #include "Game/EventHandler.hpp"
-#include "Game.hpp" 
+#include "Game.hpp"
 
+#include <queue>
 
 class RemotePlayer : public GameObject {
 
@@ -16,6 +17,11 @@ class RemotePlayer : public GameObject {
 
     friend class Game;
     friend class EventHandler;
+
+    // interpolation variables
+    float lastUpdateTime = 0;
+    data_packets::PlayerData lastData;
+    std::queue<data_packets::PlayerData> dataBuffer;
 
 public:
     RemotePlayer(float x, float y, float direction) : GameObject(x, y), direction(direction) {}

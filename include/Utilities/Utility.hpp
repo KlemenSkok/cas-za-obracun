@@ -49,3 +49,6 @@ void dumpPacket(UDPpacket *packet);
 
 // Draw a filled circle with center at (x, y) and radius r
 void DrawFillCircleF(SDL_Renderer* renderer, float x, float y, int r);
+
+// Linear interpolation function
+float lerp(float a, float b, float t);

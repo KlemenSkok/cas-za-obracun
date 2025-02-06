@@ -111,3 +111,7 @@ void DrawFillCircleF(SDL_Renderer* renderer, float x, float y, int r) {
         }
     }
 }
+
+float lerp(float a, float b, float t) {
+    return a + t * (b - a);
+}

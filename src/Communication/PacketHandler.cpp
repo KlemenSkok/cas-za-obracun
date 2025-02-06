@@ -68,6 +68,7 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
     while(offset < d.size()) {
         PlayerData p;
         p.deserialize(d, offset);
+        p.timestamp = SDL_GetTicks();
         players[p.id] = p;
         offset += PlayerData::size();
     }
@@ -91,6 +92,7 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
             }
         }
     }
+
 
     // todo: update the local player
     Game::player->importData(players[Game::client_id]);
