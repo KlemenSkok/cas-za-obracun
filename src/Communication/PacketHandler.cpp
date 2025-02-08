@@ -68,6 +68,7 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
     while(offset < d.size()) {
         PlayerData p;
         p.deserialize(d, offset);
+        p.recv_ts = SDL_GetTicks();
         players[p.id] = p;
         offset += PlayerData::size();
     }

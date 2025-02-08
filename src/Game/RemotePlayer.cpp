@@ -6,44 +6,48 @@
 #include "Utilities/Constants.hpp"
 #include "Communication/PacketTypes.hpp"
 
+#include <algorithm>
+
 
 void RemotePlayer::update(float deltaTime) {
 
     // INTERPOLATION HERE
 
-    if(!this->dataBuffer.empty()) {
-        
+    if (!this->dataBuffer.empty()) {
         auto data = this->dataBuffer.front();
-        //std::cout << "update time: " << data.timestamp << '\n';
-        // poglej ce je cas za menjavo paketov
-        if(SDL_GetTicks() - this->lastUpdateTime > this->dataBuffer.front().timestamp - lastData.timestamp) {
+        decodeKeyStates(data.keyStates, this->keyStates);
+        
+        float estimatedServerTime = data.timestamp + (SDL_GetTicks() - data.recv_ts);
+    
+        // Apply new packet if it's time
+        if (estimatedServerTime >= data.timestamp) {
             this->dataBuffer.pop();
-            this->position.x = data.position.x;
-            this->position.y = data.position.y;
+    
+            // Smooth correction instead of snapping
+            const float correctionFactor = 0.3f;
+            this->position.x = lerp(this->position.x, data.position.x, correctionFactor);
+            this->position.y = lerp(this->position.y, data.position.y, correctionFactor);
+    
             this->velocity.x = data.velocity.x;
             this->velocity.y = data.velocity.y;
-
-            //std::cout << "New pos: " << data.position.x << ", " << data.position.y << '\n';
-
+    
             this->lastData = data;
             this->lastUpdateTime = SDL_GetTicks();
-            //std::cout << "C\n";
+            
             return;
         }
-        // else interpolate between states
-        else {
-            decodeKeyStates(data.keyStates, this->keyStates);
-            float alpha = (float(SDL_GetTicks() - this->lastUpdateTime)) / (float(data.timestamp - this->lastData.timestamp));
-            this->position.x = lerp(this->lastData.position.x, data.position.x, alpha);
-            this->position.y = lerp(this->lastData.position.y, data.position.y, alpha);
-            //std::cout << " I\n";
-            return;
-        }
-        std::cout << "   N\n";
-    }
+    
+        // Interpolation
+        float alpha = (estimatedServerTime - this->lastData.timestamp) / float(data.timestamp - this->lastData.timestamp);
+        alpha = std::clamp(alpha, 0.0f, 1.0f);
 
-    // ------------------
-    std::cout << "   E\n";
+        this->position.x = lerp(this->lastData.position.x, data.position.x, alpha);
+        this->position.y = lerp(this->lastData.position.y, data.position.y, alpha);
+
+        return;
+    }
+    
+    // EXTRAPOLATION
 
     // reset acceleration
     this->acceleration.x = 0.0f;
@@ -124,7 +128,6 @@ void RemotePlayer::importData(const data_packets::PlayerData& data) {
     // push the data to the buffer
     this->dataBuffer.push(data);
 
-    std::cout << "Recieved pos: " << data.position.x << ", " << data.position.y << '\n';
     
     /* this->position.x = data.position.x;
     this->position.y = data.position.y;

@@ -241,7 +241,7 @@ void Game::manageConnection() {
                 addMessageToQueue(m, Game::server_info.channel);
                 lastPacketTime = std::chrono::steady_clock::now();
 
-                Logger::info("Keepalive message sent.");
+                //Logger::info("Keepalive message sent.");
             }
             break;
         case ConnectionState::DISCONNECTING:

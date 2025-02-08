@@ -73,6 +73,7 @@ PlayerData& PlayerData::operator=(const PlayerData& other) {
     this->keyStates = other.keyStates;
     this->direction = other.direction;
     this->timestamp = other.timestamp;
+    this->recv_ts = other.recv_ts;
 
     return *this;
 }
