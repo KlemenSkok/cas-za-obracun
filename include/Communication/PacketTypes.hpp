@@ -31,7 +31,7 @@ namespace data_packets {
         uint8_t keyStates;
         float direction;
 
-        Uint32 timestamp; // for client side interpolation
+        Uint32 timestamp; // server timestamp for client side interpolation
 
         static int size();
         void serialize(PacketData&) const;

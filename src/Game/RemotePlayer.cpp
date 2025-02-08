@@ -9,39 +9,41 @@
 
 void RemotePlayer::update(float deltaTime) {
 
-    // check if it's time to apply the next server data
-    if(SDL_GetTicks() - this->lastUpdateTime > SERVER_TICK_DELAY) {
-        // check if there is new data to process
-        if(!this->dataBuffer.empty()) {
-            auto data = this->dataBuffer.front();
+    // INTERPOLATION HERE
+
+    if(!this->dataBuffer.empty()) {
+        
+        auto data = this->dataBuffer.front();
+        //std::cout << "update time: " << data.timestamp << '\n';
+        // poglej ce je cas za menjavo paketov
+        if(SDL_GetTicks() - this->lastUpdateTime > this->dataBuffer.front().timestamp - lastData.timestamp) {
             this->dataBuffer.pop();
-            // copy trivial data
-            decodeKeyStates(data.keyStates, this->keyStates);
-            this->direction = data.direction; // tmp
+            this->position.x = data.position.x;
+            this->position.y = data.position.y;
             this->velocity.x = data.velocity.x;
             this->velocity.y = data.velocity.y;
-    
-            // check allowed offset
-            if(std::abs(this->position.x - data.position.x) > POSITION_OFFSET_TOLERANCE || std::abs(this->position.y - data.position.y) > POSITION_OFFSET_TOLERANCE) {
-                this->position.x = data.position.x;
-                this->position.y = data.position.y;
-            }
-            else {
-                float alpha = (SDL_GetTicks() - this->lastUpdateTime) / 1000.0;
-                this->position.x = lerp(this->lastData.position.x, data.position.x, alpha);
-                this->position.y = lerp(this->lastData.position.y, data.position.y, alpha);
-            }
 
+            //std::cout << "New pos: " << data.position.x << ", " << data.position.y << '\n';
 
-            
-
-            this->lastUpdateTime = SDL_GetTicks();
             this->lastData = data;
+            this->lastUpdateTime = SDL_GetTicks();
+            //std::cout << "C\n";
+            return;
         }
-
-        // if there is no data to process, perform extrapolation (updating based on last known data)
+        // else interpolate between states
+        else {
+            decodeKeyStates(data.keyStates, this->keyStates);
+            float alpha = (float(SDL_GetTicks() - this->lastUpdateTime)) / (float(data.timestamp - this->lastData.timestamp));
+            this->position.x = lerp(this->lastData.position.x, data.position.x, alpha);
+            this->position.y = lerp(this->lastData.position.y, data.position.y, alpha);
+            //std::cout << " I\n";
+            return;
+        }
+        std::cout << "   N\n";
     }
 
+    // ------------------
+    std::cout << "   E\n";
 
     // reset acceleration
     this->acceleration.x = 0.0f;
@@ -121,6 +123,8 @@ void RemotePlayer::importData(const data_packets::PlayerData& data) {
     
     // push the data to the buffer
     this->dataBuffer.push(data);
+
+    std::cout << "Recieved pos: " << data.position.x << ", " << data.position.y << '\n';
     
     /* this->position.x = data.position.x;
     this->position.y = data.position.y;
