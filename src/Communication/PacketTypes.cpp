@@ -51,6 +51,22 @@ void PlayerData::deserialize(PacketData& packet, size_t offset) {
     offset += sizeof(float);
 }
 
+PlayerData& PlayerData::operator=(const PlayerData& other) {
+    if(this == &other)
+        return *this;
+
+    this->id = other.id;
+    this->position.x = other.position.x;
+    this->position.y = other.position.y;
+    this->velocity.x = other.velocity.x;
+    this->velocity.y = other.velocity.y;
+    this->keyStates = other.keyStates;
+    this->direction = other.direction;
+    this->timestamp = other.timestamp;
+
+    return *this;
+}
+
 
 
 // PlayerKeyStates

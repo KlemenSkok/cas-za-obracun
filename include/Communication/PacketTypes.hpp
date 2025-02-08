@@ -36,6 +36,7 @@ namespace data_packets {
         static int size();
         void serialize(PacketData&) const;
         void deserialize(PacketData&, size_t);
+        PlayerData& operator=(const PlayerData&);
         PlayerData();
     };
 

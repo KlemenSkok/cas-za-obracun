@@ -13,6 +13,9 @@
 #define TICK_RATE 60 // [Hz]
 #define GAME_LOOP_DELAY 1000 / TICK_RATE // [ms]
 
+#define SERVER_TICK_RATE 30 // [Hz]
+#define SERVER_TICK_DELAY 1000 / SERVER_TICK_RATE // [ms]
+
 #define MAX_PACKET_SIZE 512 // [B]
 #define SOCKET_LOOP_DELAY 10 // [ms]
 
@@ -64,3 +67,5 @@ enum class GameState: uint8_t {
 #define PLAYER_MAX_SPEED 200.0f // [px/s]
 #define PLAYER_ACCELERATION 1200.0f // [px/s^2]
 #define PLAYER_FRICTION 1500.0f // [px/s^2]
+
+#define POSITION_OFFSET_TOLERANCE 5.0f // [px]
