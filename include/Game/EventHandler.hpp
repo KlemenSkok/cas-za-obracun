@@ -11,5 +11,4 @@ public:
     static bool LockKeyboard;
     static KeyStates keyStates;
     static void HandleEvents();
-
 };

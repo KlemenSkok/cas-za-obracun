@@ -16,8 +16,11 @@ class LocalPlayer : public GameObject {
     friend class Game;
     friend class EventHandler;
 
+    // interpolation variables
+    Uint32 lastUpdateTime; // local timestamp
+
 public:
-    LocalPlayer(float x, float y, float direction) : GameObject(x, y), direction(direction) {}
+    LocalPlayer(float x, float y, float direction) : GameObject(x, y), direction(direction), lastUpdateTime(SDL_GetTicks()) {}
 
     void update(float deltaTime) override;
     void render(SDL_Renderer*) override;

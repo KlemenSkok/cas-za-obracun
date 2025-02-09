@@ -66,13 +66,15 @@ void addMessageToQueue(std::unique_ptr<UDPmessage> msg) {
     }
 }
 
-void addMessagesToQueue(std::vector<std::unique_ptr<UDPmessage>> data) {
+void addMessagesToQueue(std::vector<std::unique_ptr<UDPmessage>> &data) {
     {
         std::lock_guard<std::mutex> lock(sendq_mutex);
         for(auto& msg : data) {
             sendQueue.push(std::move(msg));
         }
     }
+    data.resize(0);
+    data.shrink_to_fit();
 }
 
 

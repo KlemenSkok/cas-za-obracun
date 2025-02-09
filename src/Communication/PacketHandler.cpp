@@ -4,9 +4,33 @@
 
 #include "Communication/PacketHandler.hpp"
 #include "Communication/PacketTypes.hpp"
+#include "communication/SocketHandler.hpp"
 
 uint32_t PacketHandler::lastRecvPacketID = 0;
 uint32_t PacketHandler::lastSentPacketID = 0;
+std::vector<std::unique_ptr<UDPmessage>> PacketHandler::localMsgQueue;
+Uint32 PacketHandler::lastSentPacketTime = SDL_GetTicks();
+
+
+
+void PacketHandler::sendPendingPackets() {
+    // clear the message buffer
+    addMessagesToQueue(PacketHandler::localMsgQueue);
+}
+
+/**
+ * @brief Schedule a packet for sending by adding it to a local message queue. Packets are sent at the end of each frame
+ * 
+ * @param data PacketData with actual data
+ * @param ch channel to send to (server)
+ */
+void PacketHandler::appendToLocalQueue(PacketData& data, int ch) {
+    auto msg = std::make_unique<UDPmessage>();
+    msg->channel = ch;
+    msg->len = data.size();
+    msg->data = data.getRawData();
+    PacketHandler::localMsgQueue.push_back(std::move(msg));
+}
 
 /**
  * @brief Classify the packet based on it's type and process it accordingly.
@@ -47,10 +71,6 @@ void PacketHandler::processPacket(PacketData& d) {
             Logger::warn("Unknown packet type.");
     }
 
-
-
-    // todo
-    
 }
 
 /**
@@ -126,5 +146,6 @@ void PacketHandler::sendPlayerUpdate() {
 
     Game::sendPacket(d);
 
+    PacketHandler::lastSentPacketTime = SDL_GetTicks();
     // expected packet size: 10B
 }

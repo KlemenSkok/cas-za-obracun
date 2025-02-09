@@ -78,6 +78,7 @@ void Game::Run() {
         Game::processNewPackets();
         EventHandler::HandleEvents();
         Game::manageConnection();
+        PacketHandler::sendPendingPackets();
         Game::Update(deltaTime);
         Game::Render();
 
@@ -223,14 +224,15 @@ void Game::manageConnection() {
                 // send a connection request
                 PacketData m(true);
                 m.flags() |= (1 << FLAG_SYN);
-                addMessageToQueue(m, Game::server_info.channel);
+                PacketHandler::appendToLocalQueue(m, Game::server_info.channel);
+                //addMessageToQueue(m, Game::server_info.channel);
                 lastPacketTime = std::chrono::steady_clock::now();
-
+                
                 Game::server_info.connection_state = ConnectionState::CONNECTING;
                 Logger::info("Connection request sent.");
             }
             break;
-        case ConnectionState::CONNECTED:
+            case ConnectionState::CONNECTED:
             // send a keepalive message every 5 seconds
             if(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - lastPacketTime).count() > KEEPALIVE_INTERVAL) {
                 // send a keepalive message
@@ -238,13 +240,14 @@ void Game::manageConnection() {
                 m.flags() |= (1 << FLAG_KEEPALIVE);
                 m.append(Game::session_id);
                 m.append(Game::client_id);
-                addMessageToQueue(m, Game::server_info.channel);
+                PacketHandler::appendToLocalQueue(m, Game::server_info.channel);
+                //addMessageToQueue(m, Game::server_info.channel);
                 lastPacketTime = std::chrono::steady_clock::now();
-
-                //Logger::info("Keepalive message sent.");
+                
+                Logger::info("Keepalive message sent.");
             }
             break;
-        case ConnectionState::DISCONNECTING:
+            case ConnectionState::DISCONNECTING:
             // check if the disconnection was successful
             // if not, try again
             if(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - lastPacketTime).count() > DISCONNECTION_REQUEST_INTERVAL) {
@@ -253,7 +256,8 @@ void Game::manageConnection() {
                 m.flags() |= (1 << FLAG_FIN);
                 m.append(Game::session_id);
                 m.append(Game::client_id);
-                addMessageToQueue(m, Game::server_info.channel);
+                PacketHandler::appendToLocalQueue(m, Game::server_info.channel);
+                //addMessageToQueue(m, Game::server_info.channel);
                 lastPacketTime = std::chrono::steady_clock::now();
 
                 Logger::info("Disconnection request sent.");

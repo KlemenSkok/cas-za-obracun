@@ -8,6 +8,16 @@
 
 void LocalPlayer::update(float deltaTime) {
 
+    // reset acceleration
+    this->acceleration.x = 0.0f;
+    this->acceleration.y = 0.0f;
+
+    // apply acceleration based on key states
+    if(EventHandler::keyStates.s) this->acceleration.y += PLAYER_ACCELERATION;
+    if(EventHandler::keyStates.w) this->acceleration.y -= PLAYER_ACCELERATION;
+    if(EventHandler::keyStates.a) this->acceleration.x -= PLAYER_ACCELERATION;
+    if(EventHandler::keyStates.d) this->acceleration.x += PLAYER_ACCELERATION;
+
     // update the player position
     this->velocity.x += this->acceleration.x * deltaTime;
     this->velocity.y += this->acceleration.y * deltaTime;
@@ -84,16 +94,25 @@ data_packets::PlayerKeyStates LocalPlayer::dumpKeyStates() {
 }
 
 void LocalPlayer::importData(const data_packets::PlayerData& data) {
+
     if(data.keyStates != encodeKeyStates(EventHandler::keyStates)) {
-        // the recent player update was probably not received by the server
-        // resend the update
-        PacketHandler::sendPlayerUpdate();
+        if(data.recv_ts < PacketHandler::lastSentPacketTime) {
+            // the recent player update was probably not received by the server
+            // resend the update
+            PacketHandler::sendPlayerUpdate();
+            std::cout << "Correction!\n";
+        }
     }
 
-    /* this->position.x = data.position.x;
-    this->position.y = data.position.y;
-    this->velocity.x = data.velocity.x;
-    this->velocity.y = data.velocity.y;
-    this->direction = data.direction; */
+    float errorX = std::abs(this->position.x - data.position.x);
+    float errorY = std::abs(this->position.y - data.position.y);
 
+    // If the position is off by too much, smoothly correct it
+    if (errorX > POSITION_OFFSET_TOLERANCE || errorY > POSITION_OFFSET_TOLERANCE) {
+        const float correctionFactor = 0.1f; // Adjust between 0.1 (slow correction) and 1.0 (instant)
+        this->position.x = lerp(this->position.x, data.position.x, correctionFactor);
+        this->position.y = lerp(this->position.y, data.position.y, correctionFactor);
+    }
+
+    this->lastUpdateTime = SDL_GetTicks();
 }
