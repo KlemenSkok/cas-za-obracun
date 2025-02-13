@@ -116,3 +116,7 @@ void LocalPlayer::importData(const data_packets::PlayerData& data) {
 
     this->lastUpdateTime = SDL_GetTicks();
 }
+
+float LocalPlayer::getDirection() {
+    return this->direction;
+}

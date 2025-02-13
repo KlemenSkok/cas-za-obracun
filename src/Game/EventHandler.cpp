@@ -4,9 +4,11 @@
 #include "Game/EventHandler.hpp"
 #include "Game.hpp"
 
+#include <cmath>
+
 
 bool EventHandler::LockKeyboard = false;
-KeyStates EventHandler::keyStates = {0, 0, 0, 0};
+KeyStates EventHandler::keyStates = {0, 0, 0, 0, 0, 0};
 
 void EventHandler::HandleEvents() {
     // handle all events in the queue
@@ -33,28 +35,24 @@ void EventHandler::HandleEvents() {
                     if(!keyStates.w) 
                         pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.w = 1;
-                    Game::player->acceleration.y = -PLAYER_ACCELERATION;
                     break;
                 case SDLK_s:
                     // move the player down
                     if(!keyStates.s) 
                         pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.s = 1;
-                    Game::player->acceleration.y = PLAYER_ACCELERATION;
                     break;
                 case SDLK_a:
                     // move the player left
                     if(!keyStates.a) 
                         pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.a = 1;
-                    Game::player->acceleration.x = -PLAYER_ACCELERATION;
                     break;
                 case SDLK_d:
                     // move the player right
                     if(!keyStates.d) 
                         pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.d = 1;
-                    Game::player->acceleration.x = PLAYER_ACCELERATION;
                     break;
                 default:
                     // do nothing
@@ -69,28 +67,24 @@ void EventHandler::HandleEvents() {
                     if(keyStates.w) 
                         pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.w = 0;
-                    Game::player->acceleration.y = (keyStates.s) ? PLAYER_ACCELERATION : 0.0f;
                     break;
                 case SDLK_s:
                     // move the player down
                     if(keyStates.s) 
                         pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.s = 0;
-                    Game::player->acceleration.y = (keyStates.w) ? -PLAYER_ACCELERATION : 0.0f;
                     break;
                 case SDLK_a:
                     // move the player left
                     if(keyStates.a) 
                         pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.a = 0;
-                    Game::player->acceleration.x = (keyStates.d) ? PLAYER_ACCELERATION : 0.0f;
                     break;
                 case SDLK_d:
                     // move the player right
                     if(keyStates.d) 
                         pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     keyStates.d = 0;
-                    Game::player->acceleration.x = (keyStates.a) ? -PLAYER_ACCELERATION : 0.0f;
                     break;
                 default:
                     // do nothing
@@ -106,12 +100,28 @@ void EventHandler::HandleEvents() {
             // handle mouse button presses
             // throw a projectile
             // todo
+            int posx, posy;
+            SDL_GetMouseState(&posx, &posy);
+            EventHandler::keyStates.left_click = 1;
+            pendingPackets.push_back(PacketType::PLAYER_UPDATES);
+
+            // calculate the angle
+            // ! tole bo treba prilagodit glede na postavitev kamere
+            float dy = Game::player->position.y - posy;
+            float dx = Game::player->position.x - posx;
+            float angle = SDL_atan2f(dy, dx);
+            constexpr float multiplier = 180 / M_PI;
+            Game::player->direction = angle * multiplier;
         }
         else if(e.type == SDL_MOUSEBUTTONUP) {
             // handle mouse button releases
             // stop throwing the projectile
             // start cooldown
             // todo
+            int posx, posy;
+            SDL_GetMouseState(&posx, &posy);
+            EventHandler::keyStates.left_click = 0;
+            pendingPackets.push_back(PacketType::PLAYER_UPDATES);
         }
     }
 

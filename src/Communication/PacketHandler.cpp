@@ -143,9 +143,10 @@ void PacketHandler::sendPlayerUpdate() {
 
     auto data = Game::player->dumpKeyStates();
     data.serialize(d);                              // 1B
+    d.append(Game::player->getDirection());         // 4B
 
     Game::sendPacket(d);
 
     PacketHandler::lastSentPacketTime = SDL_GetTicks();
-    // expected packet size: 10B
+    // expected packet size: 14B
 }
