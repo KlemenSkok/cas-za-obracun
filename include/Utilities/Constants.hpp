@@ -69,3 +69,6 @@ enum class GameState: uint8_t {
 #define PLAYER_FRICTION 1500.0f // [px/s^2]
 
 #define POSITION_OFFSET_TOLERANCE 5.0f // [px]
+
+#define PROJECTILE_THROW_COOLDOWN 1500 // [ms]
+#define PROJECTILE_VELOCITY 500.0f

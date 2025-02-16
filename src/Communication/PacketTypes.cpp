@@ -93,3 +93,59 @@ void PlayerKeyStates::serialize(PacketData& packet) const {
 void PlayerKeyStates::deserialize(PacketData& packet, size_t offset) {
     packet.getByOffset(keyStates, sizeof(uint8_t), offset);
 }
+
+// ProjectileData
+
+int ProjectileData::size() {
+    constexpr int size = sizeof(uint16_t)
+                        + sizeof(float) * 4
+                        + sizeof(Uint32);
+    return size;
+}
+
+void ProjectileData::serialize(PacketData& packet) const {
+    packet.append(id);
+    packet.append(position.x);
+    packet.append(position.y);
+    packet.append(velocity.x);
+    packet.append(velocity.y);
+    packet.append(timestamp);
+}
+
+void ProjectileData::deserialize(PacketData& packet, size_t offset) {
+    // id
+    packet.getByOffset(id, sizeof(uint16_t), offset);
+    offset += sizeof(uint16_t);
+    // position
+    packet.getByOffset(position.x, sizeof(float), offset);
+    packet.getByOffset(position.y, sizeof(float), offset + sizeof(float));
+    offset += sizeof(float) * 2;
+    // velocity
+    packet.getByOffset(velocity.x, sizeof(float), offset);
+    packet.getByOffset(velocity.y, sizeof(float), offset + sizeof(float));
+    offset += sizeof(float) * 2;
+    // timestamp
+    packet.getByOffset(timestamp, sizeof(Uint32), offset);
+    offset += sizeof(Uint32);
+}
+
+ProjectileData& ProjectileData::operator=(const ProjectileData& other) {
+    if(this == &other)
+        return *this;
+
+    this->id = other.id;
+    this->position.x = other.position.x;
+    this->position.y = other.position.y;
+    this->velocity.x = other.velocity.x;
+    this->velocity.y = other.velocity.y;
+    this->timestamp = other.timestamp;
+    this->recv_ts = other.recv_ts;
+
+    return *this;
+}
+
+ProjectileData::ProjectileData() 
+    : id(0), 
+    position{0.0f, 0.0f}, 
+    velocity{0.0f, 0.0f}, 
+    timestamp(SDL_GetTicks()) {}

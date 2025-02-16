@@ -5,6 +5,7 @@
 #include "Communication/PacketHandler.hpp"
 #include "Communication/PacketTypes.hpp"
 #include "communication/SocketHandler.hpp"
+#include "Game/Projectile.hpp"
 
 uint32_t PacketHandler::lastRecvPacketID = 0;
 uint32_t PacketHandler::lastSentPacketID = 0;
@@ -63,6 +64,10 @@ void PacketHandler::processPacket(PacketData& d) {
         case PacketType::PLAYERS_IN_RANGE:
             // process players in range
             processPlayerUpdates(d);
+            break;
+        case PacketType::PROJECTILES_IN_RANGE:
+            // process projectiles in range
+            processProjectileUpdates(d);
             break;
         case PacketType::GAME_STATE:
             // process game state
@@ -149,4 +154,46 @@ void PacketHandler::sendPlayerUpdate() {
 
     PacketHandler::lastSentPacketTime = SDL_GetTicks();
     // expected packet size: 14B
+}
+
+/**
+ * @brief Process the packet marked as `PROJECTILE_UPDATES`.
+ * 
+ * @param data The packet data to process.
+ */
+void PacketHandler::processProjectileUpdates(PacketData& d) {
+    using namespace data_packets;
+
+    size_t offset = OFFSET_DATA;
+    std::unordered_map<uint16_t, ProjectileData> projectiles;
+
+    // decode projectiles' data and store it in a map
+    while(offset < d.size()) {
+        ProjectileData pr;
+        pr.deserialize(d, offset);
+        pr.recv_ts = SDL_GetTicks();
+        projectiles[pr.id] = pr;
+        offset += ProjectileData::size();
+    }
+
+    // remove projectiles that are no longer in range
+    for(auto it = Game::projectiles.begin(); it != Game::projectiles.end();) {
+        if(projectiles.find(it->first) == projectiles.end()) {
+            it = Game::projectiles.erase(it);
+        } else {
+            it++;
+        }
+    }
+
+    // update the projectiles
+    for(auto& pr : projectiles) {
+        if(pr.first != Game::client_id) {
+            if(Game::projectiles.find(pr.first) == Game::projectiles.end()) {
+                Game::projectiles[pr.first] = std::make_shared<Projectile>(pr.second);
+            } else {
+                Game::projectiles[pr.first]->importData(pr.second);
+            }
+        }
+    }
+
 }

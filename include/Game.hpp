@@ -15,6 +15,7 @@
 #include "Game/EventHandler.hpp"
 #include "Communication/PacketHandler.hpp"
 #include "Game/RemotePlayer.hpp"
+#include "Game/Projectile.hpp"
 
 // forward declaration because of circular dependency
 class LocalPlayer;
@@ -43,6 +44,7 @@ class Game {
     // the local player
     static std::shared_ptr<LocalPlayer> player;
     static std::unordered_map<uint16_t, std::shared_ptr<RemotePlayer>> remote_players;
+    static std::unordered_map<uint16_t, std::shared_ptr<Projectile>> projectiles;
 
 public:
     static void Setup();

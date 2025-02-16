@@ -23,6 +23,7 @@ uint16_t Game::client_id = 0;
 
 std::shared_ptr<LocalPlayer> Game::player = nullptr;
 std::unordered_map<uint16_t, std::shared_ptr<RemotePlayer>> Game::remote_players;
+std::unordered_map<uint16_t, std::shared_ptr<Projectile>> Game::projectiles;
 
 
 
@@ -112,6 +113,9 @@ void Game::Update(int deltaTime) {
     for(auto& p : Game::remote_players) {
         p.second->update(deltaTime / 1000.0f);
     }
+    for(auto& pr : Game::projectiles) {
+        pr.second->update(deltaTime / 1000.0f);
+    }
 
 }
 
@@ -132,7 +136,9 @@ void Game::Render() {
     for(auto& p : Game::remote_players) {
         p.second->render(Window::renderer);
     }
-    
+    for(auto& pr : Game::projectiles) {
+        pr.second->render(Window::renderer);
+    }
 
     // present changes    
     Window::Present();

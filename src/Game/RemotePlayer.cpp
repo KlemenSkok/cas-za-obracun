@@ -128,23 +128,4 @@ void RemotePlayer::importData(const data_packets::PlayerData& data) {
     // push the data to the buffer
     this->dataBuffer.push(data);
 
-    
-    /* this->position.x = data.position.x;
-    this->position.y = data.position.y;
-    this->velocity.x = data.velocity.x;
-    this->velocity.y = data.velocity.y;
-    decodeKeyStates(data.keyStates, this->keyStates);
-
-    // reset acceleration
-    this->acceleration.x = 0.0f;
-    this->acceleration.y = 0.0f;
-
-    // apply acceleration based on key states
-    if(this->keyStates.w) this->acceleration.y -= PLAYER_ACCELERATION;
-    if(this->keyStates.s) this->acceleration.y += PLAYER_ACCELERATION;
-    if(this->keyStates.a) this->acceleration.x -= PLAYER_ACCELERATION;
-    if(this->keyStates.d) this->acceleration.x += PLAYER_ACCELERATION; */
-
-    //std::cout << "Remote player updated: " << this->position.x << ", " << this->position.y << std::endl;
-
 }
