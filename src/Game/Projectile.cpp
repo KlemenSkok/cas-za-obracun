@@ -66,10 +66,4 @@ void Projectile::importData(const data_packets::ProjectileData& data) {
     // add data to the buffer
     this->dataBuffer.push(data);
 
-    this->position.x = data.position.x;
-    this->position.y = data.position.y;
-    this->velocity.x = data.velocity.x;
-    this->velocity.y = data.velocity.y;
-    //std::cout << "Projectile position: " << this->position.x << ", " << this->position.y << std::endl;
-
 }
