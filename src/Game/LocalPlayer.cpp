@@ -45,28 +45,31 @@ void LocalPlayer::update(float deltaTime) {
         }
     }
 
+    // determine speed limit (players are slower when concussed)
+    float speed_cap = (this->posture > 0) ? PLAYER_MAX_SPEED : PLAYER_MAX_SPEED_SLOWED;
+
     // clamp velocity
-    if(this->velocity.x > PLAYER_MAX_SPEED) this->velocity.x = PLAYER_MAX_SPEED;
-    if(this->velocity.x < -PLAYER_MAX_SPEED) this->velocity.x = -PLAYER_MAX_SPEED;
-    if(this->velocity.y > PLAYER_MAX_SPEED) this->velocity.y = PLAYER_MAX_SPEED;
-    if(this->velocity.y < -PLAYER_MAX_SPEED) this->velocity.y = -PLAYER_MAX_SPEED;
+    if(this->velocity.x > speed_cap) this->velocity.x = speed_cap;
+    if(this->velocity.x < -speed_cap) this->velocity.x = -speed_cap;
+    if(this->velocity.y > speed_cap) this->velocity.y = speed_cap;
+    if(this->velocity.y < -speed_cap) this->velocity.y = -speed_cap;
 
     // normalize diagonal velocity
-    if(this->velocity.x == PLAYER_MAX_SPEED && this->velocity.y == PLAYER_MAX_SPEED) {
-        this->velocity.x = PLAYER_MAX_SPEED / 1.4142f;
-        this->velocity.y = PLAYER_MAX_SPEED / 1.4142f;
+    if(this->velocity.x == speed_cap && this->velocity.y == speed_cap) {
+        this->velocity.x = speed_cap / 1.4142f;
+        this->velocity.y = speed_cap / 1.4142f;
     }
-    if(this->velocity.x == -PLAYER_MAX_SPEED && this->velocity.y == PLAYER_MAX_SPEED) {
-        this->velocity.x = -PLAYER_MAX_SPEED / 1.4142f;
-        this->velocity.y = PLAYER_MAX_SPEED / 1.4142f;
+    if(this->velocity.x == -speed_cap && this->velocity.y == speed_cap) {
+        this->velocity.x = -speed_cap / 1.4142f;
+        this->velocity.y = speed_cap / 1.4142f;
     }
-    if(this->velocity.x == PLAYER_MAX_SPEED && this->velocity.y == -PLAYER_MAX_SPEED) {
-        this->velocity.x = PLAYER_MAX_SPEED / 1.4142f;
-        this->velocity.y = -PLAYER_MAX_SPEED / 1.4142f;
+    if(this->velocity.x == speed_cap && this->velocity.y == -speed_cap) {
+        this->velocity.x = speed_cap / 1.4142f;
+        this->velocity.y = -speed_cap / 1.4142f;
     }
-    if(this->velocity.x == -PLAYER_MAX_SPEED && this->velocity.y == -PLAYER_MAX_SPEED) {
-        this->velocity.x = -PLAYER_MAX_SPEED / 1.4142f;
-        this->velocity.y = -PLAYER_MAX_SPEED / 1.4142f;
+    if(this->velocity.x == -speed_cap && this->velocity.y == -speed_cap) {
+        this->velocity.x = -speed_cap / 1.4142f;
+        this->velocity.y = -speed_cap / 1.4142f;
     }
 
     // update position
@@ -80,7 +83,7 @@ void LocalPlayer::render(SDL_Renderer* renderer) {
     SDL_Color tmp_c;
     SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 255);
-    DrawFillCircleF(renderer, position.x, position.y, this->radius);
+    DrawFillCircleF(renderer, position.x, position.y, PLAYER_RADIUS);
     SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
 }
 
@@ -94,6 +97,12 @@ data_packets::PlayerKeyStates LocalPlayer::dumpKeyStates() {
 }
 
 void LocalPlayer::importData(const data_packets::PlayerData& data) {
+
+    // update posture
+    this->posture = data.posture;
+
+    // direction
+    this->direction = data.direction;
 
     if(data.keyStates != encodeKeyStates(EventHandler::keyStates)) {
         if(data.recv_ts < PacketHandler::lastSentPacketTime) {

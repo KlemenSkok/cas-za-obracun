@@ -62,13 +62,25 @@ enum class GameState: uint8_t {
     GAME_FINISHED
 };
 
+
+//  GAMEPLAY CONSTANTS
+
 #define MAX_PLAYERS 4
 
+// -- PLAYERS -- //
+// size
+#define PLAYER_RADIUS 20 // px
+// movement
 #define PLAYER_MAX_SPEED 200.0f // [px/s]
+#define PLAYER_MAX_SPEED_SLOWED 75.0f
 #define PLAYER_ACCELERATION 1200.0f // [px/s^2]
 #define PLAYER_FRICTION 1500.0f // [px/s^2]
-
+// interpolation
 #define POSITION_OFFSET_TOLERANCE 5.0f // [px]
 
-#define PROJECTILE_THROW_COOLDOWN 1500 // [ms]
+// -- PROJECTILES -- //
+#define PROJECTILE_RADIUS 10 // px
+#define PROJECTILE_THROW_COOLDOWN 1000 // [ms]
 #define PROJECTILE_VELOCITY 500.0f
+#define PROJECTILE_RANGE 1770*1770 // 2500 px in any direction
+#define PROJECTILE_POSTURE_DAMAGE 22

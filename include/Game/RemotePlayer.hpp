@@ -12,7 +12,7 @@
 class RemotePlayer : public GameObject {
 
     float direction;
-    int radius = 20;
+    int8_t posture;
     KeyStates keyStates;
 
     friend class Game;

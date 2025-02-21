@@ -11,7 +11,7 @@
 
 class LocalPlayer : public GameObject {
     float direction;
-    int radius = 20;
+    int8_t posture;
 
     friend class Game;
     friend class EventHandler;
