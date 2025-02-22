@@ -3,6 +3,7 @@
 
 #include "Game/EventHandler.hpp"
 #include "Game.hpp"
+#include "Game/Rendering/RenderingContext.hpp"
 
 #include <cmath>
 
@@ -107,11 +108,21 @@ void EventHandler::HandleEvents() {
 
             // calculate the angle
             // ! tole bo treba prilagodit glede na postavitev kamere
-            float dy = Game::player->position.y - posy;
+            // to dela za primer, ko igralcec ni v srediscu (early dev)
+/*             float dy = Game::player->position.y - posy;
             float dx = Game::player->position.x - posx;
             float angle = SDL_atan2f(dy, dx);
             constexpr float multiplier = 180 / M_PI;
-            Game::player->direction = angle * multiplier;
+            Game::player->direction = angle * multiplier; */
+
+            // to dela, ko je igralec v srediscu
+            // ok
+            float dx = rc::windowCenter.x - posx;
+            float dy = rc::windowCenter.y - posy;
+            constexpr float multiplier = 180 / M_PI;
+            Game::player->direction = SDL_atan2f(dy, dx) * multiplier; // angle in degrees
+
+
         }
         else if(e.type == SDL_MOUSEBUTTONUP) {
             // handle mouse button releases
