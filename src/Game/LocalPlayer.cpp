@@ -3,6 +3,7 @@
 
 #include "Game/LocalPlayer.hpp"
 #include "Utilities/Utility.hpp"
+#include "Game/Rendering/RenderingContext.hpp"
 
 
 
@@ -83,7 +84,14 @@ void LocalPlayer::render(SDL_Renderer* renderer) {
     SDL_Color tmp_c;
     SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 255);
-    DrawFillCircleF(renderer, position.x, position.y, PLAYER_RADIUS);
+    
+    // old
+    //DrawFillCircleF(renderer, position.x, position.y, PLAYER_RADIUS);
+
+    // Draw the player at the correct position (middle of the window)
+    DrawFillCircleF(renderer, rc::windowCenter.x, rc::windowCenter.y, PLAYER_RADIUS);
+
+    
     SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
 }
 
@@ -128,4 +136,8 @@ void LocalPlayer::importData(const data_packets::PlayerData& data) {
 
 float LocalPlayer::getDirection() {
     return this->direction;
+}
+
+Point LocalPlayer::getPosition() {
+    return this->position;
 }

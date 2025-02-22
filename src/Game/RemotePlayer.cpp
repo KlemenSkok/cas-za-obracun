@@ -5,6 +5,7 @@
 #include "Utilities/Utility.hpp"
 #include "Utilities/Constants.hpp"
 #include "Communication/PacketTypes.hpp"
+#include "Game/Rendering/RenderingContext.hpp"
 
 #include <algorithm>
 
@@ -121,7 +122,14 @@ void RemotePlayer::render(SDL_Renderer* renderer) {
     SDL_Color tmp_c;
     SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 255);
-    DrawFillCircleF(renderer, position.x, position.y, PLAYER_RADIUS);
+
+    // old
+    //DrawFillCircleF(renderer, position.x, position.y, PLAYER_RADIUS);
+    
+    // Draw the player at the correct position
+    Point pos = {rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x), rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y)};
+    DrawFillCircleF(renderer, pos.x, pos.y, PLAYER_RADIUS);
+    
     SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
 }
 

@@ -6,15 +6,16 @@
 #include <SDL2/SDL.h>
 #include <vector>
 
+#include "Containers.hpp"
+
 
 class GameObject {
 
 protected:
 
-    // position ni ravno vektor, ampak vseen
-    struct { float x, y; } position;
-    struct { float x, y; } velocity;
-    struct { float x, y; } acceleration;
+    Point position;
+    Point velocity;
+    Point acceleration;
 
 public:
     GameObject(float x, float y) : position({x, y}), velocity({0, 0}) {}

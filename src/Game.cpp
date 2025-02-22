@@ -124,6 +124,10 @@ void Game::Update(int deltaTime) {
  */
 void Game::Render() {
 
+    // render the game state
+    RenderWindow::renderGameState();
+
+/* 
     // clear the screen
     SDL_SetRenderDrawColor(Window::renderer, 0, 0, 0, 255);
     Window::Clear();
@@ -142,6 +146,7 @@ void Game::Render() {
 
     // present changes    
     Window::Present();
+ */
 }
 
 

@@ -28,5 +28,6 @@ public:
     data_packets::PlayerKeyStates dumpKeyStates();
     void importData(const data_packets::PlayerData& data);
     float getDirection();
+    Point getPosition();
 
 };

@@ -3,6 +3,7 @@
 
 #include "Game/Projectile.hpp"
 #include "Utilities/Utility.hpp"
+#include "Game/Rendering/RenderingContext.hpp"
 
 #include <algorithm>
 
@@ -57,7 +58,13 @@ void Projectile::render(SDL_Renderer* renderer) {
     SDL_Color tmp_c;
     SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
     SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0xFF, 255);
-    DrawFillCircleF(renderer, position.x, position.y, this->radius);
+
+    // old
+    //DrawFillCircleF(renderer, position.x, position.y, this->radius);
+
+    Point pos = {rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x), rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y)};
+    DrawFillCircleF(renderer, pos.x, pos.y, this->radius);
+
     SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
 }
 

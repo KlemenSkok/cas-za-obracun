@@ -9,19 +9,21 @@
 #include <memory>
 #include <unordered_map>
 
-#include "Containers.hpp"
-#include "Utilities/Constants.hpp"
+#include "Communication/PacketHandler.hpp"
 #include "Game/LocalPlayer.hpp"
 #include "Game/EventHandler.hpp"
-#include "Communication/PacketHandler.hpp"
 #include "Game/RemotePlayer.hpp"
 #include "Game/Projectile.hpp"
+#include "Game/Rendering/RenderWindow.hpp"
+#include "Utilities/Constants.hpp"
+#include "Containers.hpp"
 
 // forward declaration because of circular dependency
 class LocalPlayer;
 class RemotePlayer;
 class EventHandler;
 class PacketHandler;
+class RenderWindow;
 
 class Game {
     struct ConnectionInfo {
@@ -59,4 +61,5 @@ public:
     static void sendPacket(PacketData& d);
     friend class EventHandler; // handle all events
     friend class PacketHandler; // handle all packets    
+    friend class RenderWindow; // render all game objects
 };
