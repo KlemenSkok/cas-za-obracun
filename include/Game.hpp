@@ -14,6 +14,7 @@
 #include "Game/EventHandler.hpp"
 #include "Game/RemotePlayer.hpp"
 #include "Game/Projectile.hpp"
+#include "Game/Map/MapData.hpp"
 #include "Rendering/RenderWindow.hpp"
 #include "Utilities/Constants.hpp"
 #include "Containers.hpp"

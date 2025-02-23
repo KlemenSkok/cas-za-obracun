@@ -28,12 +28,22 @@ std::unordered_map<uint16_t, std::shared_ptr<Projectile>> Game::projectiles;
 
 
 void Game::Setup() {
+    // attempt to start the communication thread
     try {
-        // pass 0 for dynamic port assignment
         SocketHandler::Start();
     }
     catch (std::runtime_error &e) {
         throw std::runtime_error(std::string("Failed to start communication thread: ") + e.what());
+    }
+
+    // slight desync
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    // Attempt to load the map data
+    try {
+        MapData::LoadMap("../../assets/data/map_data.xml");
+    }
+    catch (std::exception &e) {
+        throw std::runtime_error(std::string("Failed to load map data: ") + e.what());
     }
 }
 

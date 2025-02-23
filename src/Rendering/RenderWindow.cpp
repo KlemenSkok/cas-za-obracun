@@ -5,6 +5,7 @@
 #include "Utilities/Utility.hpp"
 #include "Containers.hpp"
 #include "Rendering/RenderingContext.hpp"
+#include "Game/Map/MapData.hpp"
 
 
 
@@ -22,6 +23,13 @@ void RenderWindow::renderGameState() {
     Window::Clear();
     
     // render the map
+    for(auto& [x, y_map] : MapData::grid) {
+        for(auto& [y, barriers] : y_map) {
+            for(auto& barrier : barriers) {
+                barrier.render(Window::renderer);
+            }
+        }
+    }
     // todo
 
     // render the players

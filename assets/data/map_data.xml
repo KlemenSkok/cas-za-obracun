@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map>
+    <barrier>
+        <position x="200.0" y="200.0" />
+        <size w="300" h="100" />
+        <texture id="0001" />
+    </barrier>
+    <barrier>
+        <position x="-200.0" y="200.0" />
+        <size w="50" h="100" />
+        <texture id="0002" />
+    </barrier>
+    <barrier>
+        <position x="200.0" y="-200.0" />
+        <size w="100" h="100" />
+        <texture id="0003" />
+    </barrier>
+    <barrier>
+        <position x="-200.0" y="-200.0" />
+        <size w="150" h="70" />
+        <texture id="0004" />
+    </barrier>
+</map>
