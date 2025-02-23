@@ -1,7 +1,7 @@
 
 // RenderingContext.cpp
 
-#include "Game/Rendering/RenderingContext.hpp"
+#include "Rendering/RenderingContext.hpp"
 
 namespace rc {
     Point localPlayerPos;

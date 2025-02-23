@@ -3,7 +3,7 @@
 
 #include "Game/Projectile.hpp"
 #include "Utilities/Utility.hpp"
-#include "Game/Rendering/RenderingContext.hpp"
+#include "Rendering/RenderingContext.hpp"
 
 #include <algorithm>
 

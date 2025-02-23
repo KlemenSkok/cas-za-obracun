@@ -14,7 +14,7 @@
 #include "Game/EventHandler.hpp"
 #include "Game/RemotePlayer.hpp"
 #include "Game/Projectile.hpp"
-#include "Game/Rendering/RenderWindow.hpp"
+#include "Rendering/RenderWindow.hpp"
 #include "Utilities/Constants.hpp"
 #include "Containers.hpp"
 

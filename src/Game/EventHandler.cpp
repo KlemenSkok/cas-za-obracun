@@ -3,7 +3,7 @@
 
 #include "Game/EventHandler.hpp"
 #include "Game.hpp"
-#include "Game/Rendering/RenderingContext.hpp"
+#include "Rendering/RenderingContext.hpp"
 
 #include <cmath>
 

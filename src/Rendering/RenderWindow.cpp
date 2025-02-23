@@ -1,10 +1,10 @@
 
 // Renderer.cpp
 
-#include "Game/Rendering/RenderWindow.hpp"
+#include "Rendering/RenderWindow.hpp"
 #include "Utilities/Utility.hpp"
 #include "Containers.hpp"
-#include "Game/Rendering/RenderingContext.hpp"
+#include "Rendering/RenderingContext.hpp"
 
 
 

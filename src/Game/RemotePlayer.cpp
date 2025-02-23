@@ -5,7 +5,7 @@
 #include "Utilities/Utility.hpp"
 #include "Utilities/Constants.hpp"
 #include "Communication/PacketTypes.hpp"
-#include "Game/Rendering/RenderingContext.hpp"
+#include "Rendering/RenderingContext.hpp"
 
 #include <algorithm>
 
