@@ -6,6 +6,8 @@
 #include "Barrier.hpp"
 #include "Game/GameObject.hpp"
 #include "Game/LocalPlayer.hpp"
+#include "Game/RemotePlayer.hpp"
+#include "Game/Projectile.hpp"
 
 #include <vector>
 #include <unordered_map>
@@ -13,6 +15,7 @@
 #define GRID_CELL_SIZE 100 // [px]
 
 class LocalPlayer;
+class RemotePlayer;
 
 class MapData {
 
@@ -24,6 +27,7 @@ public:
     static void AddBarrier(Barrier&);
     static int LoadMap(const char*);
     static bool CheckCollision(const LocalPlayer&, Point&);
+    static bool CheckCollision(const RemotePlayer&, Point&);
 
 };
 

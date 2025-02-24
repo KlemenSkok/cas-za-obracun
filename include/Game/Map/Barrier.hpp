@@ -19,6 +19,7 @@ public:
 
     Barrier() = default;
     void render(SDL_Renderer* renderer);
+
     void setPosition(float x, float y);
     void setDimensions(int w, int h);
     void setTexture(int id);

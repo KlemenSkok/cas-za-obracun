@@ -40,7 +40,7 @@ void MapData::AddBarrier(Barrier& b) {
  * 
  * @param node The node to read from 
  * @param b The barrier to write to
- * @return int  Returns 0 on success, 1 on failure
+ * @return 0 on success, 1 on failure
  */
 int parseBarrierNode(tinyxml2::XMLNode* node, Barrier& b) {
     using namespace tinyxml2;
@@ -99,7 +99,7 @@ int parseBarrierNode(tinyxml2::XMLNode* node, Barrier& b) {
  * @brief Attempt to load map data from an XML file.
  * 
  * @param filename Name of the XML file to load.
- * @return int Returns 0 on success, 1 in failure.
+ * @return 0 on success, 1 in failure.
  */
 int MapData::LoadMap(const char* filename) {
     //std::cout << "Loading map: " << filename << std::endl;
@@ -133,7 +133,13 @@ int MapData::LoadMap(const char* filename) {
     return EXIT_SUCCESS;
 }
 
-
+/**
+ * @brief Check for collision between the local player and the map barriers.
+ * 
+ * @param player Player object to check collision for. Used to identify the overload for the LocalPlayer class.
+ * @param correctedPos The position to check for collision. If a collision is detected, this will be updated to the corrected position.
+ * @return `true` if collision was detected, `false` otherwise.
+ */
 bool MapData::CheckCollision(const LocalPlayer& player, Point& correctedPos) {
     // player grid position
     int p_grid_x = getGridKey(correctedPos.x);
@@ -156,8 +162,9 @@ bool MapData::CheckCollision(const LocalPlayer& player, Point& correctedPos) {
                 float distanceX = correctedPos.x - closestX;
                 float distanceY = correctedPos.y - closestY;
                 float distanceSQ = (distanceX * distanceX) + (distanceY * distanceY);
+                constexpr int playerRad = PLAYER_RADIUS * PLAYER_RADIUS;
 
-                if(distanceSQ < (PLAYER_RADIUS * PLAYER_RADIUS)) {
+                if(distanceSQ < playerRad) {
                     // collision detected
                     float distance = std::sqrt(distanceSQ);
                     float overlap = PLAYER_RADIUS - distance;
@@ -178,4 +185,58 @@ bool MapData::CheckCollision(const LocalPlayer& player, Point& correctedPos) {
         }
     }
     return false;
+}
+
+/**
+ * @brief Check for collision between the remote player and the map barriers.
+ * 
+ * @param player Player object to check collision for. Used to identify the overload for the RemotePlayer class.
+ * @param correctedPos The position to check for collision. If a collision is detected, this will be updated to the corrected position.
+ * @return `true` if collision was detected, `false` otherwise.
+ */
+bool MapData::CheckCollision(const RemotePlayer& player, Point& correctedPos) {
+        // player grid position
+        int p_grid_x = getGridKey(correctedPos.x);
+        int p_grid_y = getGridKey(correctedPos.y);
+    
+        for(int x = p_grid_x - 1; x <= p_grid_x + 1; x++) {
+            for(int y = p_grid_y - 1; y <= p_grid_y + 1; y++) {
+    
+                if(grid.find(x) == grid.end() || grid[x].find(y) == grid[x].end()) {
+                    continue; // skip; nothing to check in this cell
+                }
+    
+                for(const Barrier& barrier : grid[x][y]) {
+    
+                    float closestX = std::max(barrier.getPosition().x, 
+                                                std::min(correctedPos.x, barrier.getPosition().x + barrier.getWidth()));
+                    float closestY = std::max(barrier.getPosition().y, 
+                                                std::min(correctedPos.y, barrier.getPosition().y + barrier.getHeight()));
+    
+                    float distanceX = correctedPos.x - closestX;
+                    float distanceY = correctedPos.y - closestY;
+                    float distanceSQ = (distanceX * distanceX) + (distanceY * distanceY);
+                    constexpr int playerRad = PLAYER_RADIUS * PLAYER_RADIUS;
+    
+                    if(distanceSQ < playerRad) {
+                        // collision detected
+                        float distance = std::sqrt(distanceSQ);
+                        float overlap = PLAYER_RADIUS - distance;
+    
+                        if(distance > 0) {
+                            // push player away from the barrier
+                            correctedPos.x += (distanceX / distance) * overlap;
+                            correctedPos.y += (distanceY / distance) * overlap;
+                        }
+                        else {
+                            // edge case: player is exactly inside the barrier
+                            correctedPos.x += PLAYER_RADIUS;
+                        }
+    
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
 }

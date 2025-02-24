@@ -19,7 +19,7 @@ protected:
 
 public:
     GameObject(float x, float y) : position({x, y}), velocity({0, 0}) {}
+    virtual ~GameObject() = default;
     virtual void update(float deltaTime) = 0;
     virtual void render(SDL_Renderer*) = 0;
-    virtual ~GameObject() = default;
 };

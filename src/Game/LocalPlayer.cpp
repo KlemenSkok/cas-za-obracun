@@ -23,7 +23,7 @@ void LocalPlayer::update(float deltaTime) {
     this->velocity.x += this->acceleration.x * deltaTime;
     this->velocity.y += this->acceleration.y * deltaTime;
 
-    Point newPosition = {this->position.x, this->position.y};
+    Point newPosition = { this->position.x, this->position.y };
 
     newPosition.x += this->velocity.x * deltaTime;
     newPosition.y += this->velocity.y * deltaTime;
@@ -79,9 +79,7 @@ void LocalPlayer::update(float deltaTime) {
     newPosition.x += this->velocity.x * deltaTime;
     newPosition.y += this->velocity.y * deltaTime;
 
-    //this->velocity.x = newPosition.x;
-    //this->velocity.y = newPosition.y;
-
+    // check for collision
     if(MapData::CheckCollision(*this, newPosition)) {
         // collision detected; update position
         this->position = newPosition;

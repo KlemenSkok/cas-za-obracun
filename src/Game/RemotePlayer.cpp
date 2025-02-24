@@ -12,6 +12,19 @@
 
 void RemotePlayer::update(float deltaTime) {
 
+    Point newPosition = this->position;
+    
+    auto _checkCollision = [&]() {
+        // check for collision
+        if(MapData::CheckCollision(*this, newPosition)) {
+            // collision detected; update position
+            this->position = newPosition;
+        } else {
+            // no collision; update position
+            this->position = newPosition;
+        }
+    };
+    
     // INTERPOLATION HERE
 
     if (!this->dataBuffer.empty()) {
@@ -26,8 +39,8 @@ void RemotePlayer::update(float deltaTime) {
     
             // Smooth correction instead of snapping
             const float correctionFactor = 0.3f;
-            this->position.x = lerp(this->position.x, data.position.x, correctionFactor);
-            this->position.y = lerp(this->position.y, data.position.y, correctionFactor);
+            newPosition.x = lerp(newPosition.x, data.position.x, correctionFactor);
+            newPosition.y = lerp(newPosition.y, data.position.y, correctionFactor);
     
             this->velocity.x = data.velocity.x;
             this->velocity.y = data.velocity.y;
@@ -35,6 +48,13 @@ void RemotePlayer::update(float deltaTime) {
             this->lastData = data;
             this->lastUpdateTime = SDL_GetTicks();
             
+            // update position
+            newPosition.x += this->velocity.x * deltaTime;
+            newPosition.y += this->velocity.y * deltaTime;
+
+            // check for collision
+            _checkCollision();
+
             return;
         }
     
@@ -42,8 +62,15 @@ void RemotePlayer::update(float deltaTime) {
         float alpha = (estimatedServerTime - this->lastData.timestamp) / float(data.timestamp - this->lastData.timestamp);
         alpha = std::clamp(alpha, 0.0f, 1.0f);
 
-        this->position.x = lerp(this->lastData.position.x, data.position.x, alpha);
-        this->position.y = lerp(this->lastData.position.y, data.position.y, alpha);
+        newPosition.x = lerp(this->lastData.position.x, data.position.x, alpha);
+        newPosition.y = lerp(this->lastData.position.y, data.position.y, alpha);
+
+        // update position
+        newPosition.x += this->velocity.x * deltaTime;
+        newPosition.y += this->velocity.y * deltaTime;
+
+        // check for collision
+        _checkCollision();
 
         return;
     }
@@ -112,8 +139,11 @@ void RemotePlayer::update(float deltaTime) {
     }
 
     // update position
-    this->position.x += this->velocity.x * deltaTime;
-    this->position.y += this->velocity.y * deltaTime;
+    newPosition.x += this->velocity.x * deltaTime;
+    newPosition.y += this->velocity.y * deltaTime;
+
+    // check for collision
+    _checkCollision();
 
 }
 
