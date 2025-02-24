@@ -24,6 +24,10 @@ void MapData::AddBarrier(Barrier& b) {
     int end_x = getGridKey(pos.x + b.getWidth());
     int end_y = getGridKey(pos.y + b.getHeight());
 
+    // edge case: when barrier border is on the edge of a cell, expand the object territory
+    if(int(pos.x + b.getWidth()) % GRID_CELL_SIZE == 0) end_x++;
+    if(int(pos.y + b.getHeight()) % GRID_CELL_SIZE == 0) end_y++;
+
     for(int x = start_x; x < end_x; x++) {
         for(int y = start_y; y < end_y; y++) {
             grid[x][y].push_back(b);
@@ -132,8 +136,8 @@ int MapData::LoadMap(const char* filename) {
 
 bool MapData::CheckCollision(const LocalPlayer& player, Point& correctedPos) {
     // player grid position
-    int p_grid_x = getGridKey(player.getPosition().x);
-    int p_grid_y = getGridKey(player.getPosition().y);
+    int p_grid_x = getGridKey(correctedPos.x);
+    int p_grid_y = getGridKey(correctedPos.y);
 
     for(int x = p_grid_x - 1; x <= p_grid_x + 1; x++) {
         for(int y = p_grid_y - 1; y <= p_grid_y + 1; y++) {
@@ -143,13 +147,14 @@ bool MapData::CheckCollision(const LocalPlayer& player, Point& correctedPos) {
             }
 
             for(const Barrier& barrier : grid[x][y]) {
-                float closestX = std::max(barrier.getPosition().x, 
-                                            std::min(player.getPosition().x, barrier.getPosition().x + barrier.getWidth()));
-                float closestY = std::max(barrier.getPosition().y, 
-                                            std::min(player.getPosition().y, barrier.getPosition().y + barrier.getHeight()));
 
-                float distanceX = player.getPosition().x - closestX;
-                float distanceY = player.getPosition().y - closestY;
+                float closestX = std::max(barrier.getPosition().x, 
+                                            std::min(correctedPos.x, barrier.getPosition().x + barrier.getWidth()));
+                float closestY = std::max(barrier.getPosition().y, 
+                                            std::min(correctedPos.y, barrier.getPosition().y + barrier.getHeight()));
+
+                float distanceX = correctedPos.x - closestX;
+                float distanceY = correctedPos.y - closestY;
                 float distanceSQ = (distanceX * distanceX) + (distanceY * distanceY);
 
                 if(distanceSQ < (PLAYER_RADIUS * PLAYER_RADIUS)) {
@@ -162,10 +167,10 @@ bool MapData::CheckCollision(const LocalPlayer& player, Point& correctedPos) {
                         correctedPos.x += (distanceX / distance) * overlap;
                         correctedPos.y += (distanceY / distance) * overlap;
                     }
-/*                     else {
+                    else {
                         // edge case: player is exactly inside the barrier
                         correctedPos.x += PLAYER_RADIUS;
-                    } */
+                    }
 
                     return true;
                 }
