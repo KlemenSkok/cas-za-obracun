@@ -22,9 +22,9 @@ public:
     void setPosition(float x, float y);
     void setDimensions(int w, int h);
     void setTexture(int id);
-    Point getPosition() { return position; }
-    int getWidth() { return width; }
-    int getHeight() { return height; }
+    Point getPosition() const { return position; }
+    int getWidth() const { return width; }
+    int getHeight() const { return height; }
     //void loadTexture(SDL_Renderer* renderer);
     
 };

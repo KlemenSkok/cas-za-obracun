@@ -4,13 +4,15 @@
 #pragma once
 
 #include "Barrier.hpp"
+#include "Game/GameObject.hpp"
+#include "Game/LocalPlayer.hpp"
 
 #include <vector>
 #include <unordered_map>
 
 #define GRID_CELL_SIZE 100 // [px]
 
-
+class LocalPlayer;
 
 class MapData {
 
@@ -21,6 +23,7 @@ public:
     static void InitializeGrid();
     static void AddBarrier(Barrier&);
     static int LoadMap(const char*);
+    static bool CheckCollision(const LocalPlayer&, Point&);
 
 };
 

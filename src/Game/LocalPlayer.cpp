@@ -23,8 +23,10 @@ void LocalPlayer::update(float deltaTime) {
     this->velocity.x += this->acceleration.x * deltaTime;
     this->velocity.y += this->acceleration.y * deltaTime;
 
-    this->position.x += this->velocity.x * deltaTime;
-    this->position.y += this->velocity.y * deltaTime;
+    Point newPosition = {this->position.x, this->position.y};
+
+    newPosition.x += this->velocity.x * deltaTime;
+    newPosition.y += this->velocity.y * deltaTime;
 
     // apply friction if no keys are pressed
     if(!EventHandler::keyStates.a && !EventHandler::keyStates.d) {
@@ -74,8 +76,19 @@ void LocalPlayer::update(float deltaTime) {
     }
 
     // update position
-    this->position.x += this->velocity.x * deltaTime;
-    this->position.y += this->velocity.y * deltaTime;
+    newPosition.x += this->velocity.x * deltaTime;
+    newPosition.y += this->velocity.y * deltaTime;
+
+    //this->velocity.x = newPosition.x;
+    //this->velocity.y = newPosition.y;
+
+    if(MapData::CheckCollision(*this, newPosition)) {
+        // collision detected; update position
+        this->position = newPosition;
+    } else {
+        // no collision; update position
+        this->position = newPosition;
+    }
 
 }
 
@@ -134,10 +147,10 @@ void LocalPlayer::importData(const data_packets::PlayerData& data) {
     this->lastUpdateTime = SDL_GetTicks();
 }
 
-float LocalPlayer::getDirection() {
+float LocalPlayer::getDirection() const {
     return this->direction;
 }
 
-Point LocalPlayer::getPosition() {
+Point LocalPlayer::getPosition() const {
     return this->position;
 }
