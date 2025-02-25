@@ -11,6 +11,9 @@
 
 class Projectile : public GameObject {
 
+    PointF velocity;
+    PointF acceleration;
+
     uint8_t radius = 10;
 
     // interpolation variables

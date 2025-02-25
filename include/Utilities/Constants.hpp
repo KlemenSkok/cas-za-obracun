@@ -79,8 +79,12 @@ enum class GameState: uint8_t {
 #define POSITION_OFFSET_TOLERANCE 5.0f // [px]
 
 // -- PROJECTILES -- //
-#define PROJECTILE_RADIUS 10 // px
+#define PROJECTILE_RADIUS 10 // [px]
 #define PROJECTILE_THROW_COOLDOWN 1000 // [ms]
 #define PROJECTILE_VELOCITY 500.0f
-#define PROJECTILE_RANGE 1770*1770 // 2500 px in any direction
+#define PROJECTILE_RANGE 1770*1770 // [px^2] 2500 px in any direction
 #define PROJECTILE_POSTURE_DAMAGE 22
+
+// -- FLAGS -- //
+#define FLAG_SIZE {50, 20} // [px] w, h
+#define FLAG_PICKUP_RANGE 100 // [px] from center of the flag

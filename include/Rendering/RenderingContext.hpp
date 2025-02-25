@@ -7,6 +7,6 @@
 
 
 namespace rc {
-    extern Point localPlayerPos;
+    extern PointF localPlayerPos;
     extern Point windowCenter;
 }

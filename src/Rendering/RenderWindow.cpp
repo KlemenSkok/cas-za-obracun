@@ -17,7 +17,7 @@ void RenderWindow::renderGameState() {
 
     // get player position for reference
     rc::localPlayerPos = Game::player->getPosition();
-    rc::windowCenter = {Window::Width() / 2.0f, Window::Height() / 2.0f};
+    rc::windowCenter = {static_cast<int>(Window::Width() / 2.0f), static_cast<int>(Window::Height() / 2.0f)};
 
     // clear the screen
     Window::Clear();

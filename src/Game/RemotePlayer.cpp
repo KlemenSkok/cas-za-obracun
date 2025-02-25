@@ -12,7 +12,7 @@
 
 void RemotePlayer::update(float deltaTime) {
 
-    Point newPosition = this->position;
+    PointF newPosition = this->position;
     
     auto _checkCollision = [&]() {
         // check for collision
@@ -157,7 +157,7 @@ void RemotePlayer::render(SDL_Renderer* renderer) {
     //DrawFillCircleF(renderer, position.x, position.y, PLAYER_RADIUS);
     
     // Draw the player at the correct position
-    Point pos = {rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x), rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y)};
+    PointF pos = {rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x), rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y)};
     DrawFillCircleF(renderer, pos.x, pos.y, PLAYER_RADIUS);
     
     SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);

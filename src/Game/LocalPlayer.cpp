@@ -23,7 +23,7 @@ void LocalPlayer::update(float deltaTime) {
     this->velocity.x += this->acceleration.x * deltaTime;
     this->velocity.y += this->acceleration.y * deltaTime;
 
-    Point newPosition = { this->position.x, this->position.y };
+    PointF newPosition = { this->position.x, this->position.y };
 
     newPosition.x += this->velocity.x * deltaTime;
     newPosition.y += this->velocity.y * deltaTime;
@@ -149,6 +149,6 @@ float LocalPlayer::getDirection() const {
     return this->direction;
 }
 
-Point LocalPlayer::getPosition() const {
+PointF LocalPlayer::getPosition() const {
     return this->position;
 }

@@ -31,6 +31,10 @@ void decodeKeyStates(const uint8_t& data, KeyStates& ks);
 
 typedef struct {
     float x, y;
+} PointF;
+
+typedef struct {
+    int x, y;
 } Point;
 
 // ---------------------------------------- //

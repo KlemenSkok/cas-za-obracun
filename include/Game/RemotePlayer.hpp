@@ -11,6 +11,9 @@
 
 class RemotePlayer : public GameObject {
 
+    PointF velocity;
+    PointF acceleration;
+
     float direction;
     int8_t posture;
     KeyStates keyStates;

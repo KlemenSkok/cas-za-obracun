@@ -10,6 +10,10 @@
 
 
 class LocalPlayer : public GameObject {
+
+    PointF velocity;
+    PointF acceleration;
+
     float direction;
     int8_t posture;
 
@@ -28,6 +32,6 @@ public:
     data_packets::PlayerKeyStates dumpKeyStates();
     void importData(const data_packets::PlayerData& data);
     float getDirection() const;
-    Point getPosition() const;
+    PointF getPosition() const;
 
 };

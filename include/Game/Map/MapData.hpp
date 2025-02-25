@@ -26,8 +26,8 @@ public:
     static void InitializeGrid();
     static void AddBarrier(Barrier&);
     static int LoadMap(const char*);
-    static bool CheckCollision(const LocalPlayer&, Point&);
-    static bool CheckCollision(const RemotePlayer&, Point&);
+    static bool CheckCollision(const LocalPlayer&, PointF&);
+    static bool CheckCollision(const RemotePlayer&, PointF&);
 
 };
 

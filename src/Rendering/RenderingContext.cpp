@@ -4,6 +4,6 @@
 #include "Rendering/RenderingContext.hpp"
 
 namespace rc {
-    Point localPlayerPos;
+    PointF localPlayerPos;
     Point windowCenter;
 }
