@@ -22,6 +22,7 @@ uint8_t Game::session_id = 0;
 uint16_t Game::client_id = 0;
 
 std::shared_ptr<LocalPlayer> Game::player = nullptr;
+std::shared_ptr<Flag> Game::flag = nullptr;
 std::unordered_map<uint16_t, std::shared_ptr<RemotePlayer>> Game::remote_players;
 std::unordered_map<uint16_t, std::shared_ptr<Projectile>> Game::projectiles;
 
@@ -67,6 +68,7 @@ void Game::setServerIP(const char* ip, uint16_t port) {
 void Game::Run() {
 
     Game::player = std::make_shared<LocalPlayer>(100, 100, 0);
+    Game::flag = std::make_shared<Flag>(GAME_FLAG_HOME_POS_X, GAME_FLAG_HOME_POS_Y);
 
     Window::Open();
     Game::_running = true;
@@ -116,15 +118,30 @@ void Game::Run() {
  */
 void Game::Update(int deltaTime) {
 
+    float t = deltaTime / 1000.0f;
+
     // update the local player's position   
-    Game::player->update(deltaTime / 1000.0f);
+    Game::player->update(t);
 
     // update remote players
     for(auto& p : Game::remote_players) {
-        p.second->update(deltaTime / 1000.0f);
+        p.second->update(t);
     }
     for(auto& pr : Game::projectiles) {
-        pr.second->update(deltaTime / 1000.0f);
+        pr.second->update(t);
+    }
+
+    // update the flag
+    Game::flag->update(t);
+
+    if(Game::flag->getCarrierID() == Game::client_id) {
+        // update the flag's position
+        // overrride the flag's position with the player's position to cancel out the interpolation
+        Game::flag->updatePosition(Game::player->position);
+        Game::player->captureFlag();
+    }
+    else {
+        Game::player->dropFlag();
     }
 
 }

@@ -3,21 +3,22 @@
 
 #pragma once
 
-#include <SDL2/SDL_net.h>
-#include <SDL2/SDL.h>
-#include <cstdint>
 #include <memory>
+#include <cstdint>
+#include <SDL2/SDL.h>
 #include <unordered_map>
+#include <SDL2/SDL_net.h>
 
 #include "Communication/PacketHandler.hpp"
-#include "Game/LocalPlayer.hpp"
-#include "Game/EventHandler.hpp"
-#include "Game/RemotePlayer.hpp"
-#include "Game/Projectile.hpp"
-#include "Game/Map/MapData.hpp"
 #include "Rendering/RenderWindow.hpp"
 #include "Utilities/Constants.hpp"
+#include "Game/EventHandler.hpp"
+#include "Game/RemotePlayer.hpp"
+#include "Game/Map/MapData.hpp"
+#include "Game/LocalPlayer.hpp"
+#include "Game/Projectile.hpp"
 #include "Containers.hpp"
+#include "Game/Flag.hpp"
 
 // forward declaration because of circular dependency
 class LocalPlayer;
@@ -44,7 +45,8 @@ class Game {
     static uint8_t session_id;
     static uint16_t client_id;
 
-    // the local player
+    // game objects
+    static std::shared_ptr<Flag> flag;
     static std::shared_ptr<LocalPlayer> player;
     static std::unordered_map<uint16_t, std::shared_ptr<RemotePlayer>> remote_players;
     static std::unordered_map<uint16_t, std::shared_ptr<Projectile>> projectiles;
@@ -60,6 +62,7 @@ public:
     static void processNewPackets();
     static void manageConnection();
     static void sendPacket(PacketData& d);
+
     friend class EventHandler; // handle all events
     friend class PacketHandler; // handle all packets    
     friend class RenderWindow; // render all game objects
