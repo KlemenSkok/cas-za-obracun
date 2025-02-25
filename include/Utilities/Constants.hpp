@@ -73,6 +73,7 @@ enum class GameState: uint8_t {
 // movement
 #define PLAYER_MAX_SPEED 200.0f // [px/s]
 #define PLAYER_MAX_SPEED_SLOWED 75.0f
+#define PLAYER_MAX_SPEED_CARRYING 100.0f // [px/s]
 #define PLAYER_ACCELERATION 1200.0f // [px/s^2]
 #define PLAYER_FRICTION 1500.0f // [px/s^2]
 // interpolation
@@ -86,5 +87,8 @@ enum class GameState: uint8_t {
 #define PROJECTILE_POSTURE_DAMAGE 22
 
 // -- FLAGS -- //
-#define FLAG_SIZE {50, 20} // [px] w, h
-#define FLAG_PICKUP_RANGE 100 // [px] from center of the flag
+#define GAME_FLAG_SIZE {75, 50} // [px] w, h
+#define GAME_FLAG_PICKUP_RANGE 100 // [px] from center of the flag
+#define GAME_FLAG_HOME_POS_X 400 // [px] x, y
+#define GAME_FLAG_HOME_POS_Y 300 // [px] x, y
+#define GAME_FLAG_HOME_POS {GAME_FLAG_HOME_POS_X, GAME_FLAG_HOME_POS_Y} // [px] x, y

@@ -49,7 +49,7 @@ void LocalPlayer::update(float deltaTime) {
     }
 
     // determine speed limit (players are slower when concussed)
-    float speed_cap = (this->posture > 0) ? PLAYER_MAX_SPEED : PLAYER_MAX_SPEED_SLOWED;
+    float speed_cap = (this->posture == 0) ? PLAYER_MAX_SPEED_SLOWED : (hasFlag) ? PLAYER_MAX_SPEED_CARRYING : PLAYER_MAX_SPEED;
 
     // clamp velocity
     if(this->velocity.x > speed_cap) this->velocity.x = speed_cap;
@@ -151,4 +151,12 @@ float LocalPlayer::getDirection() const {
 
 PointF LocalPlayer::getPosition() const {
     return this->position;
+}
+
+void LocalPlayer::captureFlag() {
+    this->hasFlag = true;
+}
+
+void LocalPlayer::dropFlag() {
+    this->hasFlag = false;
 }

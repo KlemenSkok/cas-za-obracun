@@ -53,7 +53,12 @@ void EventHandler::HandleEvents() {
                     // move the player right
                     if(!keyStates.d) 
                         pendingPackets.push_back(PacketType::PLAYER_UPDATES);
-                    keyStates.d = 1;
+                        keyStates.d = 1;
+                    break;
+                    case SDLK_e:
+                    // interact with the flag
+                    keyStates.use_button = 1;
+                    pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 default:
                     // do nothing
@@ -85,7 +90,12 @@ void EventHandler::HandleEvents() {
                     // move the player right
                     if(keyStates.d) 
                         pendingPackets.push_back(PacketType::PLAYER_UPDATES);
-                    keyStates.d = 0;
+                        keyStates.d = 0;
+                        break;
+                        case SDLK_e:
+                        // interact with the flag
+                        keyStates.use_button = 0;
+                        pendingPackets.push_back(PacketType::PLAYER_UPDATES);
                     break;
                 default:
                     // do nothing
@@ -107,7 +117,7 @@ void EventHandler::HandleEvents() {
             pendingPackets.push_back(PacketType::PLAYER_UPDATES);
 
             // calculate the angle
-            // ! tole bo treba prilagodit glede na postavitev kamere
+            // tole bo treba prilagodit glede na postavitev kamere
             // to dela za primer, ko igralcec ni v srediscu (early dev)
 /*             float dy = Game::player->position.y - posy;
             float dx = Game::player->position.x - posx;
@@ -116,7 +126,7 @@ void EventHandler::HandleEvents() {
             Game::player->direction = angle * multiplier; */
 
             // to dela, ko je igralec v srediscu
-            // ok
+            //* ok
             float dx = rc::windowCenter.x - posx;
             float dy = rc::windowCenter.y - posy;
             constexpr float multiplier = 180 / M_PI;

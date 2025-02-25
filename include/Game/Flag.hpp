@@ -3,6 +3,9 @@
 
 #include "GameObject.hpp"
 #include "Utilities/Constants.hpp"
+#include "Communication/PacketTypes.hpp"
+
+#include <queue>
 
 
 class Flag : public GameObject {
@@ -14,13 +17,28 @@ class Flag : public GameObject {
     bool _isHome;
     bool _isCaptured;
 
+    // interpolation variables
+    Uint32 lastUpdateTime; // local timestamp
+    data_packets::FlagData lastData; // last processed data
+    std::queue<data_packets::FlagData> dataBuffer; // data to be processed
+
 public:
 
-    Flag(float x, float y) : GameObject(x, y), homePosition({x, y}), size({50, 20}), carrierID(0), _isHome(true), _isCaptured(false) {}
+    Flag(float x, float y) :
+        GameObject(x, y), 
+        homePosition(GAME_FLAG_HOME_POS), 
+        size(GAME_FLAG_SIZE), 
+        carrierID(0), 
+        _isHome(true), 
+        _isCaptured(false),
+        lastUpdateTime(SDL_GetTicks()) {}
+        
     ~Flag() = default;
 
     void update(float deltaTime) override;
     void render(SDL_Renderer* renderer) override;
+
+    void importData(const data_packets::FlagData& data);
 
     void capture(uint16_t playerID);
     void release();
@@ -29,5 +47,8 @@ public:
     bool isCaptured() const;
     bool isHome() const;
     uint16_t getCarrierID() const;
+
+    void setPosition(const PointF&);
+    void updatePosition(const PointF&);
 
 };

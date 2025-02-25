@@ -43,6 +43,9 @@ void RenderWindow::renderGameState() {
         projectile->render(Window::renderer);
     }
 
+    // render flag
+    Game::flag->render(Window::renderer);
+
     // present changes
     Window::Present();
 

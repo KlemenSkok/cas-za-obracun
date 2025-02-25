@@ -22,6 +22,7 @@ public:
     static void processPacket(PacketData&);
     static void processPlayerUpdates(PacketData&);
     static void processProjectileUpdates(PacketData&);
+    static void processFlagUpdates(PacketData&);
     
     static void sendPlayerUpdate();
 

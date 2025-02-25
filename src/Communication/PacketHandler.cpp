@@ -72,6 +72,10 @@ void PacketHandler::processPacket(PacketData& d) {
         case PacketType::GAME_STATE:
             // process game state
             break;
+        case PacketType::FLAG_STATE:
+            processFlagUpdates(d);
+            // process flag state
+            break;
         default:
             Logger::warn("Unknown packet type.");
     }
@@ -195,5 +199,23 @@ void PacketHandler::processProjectileUpdates(PacketData& d) {
             }
         }
     }
+
+}
+
+/**
+ * @brief Process the packet marked as `FLAG_STATE`.
+ * 
+ * @param d The packet data to process.
+ */
+void PacketHandler::processFlagUpdates(PacketData& d) {
+    using namespace data_packets;
+
+    size_t offset = OFFSET_DATA;
+    FlagData f;
+
+    f.deserialize(d, offset);
+    f.recv_ts = SDL_GetTicks();
+
+    Game::flag->importData(f);
 
 }
