@@ -31,8 +31,10 @@ public:
         carrierID(0), 
         _isHome(true), 
         _isCaptured(false),
-        lastUpdateTime(SDL_GetTicks()) {}
-        
+        lastUpdateTime(SDL_GetTicks()) 
+    {
+        this->lastData.position = this->homePosition;
+    }
     ~Flag() = default;
 
     void update(float deltaTime) override;

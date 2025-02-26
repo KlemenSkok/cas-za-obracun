@@ -134,7 +134,7 @@ void Game::Update(int deltaTime) {
     // update the flag
     Game::flag->update(t);
 
-    if(Game::flag->getCarrierID() == Game::client_id) {
+    if(Game::flag->getCarrierID() == Game::client_id && (Game::client_id != 0)) {
         // update the flag's position
         // overrride the flag's position with the player's position to cancel out the interpolation
         Game::flag->updatePosition(Game::player->position);

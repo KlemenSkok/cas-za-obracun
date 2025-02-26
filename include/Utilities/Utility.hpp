@@ -42,6 +42,15 @@ namespace Window {
     int Height();
 }
 
+// game info constants
+
+enum class GameState: uint8_t {
+    WAITING_FOR_PLAYERS = 0,
+    BETWEEN_ROUNDS,
+    ROUND_RUNNING,
+    GAME_FINISHED
+};
+
 
 
 std::string formatIP(Uint32 ip);

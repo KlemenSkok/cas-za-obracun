@@ -53,17 +53,10 @@ enum class ConnectionState: uint8_t {
 #define OFFSET_PACKET_TYPE 8
 #define OFFSET_DATA 9
 
-// game info constants
 
-enum class GameState: uint8_t {
-    WAITING_FOR_PLAYERS = 0,
-    ROUND_PAUSED,
-    ROUND_RUNNING,
-    GAME_FINISHED
-};
-
-
+//
 //  GAMEPLAY CONSTANTS
+//
 
 #define MAX_PLAYERS 4
 
@@ -71,9 +64,9 @@ enum class GameState: uint8_t {
 // size
 #define PLAYER_RADIUS 20 // px
 // movement
-#define PLAYER_MAX_SPEED 200.0f // [px/s]
-#define PLAYER_MAX_SPEED_SLOWED 75.0f
-#define PLAYER_MAX_SPEED_CARRYING 100.0f // [px/s]
+#define PLAYER_MAX_SPEED 100.0f // [px/s]
+#define PLAYER_MAX_SPEED_SLOWED 37.5f // [px/s]
+#define PLAYER_MAX_SPEED_CARRYING 50.0f // [px/s]
 #define PLAYER_ACCELERATION 1200.0f // [px/s^2]
 #define PLAYER_FRICTION 1500.0f // [px/s^2]
 // interpolation
