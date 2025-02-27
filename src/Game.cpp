@@ -18,6 +18,9 @@ bool Game::_running = false;
 
 Game::ConnectionInfo Game::server_info;
 
+GameState Game::current_state = GameState::NONE;
+Uint32 Game::last_state_change = 0;
+
 uint8_t Game::session_id = 0;
 uint16_t Game::client_id = 0;
 
@@ -80,6 +83,10 @@ void Game::Initialize() {
     Game::server_info.connection_state = ConnectionState::CONNECTING;
 }
 
+/**
+ * @brief Run the game loop.
+ * 
+ */
 void Game::Run() {
     
     Game::Initialize();
@@ -111,7 +118,6 @@ void Game::Run() {
         // send updates to the server
         // show the game state
         // repeat
-
 
 
     }
@@ -171,7 +177,7 @@ void Game::Render() {
  */
 void Game::processNewPackets() {
 
-    // omejimo stevilo paketov, ki jih obdelamo naenkrat,
+    // Omejimo stevilo paketov, ki jih obdelamo naenkrat,
     // da ne blokiramo glavne niti
     constexpr const uint8_t max_packets = 100;
     uint8_t num_packets = 0;

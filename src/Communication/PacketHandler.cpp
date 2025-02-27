@@ -71,6 +71,7 @@ void PacketHandler::processPacket(PacketData& d) {
             break;
         case PacketType::GAME_STATE:
             // process game state
+
             break;
         case PacketType::FLAG_STATE:
             processFlagUpdates(d);
@@ -217,5 +218,48 @@ void PacketHandler::processFlagUpdates(PacketData& d) {
     f.recv_ts = SDL_GetTicks();
 
     Game::flag->importData(f);
+
+}
+
+/**
+ * @brief Process the packet marked as `GAME_STATE`.
+ * 
+ * @param d The packet data to process.
+ */
+void PacketHandler::processGameStateUpdates(PacketData& d) {
+    using namespace data_packets;
+
+    size_t offset = OFFSET_DATA;
+    GameStateData gs;
+
+    gs.deserialize(d, offset);
+    gs.clientTime = SDL_GetTicks();
+
+    if(Game::current_state != gs.gameState) {
+        // the game state has changed
+        Game::current_state = gs.gameState;
+        Game::last_state_change = gs.clientTime;
+
+        switch(Game::current_state) {
+            case GameState::ROUND_ENDING:
+                // show the round ending screen
+                break;
+            case GameState::WAITING_NEXT_ROUND:
+                // show the waiting screen
+                EventHandler::LockKeyboard();
+                break;
+            case GameState::ROUND_RUNNING:
+                // start the round
+                EventHandler::UnlockKeyboard();
+                break;
+            case GameState::GAME_FINISHED:
+                // show the game finished screen
+                EventHandler::LockKeyboard();
+                break;
+            default:
+                break;
+        }
+
+    }
 
 }

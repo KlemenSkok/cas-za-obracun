@@ -12,6 +12,7 @@
 #include "Communication/PacketHandler.hpp"
 #include "Rendering/RenderWindow.hpp"
 #include "Utilities/Constants.hpp"
+#include "Utilities/Utility.hpp"
 #include "Game/EventHandler.hpp"
 #include "Game/RemotePlayer.hpp"
 #include "Game/Map/MapData.hpp"
@@ -40,6 +41,10 @@ class Game {
 
     // connection info
     static ConnectionInfo server_info;
+
+    // game state
+    static GameState current_state;
+    static Uint32 last_state_change;
 
     // session and client id
     static uint8_t session_id;

@@ -7,8 +7,15 @@
 #include "Containers.hpp"
 
 class EventHandler {
+    
+    static bool keyboardLocked;
+    
 public:
-    static bool LockKeyboard;
+
+    static void LockKeyboard();
+    static void UnlockKeyboard();
+
     static KeyStates keyStates;
     static void HandleEvents();
+
 };
