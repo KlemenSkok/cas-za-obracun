@@ -53,6 +53,7 @@ class Game {
 
 public:
     static void Setup();
+    static void Initialize();
     static void Run();
     static void Update(int deltaTime);
     static void Render();

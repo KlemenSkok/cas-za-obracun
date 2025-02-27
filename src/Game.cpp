@@ -65,8 +65,12 @@ void Game::setServerIP(const char* ip, uint16_t port) {
 
 }
 
-void Game::Run() {
-
+/**
+ * @brief Initialize the game state.
+ * 
+ */
+void Game::Initialize() {
+    // set all starting values
     Game::player = std::make_shared<LocalPlayer>(100, 100, 0);
     Game::flag = std::make_shared<Flag>(GAME_FLAG_HOME_POS_X, GAME_FLAG_HOME_POS_Y);
 
@@ -74,6 +78,11 @@ void Game::Run() {
     Game::_running = true;
     // start connecting to the server
     Game::server_info.connection_state = ConnectionState::CONNECTING;
+}
+
+void Game::Run() {
+    
+    Game::Initialize();
     Uint32 lastUpdate = SDL_GetTicks();
 
     while(Game::_running || Game::server_info.connection_state != ConnectionState::DISCONNECTED) {
@@ -154,26 +163,6 @@ void Game::Render() {
     // render the game state
     RenderWindow::renderGameState();
 
-/* 
-    // clear the screen
-    SDL_SetRenderDrawColor(Window::renderer, 0, 0, 0, 255);
-    Window::Clear();
-
-    
-    // render the local player
-    Game::player->render(Window::renderer);
-    
-    // render remote players
-    for(auto& p : Game::remote_players) {
-        p.second->render(Window::renderer);
-    }
-    for(auto& pr : Game::projectiles) {
-        pr.second->render(Window::renderer);
-    }
-
-    // present changes    
-    Window::Present();
- */
 }
 
 

@@ -30,7 +30,9 @@ void RenderWindow::renderGameState() {
             }
         }
     }
-    // todo
+    for(auto& [i, site] : MapData::sites) {
+        site->render(Window::renderer);
+    }
 
     // render the players
     Game::player->render(Window::renderer);

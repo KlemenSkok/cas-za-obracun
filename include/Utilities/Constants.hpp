@@ -85,3 +85,9 @@ enum class ConnectionState: uint8_t {
 #define GAME_FLAG_HOME_POS_X 400 // [px] x, y
 #define GAME_FLAG_HOME_POS_Y 300 // [px] x, y
 #define GAME_FLAG_HOME_POS {GAME_FLAG_HOME_POS_X, GAME_FLAG_HOME_POS_Y} // [px] x, y
+
+// -- SITES -- //
+#define TEAM_SITE_1_POSITION { -300.0f, -100.0f }
+#define TEAM_SITE_1_SIZE { 150, 200 }
+#define TEAM_SITE_2_POSITION { 300.0f, -100.0f }
+#define TEAM_SITE_2_SIZE { 150, 200 }
