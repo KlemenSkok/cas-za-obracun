@@ -4,11 +4,12 @@
 #include "Game/EventHandler.hpp"
 #include "Game.hpp"
 #include "Rendering/RenderingContext.hpp"
+#include "UI/UIManager.hpp"
 
 #include <cmath>
 
 
-bool EventHandler::keyboardLocked = false;
+bool EventHandler::keyboardLocked = true;
 KeyStates EventHandler::keyStates = {0, 0, 0, 0, 0, 0};
 
 
@@ -159,6 +160,15 @@ void EventHandler::HandleEvents() {
             SDL_GetMouseState(&posx, &posy);
             EventHandler::keyStates.left_click = 0;
             sendUpdates = true;
+        }
+        // ignore the keyboard lock for these events (GUI interactions)
+        if(gui::expectsInput && e.type == SDL_KEYDOWN) {
+            switch(e.key.keysym.sym) {
+                case SDLK_1:
+                    // select the first option
+                    gui::processInput(1);
+                    break;
+            }
         }
     }
 

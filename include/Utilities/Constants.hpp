@@ -4,6 +4,11 @@
 #pragma once
 
 
+
+
+#define DEBUG
+
+
 // global constants
 
 #define GAME_TITLE "Čas za obracun" // očitno šimniki ne delajo problemov
@@ -21,12 +26,6 @@
 
 
 // CONNECTION CONSTANTS
-enum class ConnectionState: uint8_t {
-    DISCONNECTED = 0,
-    CONNECTING,
-    CONNECTED,
-    DISCONNECTING
-};
 
 #define CONNECTION_REQUEST_INTERVAL 1000 // [ms]
 #define DISCONNECTION_REQUEST_INTERVAL 1000 // [ms]
@@ -91,3 +90,16 @@ enum class ConnectionState: uint8_t {
 #define TEAM_SITE_1_SIZE { 150, 200 }
 #define TEAM_SITE_2_POSITION { 300.0f, -100.0f }
 #define TEAM_SITE_2_SIZE { 150, 200 }
+
+
+//
+// RENDERING CONSTANTS
+// 
+
+// -- TEXTURES -- //
+
+#ifdef DEBUG
+#define ASSETS_PATH "../../assets/"
+#else
+#define ASSETS_PATH "assets/"
+#endif

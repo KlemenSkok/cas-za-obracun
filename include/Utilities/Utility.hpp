@@ -53,6 +53,19 @@ enum class GameState: uint8_t {
     NONE
 };
 
+enum class RenderState: uint8_t {
+    MAIN_MENU = 0,
+    CONNECTING,
+    GAME,
+    GAME_OVER
+};
+
+enum class ConnectionState: uint8_t {
+    DISCONNECTED = 0,
+    CONNECTING,
+    CONNECTED,
+    DISCONNECTING
+};
 
 
 std::string formatIP(Uint32 ip);
@@ -65,3 +78,4 @@ void DrawFillCircleF(SDL_Renderer* renderer, float x, float y, int r);
 float lerp(float a, float b, float t);
 // Linear interpolation for direction (values within [-180, 180])
 float lerpAngle(float a, float b, float t);
+

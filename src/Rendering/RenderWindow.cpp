@@ -1,17 +1,65 @@
 
 // Renderer.cpp
 
-#include "Rendering/RenderWindow.hpp"
-#include "Utilities/Utility.hpp"
-#include "Containers.hpp"
 #include "Rendering/RenderingContext.hpp"
+#include "Rendering/RenderWindow.hpp"
+#include "Utilities/AssetManager.hpp"
 #include "Game/Map/MapData.hpp"
+#include "Containers.hpp"
+#include "UI/UIManager.hpp"
 
+
+std::unordered_map<uint8_t, SDL_Texture*> RenderWindow::screens;
+
+
+void RenderWindow::loadScreens() {
+
+    // load all textures
+    SDL_Texture* t;
+
+    // main menu
+    t = AssetManager::LoadTexture("images/GUI/screens/main_menu.png");
+    screens[static_cast<uint8_t>(RenderState::MAIN_MENU)] = t;
+
+    // loading screen
+    t = AssetManager::LoadTexture("images/GUI/screens/connecting_menu.png");
+    screens[static_cast<uint8_t>(RenderState::CONNECTING)] = t;
+
+    // game state doesn't need a texture; it shows dinamically
+
+    // game over menu
+    t = AssetManager::LoadTexture("images/GUI/screens/game_over.png");
+    screens[static_cast<uint8_t>(RenderState::GAME_OVER)] = t;
+
+}
 
 
 /**
- * @brief Render game state relative to the player's position.
- * Thus, the remote players' windows position equals (player's position - remote player's position) + window center
+ * @brief Render the game window based on the current game state.
+ * 
+ */
+void RenderWindow::renderWindow() {
+
+    switch(gui::currentScreen) {
+        case RenderState::MAIN_MENU:
+        case RenderState::CONNECTING:
+        case RenderState::GAME_OVER:
+            // render the current screen
+            renderCurrentScreen();
+            break;
+
+        case RenderState::GAME:
+            // render the game state
+            renderGameState();
+            break;
+    }
+
+}
+
+
+/**
+ @brief Render game state relative to the player's position.
+ * Thus, the remote players' position equals (player's position - remote player's position) + window center
  */
 void RenderWindow::renderGameState() {
 
@@ -47,6 +95,22 @@ void RenderWindow::renderGameState() {
 
     // render flag
     Game::flag->render(Window::renderer);
+
+    // present changes
+    Window::Present();
+
+}
+
+
+void RenderWindow::renderCurrentScreen() {
+    // clear the screen
+    Window::Clear();
+
+    // double check the game state
+    if(!(gui::currentScreen == RenderState::GAME)) {
+        // render the loading screen
+        SDL_RenderCopy(Window::renderer, screens[static_cast<uint8_t>(gui::currentScreen)], NULL, NULL);
+    }
 
     // present changes
     Window::Present();

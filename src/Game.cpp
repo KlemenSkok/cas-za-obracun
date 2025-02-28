@@ -6,6 +6,7 @@
 #include "Communication/SocketHandler.hpp"
 #include "Logging/Logger.hpp"
 #include "Containers.hpp"
+#include "UI/UIManager.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -74,6 +75,7 @@ void Game::setServerIP(const char* ip, uint16_t port) {
  * 
  */
 void Game::Initialize() {
+
     // set all starting values
     Game::player = std::make_shared<LocalPlayer>(100, 100, 0);
     Game::flag = std::make_shared<Flag>(GAME_FLAG_HOME_POS_X, GAME_FLAG_HOME_POS_Y);
@@ -81,7 +83,11 @@ void Game::Initialize() {
     Window::Open();
     Game::_running = true;
     // start connecting to the server
-    Game::server_info.connection_state = ConnectionState::CONNECTING;
+    Game::server_info.connection_state = ConnectionState::DISCONNECTED;
+
+    // load all textures
+    RenderWindow::loadScreens();
+
 }
 
 /**
@@ -93,7 +99,7 @@ void Game::Run() {
     Game::Initialize();
     Uint32 lastUpdate = SDL_GetTicks();
 
-    while(Game::_running || Game::server_info.connection_state != ConnectionState::DISCONNECTED) {
+    while(Game::_running) {
         Uint32 now = SDL_GetTicks();
         if(now - lastUpdate < GAME_LOOP_DELAY) {
             continue;
@@ -168,7 +174,7 @@ void Game::Update(int deltaTime) {
 void Game::Render() {
 
     // render the game state
-    RenderWindow::renderGameState();
+    RenderWindow::renderWindow();
 
 }
 
@@ -246,11 +252,15 @@ void Game::processNewPackets() {
 
 void Game::manageConnection() {
     static std::chrono::steady_clock::time_point lastPacketTime = std::chrono::steady_clock::now();
-    
+
+
     switch(Game::server_info.connection_state) {
         case ConnectionState::DISCONNECTED:
             // do nothing
-            break;
+            if(gui::currentScreen == RenderState::CONNECTING) {
+                Game::server_info.connection_state = ConnectionState::CONNECTING;
+            }
+            else break;
         case ConnectionState::CONNECTING:
             // check if the connection was established
             // if not, try again
@@ -262,7 +272,6 @@ void Game::manageConnection() {
                 //addMessageToQueue(m, Game::server_info.channel);
                 lastPacketTime = std::chrono::steady_clock::now();
                 
-                Game::server_info.connection_state = ConnectionState::CONNECTING;
                 Logger::info("Connection request sent.");
             }
             break;
