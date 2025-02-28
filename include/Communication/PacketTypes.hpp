@@ -31,8 +31,8 @@ namespace data_packets {
     struct PlayerData {
         uint16_t id;
         int8_t posture;
-        struct { float x, y; } position;
-        struct { float x, y; } velocity;
+        PointF position;
+        PointF velocity;
         uint8_t keyStates;
         float direction;
 
@@ -58,8 +58,8 @@ namespace data_packets {
     // data for client side projectile rendering
     struct ProjectileData {
         uint16_t id;
-        struct { float x, y; } position;
-        struct { float x, y; } velocity;
+        PointF position;
+        PointF velocity;
 
         Uint32 timestamp; // server timestamp for client side interpolation
         Uint32 recv_ts; // client timestamp

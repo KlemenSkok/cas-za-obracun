@@ -120,8 +120,8 @@ void LocalPlayer::importData(const data_packets::PlayerData& data) {
     // update posture
     this->posture = data.posture;
 
-    // direction
-    this->direction = data.direction;
+    // interpolate direction
+    this->direction = lerpAngle(this->direction, data.direction, 0.3f);
 
     if(data.keyStates != encodeKeyStates(EventHandler::keyStates)) {
         if(data.recv_ts < PacketHandler::lastSentPacketTime) {
@@ -143,6 +143,22 @@ void LocalPlayer::importData(const data_packets::PlayerData& data) {
     }
 
     this->lastUpdateTime = SDL_GetTicks();
+}
+
+void LocalPlayer::forceImportData(const data_packets::PlayerData& data) {
+
+    // update posture
+    this->posture = data.posture;
+
+    // update the player position without interpolation
+    this->position = data.position;
+    this->velocity = data.velocity;
+
+    // stil interpolate direction
+    this->direction = lerpAngle(this->direction, data.direction, 0.3f);
+
+    this->lastUpdateTime = SDL_GetTicks();
+
 }
 
 float LocalPlayer::getDirection() const {

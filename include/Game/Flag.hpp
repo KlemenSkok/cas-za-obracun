@@ -41,6 +41,7 @@ public:
     void render(SDL_Renderer* renderer) override;
 
     void importData(const data_packets::FlagData& data);
+    void forceImportData(const data_packets::FlagData& data);
 
     void capture(uint16_t playerID);
     void release();

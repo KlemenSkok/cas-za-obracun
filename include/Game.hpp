@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 #include <cstdint>
 #include <SDL2/SDL.h>
 #include <unordered_map>
@@ -45,6 +46,7 @@ class Game {
     // game state
     static GameState current_state;
     static Uint32 last_state_change;
+    static std::vector<uint8_t> scores;
 
     // session and client id
     static uint8_t session_id;

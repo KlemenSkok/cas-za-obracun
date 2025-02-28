@@ -20,6 +20,7 @@ Game::ConnectionInfo Game::server_info;
 
 GameState Game::current_state = GameState::NONE;
 Uint32 Game::last_state_change = 0;
+std::vector<uint8_t> Game::scores(2, 0);
 
 uint8_t Game::session_id = 0;
 uint16_t Game::client_id = 0;

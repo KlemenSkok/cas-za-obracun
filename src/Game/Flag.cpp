@@ -118,6 +118,25 @@ void Flag::importData(const data_packets::FlagData& data) {
     if(this->carrierID != data.carrierID) {
         this->capture(data.carrierID);
     }
-       
+
+}
+
+void Flag::forceImportData(const data_packets::FlagData& data) {
+
+    // clear buffer
+    while(!this->dataBuffer.empty()) {
+        this->dataBuffer.pop();
+    }
+
+    // apply new data
+    this->lastData = data;
+    this->lastUpdateTime = SDL_GetTicks();
+    this->position = data.position;
+    
+    // decode data
+    if(this->carrierID != data.carrierID) {
+        this->capture(data.carrierID);
+    }
+
 
 }

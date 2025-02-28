@@ -71,7 +71,7 @@ void PacketHandler::processPacket(PacketData& d) {
             break;
         case PacketType::GAME_STATE:
             // process game state
-
+            processGameStateUpdates(d);
             break;
         case PacketType::FLAG_STATE:
             processFlagUpdates(d);
@@ -93,6 +93,8 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
 
     size_t offset = OFFSET_DATA;
     std::unordered_map<uint16_t, PlayerData> players;
+
+    bool force = (Game::current_state == GameState::WAITING_NEXT_ROUND);
 
     // decode players' data and store it in a map
     while(offset < d.size()) {
@@ -118,23 +120,23 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
             if(Game::remote_players.find(p.first) == Game::remote_players.end()) {
                 Game::remote_players[p.first] = std::make_shared<RemotePlayer>(p.second);
             } else {
-                Game::remote_players[p.first]->importData(p.second);
+                if(force) {
+                    Game::remote_players[p.first]->forceImportData(p.second);
+                }
+                else {
+                    Game::remote_players[p.first]->importData(p.second);
+                }
             }
         }
     }
 
+    if(force) {
+        Game::player->forceImportData(players[Game::client_id]);
+    }
+    else {
+        Game::player->importData(players[Game::client_id]);
+    }
 
-    // todo: update the local player
-    Game::player->importData(players[Game::client_id]);
-
-
-/*     std::cout << "dumping data[0]: \n";
-    std::cout << "id: " << players[0].id << std::endl;
-    std::cout << "position: " << players[0].position.x << ", " << players[0].position.y << std::endl;
-    std::cout << "velocity: " << players[0].velocity.x << ", " << players[0].velocity.y << std::endl;
-    std::cout << "keyStates: " << (int)players[0].keyStates << std::endl;
-    std::cout << "direction: " << players[0].direction << std::endl;
-    std::cout << "--------------------------------\n\n"; */
 
 }
 
@@ -211,13 +213,21 @@ void PacketHandler::processProjectileUpdates(PacketData& d) {
 void PacketHandler::processFlagUpdates(PacketData& d) {
     using namespace data_packets;
 
+    bool force = (Game::current_state == GameState::WAITING_NEXT_ROUND);
+
     size_t offset = OFFSET_DATA;
     FlagData f;
 
     f.deserialize(d, offset);
     f.recv_ts = SDL_GetTicks();
 
-    Game::flag->importData(f);
+    // import data
+    if(force) {
+        Game::flag->forceImportData(f);
+    }
+    else {
+        Game::flag->importData(f);
+    }
 
 }
 

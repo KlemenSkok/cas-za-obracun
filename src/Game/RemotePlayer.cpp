@@ -41,7 +41,10 @@ void RemotePlayer::update(float deltaTime) {
             const float correctionFactor = 0.3f;
             newPosition.x = lerp(newPosition.x, data.position.x, correctionFactor);
             newPosition.y = lerp(newPosition.y, data.position.y, correctionFactor);
-    
+
+            // interpolate direction (smooth rotation)
+            this->direction = lerpAngle(this->direction, data.direction, correctionFactor);
+
             this->velocity.x = data.velocity.x;
             this->velocity.y = data.velocity.y;
     
@@ -64,6 +67,10 @@ void RemotePlayer::update(float deltaTime) {
 
         newPosition.x = lerp(this->lastData.position.x, data.position.x, alpha);
         newPosition.y = lerp(this->lastData.position.y, data.position.y, alpha);
+
+        // interpolate direction (smooth rotation)
+        this->direction = lerpAngle(this->direction, data.direction, alpha);
+    
 
         // update position
         newPosition.x += this->velocity.x * deltaTime;
@@ -153,9 +160,6 @@ void RemotePlayer::render(SDL_Renderer* renderer) {
     SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 255);
 
-    // old
-    //DrawFillCircleF(renderer, position.x, position.y, PLAYER_RADIUS);
-    
     // Draw the player at the correct position
     PointF pos = {rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x), rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y)};
     DrawFillCircleF(renderer, pos.x, pos.y, PLAYER_RADIUS);
@@ -171,5 +175,24 @@ void RemotePlayer::importData(const data_packets::PlayerData& data) {
 
     // update the posture immediately
     this->posture = data.posture;
+
+}
+
+void RemotePlayer::forceImportData(const data_packets::PlayerData& data) {
+
+    // clear the buffer
+    while(!this->dataBuffer.empty()) this->dataBuffer.pop();
+
+    // update the player data
+    this->position = data.position;
+    this->velocity = data.velocity;
+    this->posture = data.posture;
+    decodeKeyStates(data.keyStates, this->keyStates);
+
+    // update the last data
+    this->lastData = data;
+    this->lastUpdateTime = SDL_GetTicks();
+
+    // direction is still interpolated in the next RemotePlayer::update call
 
 }

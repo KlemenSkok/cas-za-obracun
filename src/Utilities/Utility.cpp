@@ -115,3 +115,13 @@ void DrawFillCircleF(SDL_Renderer* renderer, float x, float y, int r) {
 float lerp(float a, float b, float t) {
     return a + t * (b - a);
 }
+
+float lerpAngle(float a, float b, float t) {
+    float diff = b - a;
+    if(diff > 180) {
+        b -= 360;
+    } else if(diff < -180) {
+        b += 360;
+    }
+    return lerp(a, b, t);
+}

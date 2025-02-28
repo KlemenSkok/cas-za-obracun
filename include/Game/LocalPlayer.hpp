@@ -33,6 +33,8 @@ public:
 
     data_packets::PlayerKeyStates dumpKeyStates();
     void importData(const data_packets::PlayerData& data);
+    void forceImportData(const data_packets::PlayerData& data);
+
     float getDirection() const;
     PointF getPosition() const;
 

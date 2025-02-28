@@ -45,4 +45,5 @@ public:
     void render(SDL_Renderer*) override;
 
     void importData(const data_packets::PlayerData& data);
+    void forceImportData(const data_packets::PlayerData& data);
 };

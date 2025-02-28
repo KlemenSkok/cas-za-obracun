@@ -63,3 +63,5 @@ void DrawFillCircleF(SDL_Renderer* renderer, float x, float y, int r);
 
 // Linear interpolation function
 float lerp(float a, float b, float t);
+// Linear interpolation for direction (values within [-180, 180])
+float lerpAngle(float a, float b, float t);
