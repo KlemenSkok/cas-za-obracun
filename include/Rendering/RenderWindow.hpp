@@ -18,6 +18,10 @@
 class RenderWindow {
 
     static std::unordered_map<uint8_t, SDL_Texture*> screens;
+    static SDL_Texture* screen_victory;
+    static SDL_Texture* screen_defeat;
+    
+    static RenderState prev_state;
 
 public:
 

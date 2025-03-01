@@ -120,6 +120,8 @@ void LocalPlayer::importData(const data_packets::PlayerData& data) {
     // update posture
     this->posture = data.posture;
 
+    this->teamNumber = data.teamNumber;
+
     // interpolate direction
     this->direction = lerpAngle(this->direction, data.direction, 0.3f);
 
@@ -150,6 +152,8 @@ void LocalPlayer::forceImportData(const data_packets::PlayerData& data) {
     // update posture
     this->posture = data.posture;
 
+    this->teamNumber = data.teamNumber;
+
     // update the player position without interpolation
     this->position = data.position;
     this->velocity = data.velocity;
@@ -167,6 +171,10 @@ float LocalPlayer::getDirection() const {
 
 PointF LocalPlayer::getPosition() const {
     return this->position;
+}
+
+uint8_t LocalPlayer::getTeamNumber() const {
+    return this->teamNumber;
 }
 
 void LocalPlayer::captureFlag() {

@@ -8,15 +8,6 @@
 #include <iostream>
 
 
-// ID generator for all server objects
-class IDGenerator {
-public:
-    static int GetNextID() {
-        static int current_id = 1;
-        return current_id++;
-    }
-};
-
 
 // namespace for dealing with SDL initialization and quitting
 namespace SDLUtils {
@@ -47,7 +38,7 @@ namespace Window {
 enum class GameState: uint8_t {
     WAITING_FOR_PLAYERS = 0,    // as long as needed
     ROUND_ENDING = 3,           // 3s
-    WAITING_NEXT_ROUND = 10,    // 10s
+    WAITING_NEXT_ROUND = 4,     // 5s
     ROUND_RUNNING,              // as long as needed
     GAME_FINISHED = 30,         // 30s
     NONE

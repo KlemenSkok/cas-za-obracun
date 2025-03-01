@@ -16,11 +16,13 @@ KeyStates EventHandler::keyStates = {0, 0, 0, 0, 0, 0};
 void EventHandler::LockKeyboard() {
     EventHandler::keyboardLocked = true;
     keyStates = KeyStates();
+    //std::cout << " -- Keyboard locked." << std::endl;
 }
 
 void EventHandler::UnlockKeyboard() {
     EventHandler::keyboardLocked = false;
     keyStates = KeyStates();
+    //std::cout << " -- Keyboard unlocked." << std::endl;
 }
 
 

@@ -18,6 +18,7 @@ class LocalPlayer : public GameObject {
     int8_t posture;
 
     bool hasFlag;
+    uint8_t teamNumber;
 
     friend class Game;
     friend class EventHandler;
@@ -37,6 +38,7 @@ public:
 
     float getDirection() const;
     PointF getPosition() const;
+    uint8_t getTeamNumber() const;
 
     void captureFlag();
     void dropFlag();

@@ -175,6 +175,7 @@ void RemotePlayer::importData(const data_packets::PlayerData& data) {
 
     // update the posture immediately
     this->posture = data.posture;
+    this->teamNumber = data.teamNumber;
 
 }
 
@@ -187,6 +188,7 @@ void RemotePlayer::forceImportData(const data_packets::PlayerData& data) {
     this->position = data.position;
     this->velocity = data.velocity;
     this->posture = data.posture;
+    this->teamNumber = data.teamNumber;
     decodeKeyStates(data.keyStates, this->keyStates);
 
     // update the last data

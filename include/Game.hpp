@@ -47,6 +47,7 @@ class Game {
     static GameState current_state;
     static Uint32 last_state_change;
     static std::vector<uint8_t> scores;
+    static uint8_t last_winner;
 
     // session and client id
     static uint8_t session_id;
@@ -66,6 +67,9 @@ public:
     static void Render();
     static void Cleanup();
     static void setServerIP(const char* ip, uint16_t port);
+
+    static void resetConnection();
+    static void resetGameState();
 
     static void processNewPackets();
     static void manageConnection();

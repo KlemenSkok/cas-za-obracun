@@ -10,6 +10,10 @@
 
 
 std::unordered_map<uint8_t, SDL_Texture*> RenderWindow::screens;
+SDL_Texture* RenderWindow::screen_victory;
+SDL_Texture* RenderWindow::screen_defeat;
+
+RenderState RenderWindow::prev_state = RenderState::MAIN_MENU;
 
 
 void RenderWindow::loadScreens() {
@@ -27,9 +31,13 @@ void RenderWindow::loadScreens() {
 
     // game state doesn't need a texture; it shows dinamically
 
-    // game over menu
-    t = AssetManager::LoadTexture("images/GUI/screens/game_over.png");
-    screens[static_cast<uint8_t>(RenderState::GAME_OVER)] = t;
+    // victory screen
+    t = AssetManager::LoadTexture("images/GUI/screens/game_over_victory.png");
+    screen_victory = t;
+
+    // defeat screen
+    t = AssetManager::LoadTexture("images/GUI/screens/game_over_defeat.png");
+    screen_defeat = t;
 
 }
 
@@ -53,6 +61,8 @@ void RenderWindow::renderWindow() {
             renderGameState();
             break;
     }
+
+    prev_state = gui::currentScreen;
 
 }
 
@@ -106,10 +116,21 @@ void RenderWindow::renderCurrentScreen() {
     // clear the screen
     Window::Clear();
 
-    // double check the game state
-    if(!(gui::currentScreen == RenderState::GAME)) {
-        // render the loading screen
-        SDL_RenderCopy(Window::renderer, screens[static_cast<uint8_t>(gui::currentScreen)], NULL, NULL);
+    switch(gui::currentScreen) {
+        case RenderState::MAIN_MENU:
+        case RenderState::CONNECTING:
+            // render the current screen
+            SDL_RenderCopy(Window::renderer, screens[static_cast<uint8_t>(gui::currentScreen)], NULL, NULL);
+            break;
+        case RenderState::GAME_OVER:
+            // render the game over screen
+            if(Game::scores[0] > Game::scores[1] && Game::player->getTeamNumber() == 1) {
+                SDL_RenderCopy(Window::renderer, screen_victory, NULL, NULL);
+            }
+            else {
+                SDL_RenderCopy(Window::renderer, screen_defeat, NULL, NULL);
+            }
+            break;
     }
 
     // present changes

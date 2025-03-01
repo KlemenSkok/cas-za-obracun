@@ -19,6 +19,8 @@ class RemotePlayer : public GameObject {
     int8_t posture;
     KeyStates keyStates;
 
+    uint8_t teamNumber;
+
     friend class Game;
     friend class EventHandler;
 
@@ -32,10 +34,12 @@ public:
         GameObject(x, y), 
         direction(direction), 
         lastUpdateTime(SDL_GetTicks()) {}
+
     RemotePlayer(const data_packets::PlayerData& data) : 
         GameObject(data.position.x, data.position.y), 
         direction(data.direction), 
-        lastUpdateTime(SDL_GetTicks()) 
+        teamNumber(data.teamNumber), 
+        lastUpdateTime(SDL_GetTicks())
     {
         decodeKeyStates(data.keyStates, this->keyStates);
         this->lastData = data;

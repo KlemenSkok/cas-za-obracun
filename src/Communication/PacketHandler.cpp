@@ -6,6 +6,7 @@
 #include "Communication/PacketTypes.hpp"
 #include "communication/SocketHandler.hpp"
 #include "Game/Projectile.hpp"
+#include "UI/UIManager.hpp"
 
 uint32_t PacketHandler::lastRecvPacketID = 0;
 uint32_t PacketHandler::lastSentPacketID = 0;
@@ -245,30 +246,71 @@ void PacketHandler::processGameStateUpdates(PacketData& d) {
     gs.deserialize(d, offset);
     gs.clientTime = SDL_GetTicks();
 
+    // take case of the game state
     if(Game::current_state != gs.gameState) {
         // the game state has changed
         Game::current_state = gs.gameState;
         Game::last_state_change = gs.clientTime;
 
         switch(Game::current_state) {
+            case GameState::WAITING_FOR_PLAYERS:
+                // connection established, waiting for players
+                EventHandler::UnlockKeyboard();
+                //std::cout << "Waiting for players." << std::endl;
+                break;
             case GameState::ROUND_ENDING:
                 // show the round ending screen
+                //std::cout << "Round ending." << std::endl;
+                {
+                    uint8_t sc1 = 0, sc2 = 0;
+                    sc1 = (gs.teamScores & 0xF0) >> 4;
+                    sc2 = gs.teamScores & 0x0F;
+                    if(Game::scores[0] != sc1) {
+                        Game::last_winner = 1;
+                    }
+                    else if(Game::scores[1] != sc2) {
+                        Game::last_winner = 2;
+                    }
+                    Game::scores[0] = sc1;
+                    Game::scores[1] = sc2;
+                }
                 break;
             case GameState::WAITING_NEXT_ROUND:
                 // show the waiting screen
                 EventHandler::LockKeyboard();
+                //std::cout << "Waiting for the next round." << std::endl;
                 break;
             case GameState::ROUND_RUNNING:
                 // start the round
                 EventHandler::UnlockKeyboard();
+                //std::cout << "Round started." << std::endl;
                 break;
             case GameState::GAME_FINISHED:
                 // show the game finished screen
                 EventHandler::LockKeyboard();
+                {
+                    uint8_t sc1 = 0, sc2 = 0;
+                    sc1 = (gs.teamScores & 0xF0) >> 4;
+                    sc2 = gs.teamScores & 0x0F;
+                    if(Game::scores[0] != sc1) {
+                        Game::last_winner = 1;
+                    }
+                    else if(Game::scores[1] != sc2) {
+                        Game::last_winner = 2;
+                    }
+                    Game::scores[0] = sc1;
+                    Game::scores[1] = sc2;
+
+                    // the client can already start disconnecting
+                    Game::resetConnection();
+                }
+                //std::cout << "Game finished." << std::endl;
                 break;
             default:
                 break;
         }
+
+        gui::updateState(Game::current_state, Game::server_info.connection_state);
 
     }
 

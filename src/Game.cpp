@@ -22,6 +22,7 @@ Game::ConnectionInfo Game::server_info;
 GameState Game::current_state = GameState::NONE;
 Uint32 Game::last_state_change = 0;
 std::vector<uint8_t> Game::scores(2, 0);
+uint8_t Game::last_winner = 0;
 
 uint8_t Game::session_id = 0;
 uint16_t Game::client_id = 0;
@@ -219,10 +220,14 @@ void Game::processNewPackets() {
                         Game::session_id = s_id;
 
                         Game::server_info.connection_state = ConnectionState::CONNECTED;
+                        gui::currentScreen = RenderState::GAME;
+                        scores = {0, 0};
                         break;
                     case FLAG_FIN:
                         // close the connection
                         Game::server_info.connection_state = ConnectionState::DISCONNECTED;
+                        Game::client_id = 0;
+                        Game::session_id = 0;
                         break;
                     case FLAG_KEEPALIVE:
                         // just update timestamp of the last keepalive message
@@ -287,7 +292,7 @@ void Game::manageConnection() {
                 //addMessageToQueue(m, Game::server_info.channel);
                 lastPacketTime = std::chrono::steady_clock::now();
                 
-                Logger::info("Keepalive message sent.");
+                //Logger::info("Keepalive message sent.");
             }
             break;
             case ConnectionState::DISCONNECTING:
@@ -311,4 +316,14 @@ void Game::manageConnection() {
 
 void Game::sendPacket(PacketData& d) {
     addMessageToQueue(d, Game::server_info.channel);
+}
+
+void Game::resetConnection() {
+    Game::server_info.connection_state = ConnectionState::DISCONNECTING;
+    Game::last_winner = 0;
+
+    Game::projectiles.clear();
+    Game::remote_players.clear();
+    Game::flag->reset();
+    EventHandler::LockKeyboard();
 }

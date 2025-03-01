@@ -16,6 +16,7 @@ namespace gui {
             case GameState::NONE:
                 // render the main menu
                 currentScreen = RenderState::MAIN_MENU;
+                expectsInput = true;
                 break;
             case GameState::WAITING_FOR_PLAYERS:
             case GameState::ROUND_ENDING:
@@ -23,10 +24,12 @@ namespace gui {
             case GameState::WAITING_NEXT_ROUND:
                 // render the game state
                 currentScreen = RenderState::GAME;
+                expectsInput = false;
                 break;
             case GameState::GAME_FINISHED:
                 // render the game over menu
                 currentScreen = RenderState::GAME_OVER;
+                expectsInput = true;
                 break;
         }
 
@@ -55,6 +58,11 @@ namespace gui {
                 break;
             case RenderState::GAME_OVER:
                 // process the game over menu input
+                if(key == 1) {
+                    // return to the main menu
+                    currentScreen = RenderState::MAIN_MENU;
+                    expectsInput = true;
+                }
                 break;
         }
     }
