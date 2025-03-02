@@ -13,6 +13,30 @@ std::unordered_map<uint16_t, std::unordered_map<uint16_t, std::vector<Barrier>>>
 std::unordered_map<uint8_t, std::shared_ptr<Site>> MapData::sites;
 
 
+
+/* 
+
+wall: 001
+wall_pillar: 002
+pillar: 003
+crate: 004
+sofa: 005
+
+flag home pos: { 1478, 140}
+flag size: {100, 60}
+
+player start positions:
+team 1: 
+    {1084, 670}, {1084, 775}
+team 2:
+    {1940, 670}, {1940, 775}
+
+
+*/
+
+
+
+
 void MapData::InitializeGrid() {
     grid.clear();
     sites.clear();
@@ -30,8 +54,9 @@ void MapData::AddBarrier(Barrier& b) {
     if(int(pos.x + b.getWidth()) % GRID_CELL_SIZE == 0) end_x++;
     if(int(pos.y + b.getHeight()) % GRID_CELL_SIZE == 0) end_y++;
 
-    for(int x = start_x; x < end_x; x++) {
-        for(int y = start_y; y < end_y; y++) {
+
+    for(int x = start_x; x <= end_x; x++) {
+        for(int y = start_y; y <= end_y; y++) {
             grid[x][y].push_back(b);
         }
     }
@@ -89,6 +114,11 @@ int parseBarrierNode(tinyxml2::XMLNode* node, Barrier& b) {
         Logger::warn((std::string("Failed to parse barrier <texture> (line ") + std::to_string(n->GetLineNum()) + ").").c_str());
         return EXIT_FAILURE;
     }
+
+    // boxes in the file have origin in the bottom left corner
+    // we need to adjust the position to the top left corner
+
+    pos.y -= h;
 
     b.setPosition(pos.x, pos.y);
     b.setDimensions(w, h);
@@ -150,6 +180,12 @@ int parseSiteNode(tinyxml2::XMLNode* node, Site& s) {
         Logger::warn((std::string("Failed to parse site <team> (line ") + std::to_string(n->GetLineNum()) + ").").c_str());
         return EXIT_FAILURE;
     }
+
+
+    // boxes in the file have origin in the bottom left corner
+    // we need to adjust the position to the top left corner
+
+    pos.y -= size.y;
 
     s.setPosition(pos);
     s.setSize(size);

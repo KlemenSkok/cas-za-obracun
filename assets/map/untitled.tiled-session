@@ -1,0 +1,48 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "mapa.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "#box": {
+            "scaleInEditor": 1
+        },
+        "mapa.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1758,
+                "y": 570.6666666666665
+            }
+        },
+        "mapa.tmx#barrier": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "C:/Users/Klemen/Documents/Klemen/Sola/MATURA/cas-za-obracun/assets/images/map",
+    "map.height": 500,
+    "map.lastUsedFormat": "tmx",
+    "map.width": 500,
+    "openFiles": [
+        "mapa.tmx"
+    ],
+    "project": "untitled.tiled-project",
+    "property.type": "int",
+    "recentFiles": [
+        "mapa.tmx"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.tileSize": {
+        "height": 30,
+        "width": 30
+    },
+    "tileset.transparentColor": "#4cff00",
+    "tileset.useTransparentColor": true
+}

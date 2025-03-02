@@ -116,7 +116,11 @@ void Game::Run() {
         EventHandler::HandleEvents();
         Game::manageConnection();
         PacketHandler::sendPendingPackets();
-        Game::Update(deltaTime);
+
+        if(Game::current_state != GameState::NONE) {
+            Game::Update(deltaTime);
+        }
+
         Game::Render();
 
 
@@ -159,7 +163,7 @@ void Game::Update(int deltaTime) {
 
     if(Game::flag->getCarrierID() == Game::client_id && (Game::client_id != 0)) {
         // update the flag's position
-        // overrride the flag's position with the player's position to cancel out the interpolation
+        // override the flag's position with the player's position to cancel out the interpolation
         Game::flag->updatePosition(Game::player->position);
         Game::player->captureFlag();
     }
@@ -245,7 +249,7 @@ void Game::processNewPackets() {
                 }
             }
         }
-        
+
 
 
         // --------------------------------------
