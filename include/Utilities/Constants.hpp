@@ -103,3 +103,17 @@
 #else
 #define ASSETS_PATH "assets/"
 #endif
+
+
+//
+// TEXTURE IDS
+//
+
+#define TEXTURE_PLAYER_1        20
+#define TEXTURE_PLAYER_2        21
+#define TEXTURE_PROJECTILE_1    22
+#define TEXTURE_PROJECTILE_2    23
+#define TEXTURE_FLAG            24
+#define TEXTURE_SITE_1          25
+#define TEXTURE_SITE_2          26
+#define TEXTURE_PILLAR          27

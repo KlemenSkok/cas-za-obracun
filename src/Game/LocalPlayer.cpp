@@ -91,19 +91,23 @@ void LocalPlayer::update(float deltaTime) {
 }
 
 void LocalPlayer::render(SDL_Renderer* renderer) {
-    // draw the player
-    SDL_Color tmp_c;
-    SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 255);
-    
-    // old
-    //DrawFillCircleF(renderer, position.x, position.y, PLAYER_RADIUS);
-
-    // Draw the player at the correct position (middle of the window)
-    DrawFillCircleF(renderer, rc::windowCenter.x, rc::windowCenter.y, PLAYER_RADIUS);
-
-    
-    SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
+    if(this->texture == nullptr) {
+        // draw the player as a red circle
+        SDL_Color tmp_c;
+        SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 255);
+        
+        // Draw the player at the correct position (middle of the window)
+        DrawFillCircleF(renderer, rc::windowCenter.x, rc::windowCenter.y, PLAYER_RADIUS);
+        
+        SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
+    }
+    else {
+        SDL_Rect dest = {static_cast<int>(rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x) - PLAYER_RADIUS), 
+            static_cast<int>(rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y) - PLAYER_RADIUS), 
+            2 * PLAYER_RADIUS, 2 * PLAYER_RADIUS};
+        SDL_RenderCopyEx(renderer, this->texture, nullptr, &dest, static_cast<double>(this->direction - 90.0f), nullptr, SDL_FLIP_NONE);
+    }
 }
 
 data_packets::PlayerKeyStates LocalPlayer::dumpKeyStates() {

@@ -7,6 +7,7 @@
 #include "communication/SocketHandler.hpp"
 #include "Game/Projectile.hpp"
 #include "UI/UIManager.hpp"
+#include "Utilities/AssetManager.hpp"
 
 uint32_t PacketHandler::lastRecvPacketID = 0;
 uint32_t PacketHandler::lastSentPacketID = 0;
@@ -119,8 +120,16 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
     for(auto& p : players) {
         if(p.first != Game::client_id) {
             if(Game::remote_players.find(p.first) == Game::remote_players.end()) {
+                // add a new player
                 Game::remote_players[p.first] = std::make_shared<RemotePlayer>(p.second);
-            } else {
+                if(p.second.teamNumber == 1) {
+                    Game::remote_players[p.first]->setTexture(AssetManager::GetTexture(TEXTURE_PLAYER_1));
+                }
+                else {
+                    Game::remote_players[p.first]->setTexture(AssetManager::GetTexture(TEXTURE_PLAYER_2));
+                }
+            }
+            else {
                 if(force) {
                     Game::remote_players[p.first]->forceImportData(p.second);
                 }
@@ -136,6 +145,13 @@ void PacketHandler::processPlayerUpdates(PacketData& d) {
     }
     else {
         Game::player->importData(players[Game::client_id]);
+    }
+
+    if(!Game::player->hasTexture()) {
+        if(Game::player->getTeamNumber() == 1)
+            Game::player->setTexture(AssetManager::GetTexture(TEXTURE_PLAYER_1));
+        else
+            Game::player->setTexture(AssetManager::GetTexture(TEXTURE_PLAYER_2));
     }
 
 

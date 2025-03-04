@@ -7,6 +7,7 @@
 #include "Logging/Logger.hpp"
 #include "Containers.hpp"
 #include "UI/UIManager.hpp"
+#include "Utilities/AssetManager.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -88,6 +89,7 @@ void Game::Initialize() {
 
     // load all textures
     RenderWindow::loadScreens();
+    AssetManager::Initialize();
 
 }
 
@@ -322,6 +324,7 @@ void Game::sendPacket(PacketData& d) {
     addMessageToQueue(d, Game::server_info.channel);
 }
 
+// not very reliable
 void Game::resetConnection() {
     Game::server_info.connection_state = ConnectionState::DISCONNECTING;
     Game::last_winner = 0;
