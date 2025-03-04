@@ -79,7 +79,7 @@
 #define PROJECTILE_POSTURE_DAMAGE 22
 
 // -- FLAGS -- //
-#define GAME_FLAG_SIZE {75, 50} // [px] w, h
+#define GAME_FLAG_SIZE {100, 60} // [px] w, h
 #define GAME_FLAG_PICKUP_RANGE 100 // [px] from center of the flag
 #define GAME_FLAG_HOME_POS_X 400 // [px] x, y
 #define GAME_FLAG_HOME_POS_Y 300 // [px] x, y

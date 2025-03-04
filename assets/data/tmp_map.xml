@@ -34,7 +34,7 @@
             <texture id="01" />
         </barrier>
         <barrier>
-            <position x="2605" y="465" />
+            <position x="2641" y="281" />
             <size w="36" h="184" />
             <texture id="01" />
         </barrier>
@@ -136,12 +136,12 @@
             <texture id="02" />
         </barrier>
         <barrier>
-            <position x="2598" y="515" />
+            <position x="2648" y="465" />
             <size w="50" h="50" />
             <texture id="02" />
         </barrier>
         <barrier>
-            <position x="2598" y="281" />
+            <position x="2648" y="231" />
             <size w="50" h="50" />
             <texture id="02" />
         </barrier>
@@ -196,12 +196,12 @@
             <texture id="02" />
         </barrier>
         <barrier>
-            <position x="2968" y="281" />
+            <position x="3018" y="231" />
             <size w="50" h="50" />
             <texture id="02" />
         </barrier>
         <barrier>
-            <position x="2968" y="1075" />
+            <position x="3018" y="1025" />
             <size w="50" h="50" />
             <texture id="02" />
         </barrier>
