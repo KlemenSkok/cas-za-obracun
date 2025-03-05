@@ -40,14 +40,10 @@ bool Site::checkFlagCollision(const PointF& f_pos, const Point& f_size) {
 void Site::update(float deltaTime) { }
 
 void Site::render(SDL_Renderer* renderer) {
-    SDL_Color tmp_c;
-    SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
     
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0x99, 0x00, 255);
-    PointF pos = {rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x), rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y)};
-    SDL_Rect rect = {(int)pos.x, (int)pos.y, this->size.x, this->size.y};
-    SDL_RenderFillRect(renderer, &rect);
-    
-    SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
+    SDL_Rect dest = {static_cast<int>(rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x)), 
+                     static_cast<int>(rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y)), 
+                     this->size.x, this->size.y};
+    SDL_RenderCopy(renderer, this->texture, nullptr, &dest);
 
 }

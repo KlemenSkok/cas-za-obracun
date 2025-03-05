@@ -3,6 +3,7 @@
 
 #include "XML/tinyxml2.h"
 #include "Game/Map/MapData.hpp"
+#include "Utilities/AssetManager.hpp"
 
 #include <exception>
 #include <cmath>
@@ -244,6 +245,13 @@ int MapData::LoadMap(const char* filename) {
             Site s;
             if(parseSiteNode(node, s) == 0) {
                 MapData::sites[s.getTeam()] = std::make_shared<Site>(s);
+
+                if(s.getTeam() == 1) {
+                    MapData::sites[s.getTeam()]->setTexture(AssetManager::GetTexture(TEXTURE_SITE_1));
+                }
+                else {
+                    MapData::sites[s.getTeam()]->setTexture(AssetManager::GetTexture(TEXTURE_SITE_2));
+                }
             }
         }
     }

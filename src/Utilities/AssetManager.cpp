@@ -23,6 +23,9 @@ SDL_Texture* AssetManager::LoadTexture(const char* fileName) {
     if(texture == nullptr) {
         Logger::warn(("Failed to load texture: " + path).c_str());
     }
+    else {
+        Logger::info(("Texture loaded: " + path).c_str());
+    }
 
     return texture;
     
@@ -44,7 +47,14 @@ void AssetManager::Clear() {
 
 void AssetManager::Initialize() {
     // load textures
-    textures[TEXTURE_PLAYER_1] = LoadTexture("images/player1.png");
-    textures[TEXTURE_PLAYER_2] = LoadTexture("images/player2.png");
-    
+    textures[TEXTURE_PLAYER_1] =        LoadTexture("images/player1.png");
+    textures[TEXTURE_PLAYER_2] =        LoadTexture("images/player2.png");
+    textures[TEXTURE_FLAG] =            LoadTexture("images/flag.png");
+    textures[TEXTURE_PROJECTILE_1] =    LoadTexture("images/projectile1.png");
+    textures[TEXTURE_PROJECTILE_2] =    LoadTexture("images/projectile2.png");
+
+    // map components
+    textures[TEXTURE_SITE_1] =          LoadTexture("images/map/site_team_1.png");
+    textures[TEXTURE_SITE_2] =          LoadTexture("images/map/site_team_2.png");
+
 }

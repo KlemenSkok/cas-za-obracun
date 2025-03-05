@@ -46,6 +46,14 @@ void Game::Setup() {
 
     // slight desync
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+    // open the game window
+    Window::Open();
+    // initialize the asset manager
+    AssetManager::Initialize();
+    // load all textures
+    RenderWindow::loadScreens();
+
     // Attempt to load the map data
     try {
         MapData::LoadMap("../../assets/data/map_data.xml");
@@ -58,7 +66,9 @@ void Game::Setup() {
 void Game::Cleanup() {
     Logger::info("Cleaning up...");
 
+    AssetManager::Clear();
     SocketHandler::Stop();
+
     SDLNet_UDP_Close(SocketHandler::getSocket());
 }
 
@@ -81,15 +91,11 @@ void Game::Initialize() {
     // set all starting values
     Game::player = std::make_shared<LocalPlayer>(100, 100, 0);
     Game::flag = std::make_shared<Flag>(GAME_FLAG_HOME_POS_X, GAME_FLAG_HOME_POS_Y);
+    flag->setTexture(AssetManager::GetTexture(TEXTURE_FLAG));
 
-    Window::Open();
     Game::_running = true;
     // start connecting to the server
     Game::server_info.connection_state = ConnectionState::DISCONNECTED;
-
-    // load all textures
-    RenderWindow::loadScreens();
-    AssetManager::Initialize();
 
 }
 

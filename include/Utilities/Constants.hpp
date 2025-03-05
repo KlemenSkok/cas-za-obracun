@@ -61,7 +61,7 @@
 
 // -- PLAYERS -- //
 // size
-#define PLAYER_RADIUS 20 // px
+#define PLAYER_RADIUS 30 // px
 // movement
 #define PLAYER_MAX_SPEED 100.0f // [px/s]
 #define PLAYER_MAX_SPEED_SLOWED 37.5f // [px/s]
@@ -72,11 +72,12 @@
 #define POSITION_OFFSET_TOLERANCE 5.0f // [px]
 
 // -- PROJECTILES -- //
-#define PROJECTILE_RADIUS 10 // [px]
+#define PROJECTILE_RADIUS 15 // [px]
 #define PROJECTILE_THROW_COOLDOWN 1000 // [ms]
 #define PROJECTILE_VELOCITY 500.0f
 #define PROJECTILE_RANGE 1770*1770 // [px^2] 2500 px in any direction
 #define PROJECTILE_POSTURE_DAMAGE 22
+#define PROJECTILE_ANGULAR_VELOCITY 720.0f // [deg/s]
 
 // -- FLAGS -- //
 #define GAME_FLAG_SIZE {100, 60} // [px] w, h
@@ -84,12 +85,6 @@
 #define GAME_FLAG_HOME_POS_X 400 // [px] x, y
 #define GAME_FLAG_HOME_POS_Y 300 // [px] x, y
 #define GAME_FLAG_HOME_POS {GAME_FLAG_HOME_POS_X, GAME_FLAG_HOME_POS_Y} // [px] x, y
-
-// -- SITES -- //
-#define TEAM_SITE_1_POSITION { -300.0f, -100.0f }
-#define TEAM_SITE_1_SIZE { 150, 200 }
-#define TEAM_SITE_2_POSITION { 300.0f, -100.0f }
-#define TEAM_SITE_2_SIZE { 150, 200 }
 
 
 //

@@ -214,6 +214,12 @@ void PacketHandler::processProjectileUpdates(PacketData& d) {
         if(pr.first != Game::client_id) {
             if(Game::projectiles.find(pr.first) == Game::projectiles.end()) {
                 Game::projectiles[pr.first] = std::make_shared<Projectile>(pr.second);
+                if(pr.second.parentTeam == 1) {
+                    Game::projectiles[pr.first]->setTexture(AssetManager::GetTexture(TEXTURE_PROJECTILE_1));
+                }
+                else {
+                    Game::projectiles[pr.first]->setTexture(AssetManager::GetTexture(TEXTURE_PROJECTILE_2));
+                }
             } else {
                 Game::projectiles[pr.first]->importData(pr.second);
             }

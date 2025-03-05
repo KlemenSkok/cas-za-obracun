@@ -37,7 +37,7 @@ namespace Window {
     void Open() {
         window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF); // black
+        SDL_SetRenderDrawColor(renderer, 30, 30, 30, 0xFF); // dark grey
         SDL_RenderClear(renderer);
         SDL_RenderPresent(Window::renderer);
     }

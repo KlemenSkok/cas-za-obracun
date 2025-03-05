@@ -13,6 +13,7 @@ class Projectile : public GameObject {
 
     PointF velocity;
     PointF acceleration;
+    float direction;
 
     uint8_t radius = 10;
 
@@ -22,12 +23,18 @@ class Projectile : public GameObject {
     std::queue<data_packets::ProjectileData> dataBuffer; // data to be processed
 
 public:
-    Projectile(float px, float py, float vx, float vy) : GameObject(px, py) {
+    Projectile(float px, float py, float vx, float vy) : 
+        GameObject(px, py),
+        direction(0.0f)
+    {
         velocity.x = vx;
         velocity.y = vy;
         lastUpdateTime = SDL_GetTicks();
     }
-    Projectile(const data_packets::ProjectileData& data) : GameObject(data.position.x, data.position.y) {
+    Projectile(const data_packets::ProjectileData& data) : 
+        GameObject(data.position.x, data.position.y),
+        direction(0.0f)
+    {
         velocity.x = data.velocity.x;
         velocity.y = data.velocity.y;
         lastUpdateTime = SDL_GetTicks();
