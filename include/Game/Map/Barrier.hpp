@@ -3,29 +3,17 @@
 
 #pragma once
 
-#include "Containers.hpp"
+#include "MapObject.hpp"
 
 #include <SDL2/SDL.h>
 
 
-class Barrier {
-
-    PointF position;
-    int width, height;
-
-    int texture_id;
+class Barrier : public MapObject {
 
 public:
 
-    Barrier() = default;
-    void render(SDL_Renderer* renderer);
-
-    void setPosition(float x, float y);
-    void setDimensions(int w, int h);
-    void setTexture(int id);
-    PointF getPosition() const { return position; }
-    int getWidth() const { return width; }
-    int getHeight() const { return height; }
-    //void loadTexture(SDL_Renderer* renderer);
+    Barrier() : MapObject(MapObjType::BARRIER) {}
+    
+    void render(SDL_Renderer* renderer) override;
     
 };

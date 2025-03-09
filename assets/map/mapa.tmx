@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="500" height="500" tilewidth="30" tileheight="30" infinite="0" nextlayerid="4" nextobjectid="79">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="500" height="500" tilewidth="30" tileheight="30" infinite="0" nextlayerid="4" nextobjectid="82">
  <tileset firstgid="1" name="barrier" tilewidth="32" tileheight="32" tilecount="4" columns="2">
   <image source="../images/map/barrier.png" trans="ffff00" width="79" height="78"/>
  </tileset>
@@ -562,9 +562,12 @@
   <object id="71" name="crate" gid="4" x="584" y="857" width="120" height="120"/>
   <object id="72" name="crate" gid="4" x="2097" y="857" width="120" height="120"/>
   <object id="73" name="crate" gid="4" x="2377" y="628" width="120" height="120"/>
-  <object id="74" name="player_1" gid="4" x="1084" y="670" width="32" height="32"/>
-  <object id="76" name="player_1" gid="4" x="1084" y="785" width="32" height="32"/>
+  <object id="74" name="player_1" gid="4" x="1163" y="641" width="32" height="32"/>
+  <object id="76" name="player_1" gid="4" x="1162" y="740" width="32" height="32"/>
   <object id="77" name="player_2" gid="4" x="1940" y="775" width="32" height="32"/>
   <object id="78" name="player_2" gid="4" x="1928" y="666" width="32" height="32"/>
+  <object id="79" name="trap_ice" gid="4" x="1457" y="637" width="150" height="114"/>
+  <object id="80" name="trap_sand" gid="4" x="1003" y="726" width="138" height="94"/>
+  <object id="81" name="trap_sand" gid="4" x="1946" y="626" width="151" height="98"/>
  </objectgroup>
 </map>

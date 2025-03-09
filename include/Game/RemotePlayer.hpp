@@ -29,17 +29,21 @@ class RemotePlayer : public GameObject {
     data_packets::PlayerData lastData; // last processed data
     std::queue<data_packets::PlayerData> dataBuffer; // data to be processed
 
+    // dynamic movement settings
+    float nextFriction_k;
+    float nextAcceleration_k;
+    float nextSpeedCap;
+
 public:
-    RemotePlayer(float x, float y, float direction) : 
-        GameObject(x, y), 
-        direction(direction), 
-        lastUpdateTime(SDL_GetTicks()) {}
 
     RemotePlayer(const data_packets::PlayerData& data) : 
         GameObject(data.position.x, data.position.y), 
         direction(data.direction), 
         teamNumber(data.teamNumber), 
-        lastUpdateTime(SDL_GetTicks())
+        lastUpdateTime(SDL_GetTicks()),
+        nextAcceleration_k(1.0f),
+        nextFriction_k(1.0f),
+        nextSpeedCap(PLAYER_MAX_SPEED)
     {
         decodeKeyStates(data.keyStates, this->keyStates);
         this->lastData = data;
@@ -50,4 +54,9 @@ public:
 
     void importData(const data_packets::PlayerData& data);
     void forceImportData(const data_packets::PlayerData& data);
+
+    void setNextFriction(float);
+    void setNextAcceleration(float);
+    void setNextSpeedCap(float);
+
 };

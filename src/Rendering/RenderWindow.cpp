@@ -82,9 +82,9 @@ void RenderWindow::renderGameState() {
     
     // render the map
     for(auto& [x, y_map] : MapData::grid) {
-        for(auto& [y, barriers] : y_map) {
-            for(auto& barrier : barriers) {
-                barrier.render(Window::renderer);
+        for(auto& [y, objects] : y_map) {
+            for(auto& object : objects) {
+                object->render(Window::renderer);
             }
         }
     }

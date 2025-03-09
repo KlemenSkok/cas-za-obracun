@@ -26,8 +26,20 @@ class LocalPlayer : public GameObject {
     // interpolation variables
     Uint32 lastUpdateTime; // local timestamp
 
+    // dynamic movement settings
+    float nextFriction_k;
+    float nextAcceleration_k;
+    float nextSpeedCap;
+
 public:
-    LocalPlayer(float x, float y, float direction) : GameObject(x, y), direction(direction), lastUpdateTime(SDL_GetTicks()), hasFlag(false) {}
+    LocalPlayer(float x, float y, float direction) : 
+        GameObject(x, y), 
+        direction(direction), 
+        lastUpdateTime(SDL_GetTicks()), 
+        hasFlag(false), 
+        nextAcceleration_k(1.0f),
+        nextFriction_k(1.0f),
+        nextSpeedCap(PLAYER_MAX_SPEED) {}
 
     void update(float deltaTime) override;
     void render(SDL_Renderer*) override;
@@ -42,5 +54,9 @@ public:
 
     void captureFlag();
     void dropFlag();
+
+    void setNextFriction(float);
+    void setNextAcceleration(float);
+    void setNextSpeedCap(float);
 
 };

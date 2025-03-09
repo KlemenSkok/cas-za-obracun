@@ -89,10 +89,12 @@ void RemotePlayer::update(float deltaTime) {
     this->acceleration.y = 0.0f;
 
     // apply acceleration based on key states
-    if(this->keyStates.w) this->acceleration.y -= PLAYER_ACCELERATION;
-    if(this->keyStates.s) this->acceleration.y += PLAYER_ACCELERATION;
-    if(this->keyStates.a) this->acceleration.x -= PLAYER_ACCELERATION;
-    if(this->keyStates.d) this->acceleration.x += PLAYER_ACCELERATION;
+    if(this->keyStates.w) this->acceleration.y -= PLAYER_ACCELERATION * nextAcceleration_k;
+    if(this->keyStates.s) this->acceleration.y += PLAYER_ACCELERATION * nextAcceleration_k;
+    if(this->keyStates.a) this->acceleration.x -= PLAYER_ACCELERATION * nextAcceleration_k;
+    if(this->keyStates.d) this->acceleration.x += PLAYER_ACCELERATION * nextAcceleration_k;
+
+    float current_friction = PLAYER_FRICTION * this->nextFriction_k;
 
     // update the player position
     this->velocity.x += this->acceleration.x * deltaTime;
@@ -101,25 +103,29 @@ void RemotePlayer::update(float deltaTime) {
     // apply friction if no keys are pressed
     if(!this->keyStates.a && !this->keyStates.d) {
         if(this->velocity.x > 0) {
-            this->velocity.x -= PLAYER_FRICTION * deltaTime;
+            this->velocity.x -= current_friction * deltaTime;
             if(this->velocity.x < 0) this->velocity.x = 0;
         } else if(this->velocity.x < 0) {
-            this->velocity.x += PLAYER_FRICTION * deltaTime;
+            this->velocity.x += current_friction * deltaTime;
             if(this->velocity.x > 0) this->velocity.x = 0;
         }
     }
     if(!this->keyStates.w && !this->keyStates.s) {
         if(this->velocity.y > 0) {
-            this->velocity.y -= PLAYER_FRICTION * deltaTime;
+            this->velocity.y -= current_friction * deltaTime;
             if(this->velocity.y < 0) this->velocity.y = 0;
         } else if(this->velocity.y < 0) {
-            this->velocity.y += PLAYER_FRICTION * deltaTime;
+            this->velocity.y += current_friction * deltaTime;
             if(this->velocity.y > 0) this->velocity.y = 0;
         }
     }
 
     // determine speed limit (players are slower when concussed)
     float speed_cap = (this->posture > 0) ? PLAYER_MAX_SPEED : PLAYER_MAX_SPEED_SLOWED;
+    // override the speed cap if needed (because of traps)
+    if(speed_cap > nextSpeedCap) {
+        speed_cap = nextSpeedCap;
+    }
 
     // clamp velocity
     if(this->velocity.x > speed_cap) this->velocity.x = speed_cap;
@@ -144,6 +150,12 @@ void RemotePlayer::update(float deltaTime) {
         this->velocity.x = -speed_cap / 1.4142f;
         this->velocity.y = -speed_cap / 1.4142f;
     }
+
+    // reset movement settings
+    this->nextAcceleration_k = 1.0f;
+    this->nextFriction_k = 1.0f;
+    this->nextSpeedCap = PLAYER_MAX_SPEED;
+
 
     // update position
     newPosition.x += this->velocity.x * deltaTime;
@@ -205,4 +217,16 @@ void RemotePlayer::forceImportData(const data_packets::PlayerData& data) {
 
     // direction is still interpolated in the next RemotePlayer::update call
 
+}
+
+void RemotePlayer::setNextFriction(float fk) {
+    this->nextFriction_k = fk;
+}
+
+void RemotePlayer::setNextAcceleration(float ak) {
+    this->nextAcceleration_k = ak;
+}
+
+void RemotePlayer::setNextSpeedCap(float s) {
+    this->nextSpeedCap = s;
 }

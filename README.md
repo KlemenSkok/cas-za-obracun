@@ -40,3 +40,19 @@
 - **SDL2_image:** Prikaz slik na zaslon
 - **spdlog:** Pisanje log dnevnikov
 - (**SDL2_mixer:** Predvajanje zvoka)
+
+
+## Notes
+- generiranje mape iz XML
+- igralec vedno na sredini
+- dodane bodo še teksture za mapo
+- treba se client interface
+- dela na serverju
+- optimizacija je ok, sploh pri serverju
+- narejen bo se lepsi interface (meniji)
+
+
+## todo
+- več ovir na mapi ki te upočasnijo/stunnajo
+- puščica na mapi, ki kaže v kateri smeri je flag
+- DOMENA!!!

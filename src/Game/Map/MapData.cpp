@@ -4,13 +4,14 @@
 #include "XML/tinyxml2.h"
 #include "Game/Map/MapData.hpp"
 #include "Utilities/AssetManager.hpp"
+#include "Game/Map/Trap.hpp"
 
 #include <exception>
 #include <cmath>
 
 
 
-std::unordered_map<uint16_t, std::unordered_map<uint16_t, std::vector<Barrier>>> MapData::grid;
+std::unordered_map<uint16_t, std::unordered_map<uint16_t, std::vector<std::shared_ptr<MapObject>>>> MapData::grid;
 std::unordered_map<uint8_t, std::shared_ptr<Site>> MapData::sites;
 
 
@@ -58,7 +59,27 @@ void MapData::AddBarrier(Barrier& b) {
 
     for(int x = start_x; x <= end_x; x++) {
         for(int y = start_y; y <= end_y; y++) {
-            grid[x][y].push_back(b);
+            grid[x][y].push_back(std::make_shared<Barrier>(b));
+        }
+    }
+}
+
+void MapData::AddTrap(Trap& b) {
+    auto pos = b.getPosition();
+    
+    int start_x = getGridKey(pos.x);
+    int start_y = getGridKey(pos.y);
+    int end_x = getGridKey(pos.x + b.getWidth());
+    int end_y = getGridKey(pos.y + b.getHeight());
+
+    // edge case: when barrier border is on the edge of a cell, expand the object territory
+    if(int(pos.x + b.getWidth()) % GRID_CELL_SIZE == 0) end_x++;
+    if(int(pos.y + b.getHeight()) % GRID_CELL_SIZE == 0) end_y++;
+
+
+    for(int x = start_x; x <= end_x; x++) {
+        for(int y = start_y; y <= end_y; y++) {
+            grid[x][y].push_back(std::make_shared<Trap>(b));
         }
     }
 }
@@ -123,7 +144,7 @@ int parseBarrierNode(tinyxml2::XMLNode* node, Barrier& b) {
 
     b.setPosition(pos.x, pos.y);
     b.setDimensions(w, h);
-    b.setTexture(texture_id);
+    b.setTextureId(texture_id);
 
     return  EXIT_SUCCESS;
 }
@@ -197,6 +218,90 @@ int parseSiteNode(tinyxml2::XMLNode* node, Site& s) {
 
 
 /**
+ * @brief Read a single Trap node from the XML file
+ * 
+ * @param node The node to read from 
+ * @param b The Trap object to write to
+ * @return 0 on success, 1 on failure
+ */
+int parseTrapNode(tinyxml2::XMLNode* node, Trap& s) {
+    using namespace tinyxml2;
+    
+    PointF pos;
+    Point size;
+    int texture_id;
+    char* type;
+    int err = 0;
+
+    // parse barrier data
+    // position
+    XMLElement* n = node->FirstChildElement("position");
+    if(n == nullptr) {
+        Logger::warn((std::string("Missing trap <position> data (line ") + std::to_string(node->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+    err = n->QueryFloatAttribute("x", &pos.x);
+    err += n->QueryFloatAttribute("y", &pos.y);
+    if(err != 0) {
+        Logger::warn((std::string("Failed to parse trap <position> (line ") + std::to_string(n->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+    
+    // dimensions
+    n = node->FirstChildElement("size");
+    if(n == nullptr) {
+        Logger::warn((std::string("Missing trap <size> data (line ") + std::to_string(node->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+    err = n->QueryIntAttribute("w", &size.x);
+    err += n->QueryIntAttribute("h", &size.y);
+    if(err != 0) {
+        Logger::warn((std::string("Failed to parse trap <size> (line ") + std::to_string(n->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+    
+    // texture
+    n = node->FirstChildElement("texture");
+    if(n == nullptr) {
+        Logger::warn((std::string("Missing trap <texture> data (line ") + std::to_string(node->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+    err = n->QueryIntAttribute("id", &texture_id);
+    if(err != 0) {
+        Logger::warn((std::string("Failed to parse trap <texture> (line ") + std::to_string(n->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+
+    // type
+    n = node->FirstChildElement("type");
+    if(n == nullptr) {
+        Logger::warn((std::string("Missing trap <type> data (line ") + std::to_string(node->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+    err = n->QueryStringAttribute("name", (const char**)&type);
+    if(err != 0) {
+        Logger::warn((std::string("Failed to parse trap <type> (line ") + std::to_string(n->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+
+
+
+    // boxes in the file have origin in the bottom left corner
+    // we need to adjust the position to the top left corner
+
+    pos.y -= size.y;
+
+    s.setPosition(pos.x, pos.y);
+    s.setDimensions(size.x, size.y);
+    s.setTextureId(texture_id);
+    s.setTrapType(type);
+
+
+    return  EXIT_SUCCESS;
+}
+
+
+/**
  * @brief Attempt to load map data from an XML file.
  * 
  * @param filename Name of the XML file to load.
@@ -220,6 +325,7 @@ int MapData::LoadMap(const char* filename) {
         throw std::runtime_error("Failed to find <map> root element.");
     }
 
+    // use XMLHandle with automatic nullptr checks
     XMLHandle rootHandle(root);
     
     XMLNode* barriers = rootHandle.FirstChildElement("barriers").FirstChildElement("barrier").ToNode();
@@ -255,6 +361,20 @@ int MapData::LoadMap(const char* filename) {
             }
         }
     }
+
+    XMLNode* traps = rootHandle.FirstChildElement("traps").FirstChildElement("trap").ToNode();
+    if(traps == nullptr) {
+        throw std::runtime_error("Failed to find traps in the map data.");
+    }
+    else {
+        // extract map traps
+        for(XMLNode* node = traps; node != nullptr; node = node->NextSiblingElement("trap")) {
+            Trap t;
+            if(parseTrapNode(node, t) == 0) {
+                AddTrap(t);
+            }
+        }
+    }
     
 
     return EXIT_SUCCESS;
@@ -267,7 +387,7 @@ int MapData::LoadMap(const char* filename) {
  * @param correctedPos The position to check for collision. If a collision is detected, this will be updated to the corrected position.
  * @return `true` if collision was detected, `false` otherwise.
  */
-bool MapData::CheckCollision(const LocalPlayer& player, PointF& correctedPos) {
+bool MapData::CheckCollision(LocalPlayer& player, PointF& correctedPos) {
     // player grid position
     int p_grid_x = getGridKey(correctedPos.x);
     int p_grid_y = getGridKey(correctedPos.y);
@@ -280,34 +400,52 @@ bool MapData::CheckCollision(const LocalPlayer& player, PointF& correctedPos) {
                 continue; // skip; nothing to check in this cell
             }
 
-            for(const Barrier& barrier : grid[x][y]) {
+            for(const auto& object : grid[x][y]) {
 
-                float closestX = std::max(barrier.getPosition().x, 
-                                            std::min(correctedPos.x, barrier.getPosition().x + barrier.getWidth()));
-                float closestY = std::max(barrier.getPosition().y, 
-                                            std::min(correctedPos.y, barrier.getPosition().y + barrier.getHeight()));
+                if(object->getType() == MapObjType::BARRIER) {
 
-                float distanceX = correctedPos.x - closestX;
-                float distanceY = correctedPos.y - closestY;
-                float distanceSQ = (distanceX * distanceX) + (distanceY * distanceY);
-                constexpr int playerRad = PLAYER_RADIUS * PLAYER_RADIUS;
-
-                if(distanceSQ < playerRad) {
-                    // collision detected
-                    float distance = std::sqrt(distanceSQ);
-                    float overlap = PLAYER_RADIUS - distance;
-
-                    if(distance > 0) {
-                        // push player away from the barrier
-                        correctedPos.x += (distanceX / distance) * overlap;
-                        correctedPos.y += (distanceY / distance) * overlap;
+                    float closestX = std::max(object->getPosition().x, 
+                        std::min(correctedPos.x, object->getPosition().x + object->getWidth()));
+                    float closestY = std::max(object->getPosition().y, 
+                        std::min(correctedPos.y, object->getPosition().y + object->getHeight()));
+                    
+                    float distanceX = correctedPos.x - closestX;
+                    float distanceY = correctedPos.y - closestY;
+                    float distanceSQ = (distanceX * distanceX) + (distanceY * distanceY);
+                    constexpr int playerRad = PLAYER_RADIUS * PLAYER_RADIUS;
+                    
+                    if(distanceSQ < playerRad) {
+                            // collision detected
+                            float distance = std::sqrt(distanceSQ);
+                            float overlap = PLAYER_RADIUS - distance;
+                            
+                        if(distance > 0) {
+                            // push player away from the barrier
+                            correctedPos.x += (distanceX / distance) * overlap;
+                            correctedPos.y += (distanceY / distance) * overlap;
+                        }
+                        else {
+                            // edge case: player is exactly inside the barrier
+                            correctedPos.x += PLAYER_RADIUS;
+                        }
+                        
+                        isColliding = true;
                     }
-                    else {
-                        // edge case: player is exactly inside the barrier
-                        correctedPos.x += PLAYER_RADIUS;
-                    }
+                }
+                else if(object->getType() == MapObjType::TRAP) {
+                    if(
+                        correctedPos.x >= object->getPosition().x &&
+                        correctedPos.x <= object->getPosition().x + object->getWidth() &&
+                        correctedPos.y >= object->getPosition().y &&
+                        correctedPos.y <= object->getPosition().y + object->getHeight()
+                    ) 
+                    {
+                        auto trap = dynamic_cast<Trap*>(object.get());
 
-                    isColliding = true;
+                        player.setNextAcceleration(trap->getAccelerationCoefficient());
+                        player.setNextFriction(trap->getFrictionCoefficient());
+                        player.setNextSpeedCap(trap->getMaxSpeed());
+                    }
                 }
             }
         }
@@ -322,7 +460,7 @@ bool MapData::CheckCollision(const LocalPlayer& player, PointF& correctedPos) {
  * @param correctedPos The position to check for collision. If a collision is detected, this will be updated to the corrected position.
  * @return `true` if collision was detected, `false` otherwise.
  */
-bool MapData::CheckCollision(const RemotePlayer& player, PointF& correctedPos) {
+bool MapData::CheckCollision(RemotePlayer& player, PointF& correctedPos) {
         // player grid position
         int p_grid_x = getGridKey(correctedPos.x);
         int p_grid_y = getGridKey(correctedPos.y);
@@ -334,34 +472,52 @@ bool MapData::CheckCollision(const RemotePlayer& player, PointF& correctedPos) {
                     continue; // skip; nothing to check in this cell
                 }
     
-                for(const Barrier& barrier : grid[x][y]) {
-    
-                    float closestX = std::max(barrier.getPosition().x, 
-                                                std::min(correctedPos.x, barrier.getPosition().x + barrier.getWidth()));
-                    float closestY = std::max(barrier.getPosition().y, 
-                                                std::min(correctedPos.y, barrier.getPosition().y + barrier.getHeight()));
-    
-                    float distanceX = correctedPos.x - closestX;
-                    float distanceY = correctedPos.y - closestY;
-                    float distanceSQ = (distanceX * distanceX) + (distanceY * distanceY);
-                    constexpr int playerRad = PLAYER_RADIUS * PLAYER_RADIUS;
-    
-                    if(distanceSQ < playerRad) {
-                        // collision detected
-                        float distance = std::sqrt(distanceSQ);
-                        float overlap = PLAYER_RADIUS - distance;
-    
-                        if(distance > 0) {
-                            // push player away from the barrier
-                            correctedPos.x += (distanceX / distance) * overlap;
-                            correctedPos.y += (distanceY / distance) * overlap;
+                for(const auto& object : grid[x][y]) {
+
+                    if(object->getType() == MapObjType::BARRIER) {
+                        
+                        float closestX = std::max(object->getPosition().x, 
+                            std::min(correctedPos.x, object->getPosition().x + object->getWidth()));
+                        float closestY = std::max(object->getPosition().y, 
+                            std::min(correctedPos.y, object->getPosition().y + object->getHeight()));
+                        
+                        float distanceX = correctedPos.x - closestX;
+                        float distanceY = correctedPos.y - closestY;
+                        float distanceSQ = (distanceX * distanceX) + (distanceY * distanceY);
+                        constexpr int playerRad = PLAYER_RADIUS * PLAYER_RADIUS;
+                        
+                        if(distanceSQ < playerRad) {
+                            // collision detected
+                            float distance = std::sqrt(distanceSQ);
+                            float overlap = PLAYER_RADIUS - distance;
+                            
+                            if(distance > 0) {
+                                // push player away from the barrier
+                                correctedPos.x += (distanceX / distance) * overlap;
+                                correctedPos.y += (distanceY / distance) * overlap;
+                            }
+                            else {
+                                // edge case: player is exactly inside the barrier
+                                correctedPos.x += PLAYER_RADIUS;
+                            }
+                            
+                            return true;
                         }
-                        else {
-                            // edge case: player is exactly inside the barrier
-                            correctedPos.x += PLAYER_RADIUS;
-                        }
+                    }
+                    else if(object->getType() == MapObjType::TRAP) {
+                        if(
+                            correctedPos.x >= object->getPosition().x &&
+                            correctedPos.x <= object->getPosition().x + object->getWidth() &&
+                            correctedPos.y >= object->getPosition().y &&
+                            correctedPos.y <= object->getPosition().y + object->getHeight()
+                        ) 
+                        {
+                            auto trap = dynamic_cast<Trap*>(object.get());
     
-                        return true;
+                            player.setNextAcceleration(trap->getAccelerationCoefficient());
+                            player.setNextFriction(trap->getFrictionCoefficient());
+                            player.setNextSpeedCap(trap->getMaxSpeed());
+                        }
                     }
                 }
             }
