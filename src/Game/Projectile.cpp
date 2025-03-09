@@ -73,18 +73,24 @@ void Projectile::render(SDL_Renderer* renderer) {
         SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
     }
     else {
-        SDL_Rect dest = {static_cast<int>(rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x)), 
+        /* SDL_Rect dest = {static_cast<int>(rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x)), 
             static_cast<int>(rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y) - this->radius), 
             0, static_cast<int>(3.0f * this->radius)};
 
         Point t_size;
         SDL_QueryTexture(this->texture, nullptr, nullptr, &t_size.x, &t_size.y);
-        dest.w = dest.h * t_size.y / t_size.x;
+        dest.w = dest.h * t_size.y / t_size.x; */
+
+        SDL_Rect dest = {static_cast<int>(rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x)), 
+            static_cast<int>(rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y) - this->radius), 
+            static_cast<int>(3.0f * this->radius), 0};
+
+        Point t_size;
+        SDL_QueryTexture(this->texture, nullptr, nullptr, &t_size.x, &t_size.y);
+        dest.h = dest.w * t_size.y / (float)t_size.x;
 
         SDL_RenderCopyEx(renderer, this->texture, nullptr, &dest, static_cast<double>(this->direction), nullptr, SDL_FLIP_NONE);
     }
-
-
 
 }
 

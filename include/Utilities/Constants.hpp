@@ -104,6 +104,15 @@
 // TEXTURE IDS
 //
 
+#define TEXTURE_WALL            1
+#define TEXTURE_WALL_PILLAR     2
+#define TEXTURE_PILLAR          3
+#define TEXTURE_SOFA            4
+#define TEXTURE_CRATE           5
+
+#define TEXTURE_ICE_TRAP        10
+#define TEXTURE_SAND_TRAP       11
+
 #define TEXTURE_PLAYER_1        20
 #define TEXTURE_PLAYER_2        21
 #define TEXTURE_PROJECTILE_1    22
@@ -111,4 +120,3 @@
 #define TEXTURE_FLAG            24
 #define TEXTURE_SITE_1          25
 #define TEXTURE_SITE_2          26
-#define TEXTURE_PILLAR          27

@@ -37,6 +37,8 @@ public:
     virtual void setPosition(float x, float y);
     virtual void setDimensions(int w, int h);
     virtual void setTextureId(int id);
+    virtual void setTexture(SDL_Texture*);
+    virtual int getTextureId() const;
     virtual PointF getPosition() const;
     virtual int getWidth() const;
     virtual int getHeight() const;
@@ -57,6 +59,14 @@ inline void MapObject::setDimensions(int w, int h) {
 
 inline void MapObject::setTextureId(int id ) {
     this->texture_id = id;
+}
+
+inline void MapObject::setTexture(SDL_Texture* t) {
+    this->texture = t;
+}
+
+inline int MapObject::getTextureId() const {
+    return texture_id;
 }
 
 inline PointF MapObject::getPosition() const {

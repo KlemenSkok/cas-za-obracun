@@ -57,4 +57,10 @@ void AssetManager::Initialize() {
     textures[TEXTURE_SITE_1] =          LoadTexture("images/map/site_team_1.png");
     textures[TEXTURE_SITE_2] =          LoadTexture("images/map/site_team_2.png");
 
+    textures[TEXTURE_WALL] =            LoadTexture("images/map/wall.png");
+    textures[TEXTURE_WALL_PILLAR] =     LoadTexture("images/map/wall_pillar.png");
+    textures[TEXTURE_PILLAR] =          LoadTexture("images/map/pillar.png");
+    textures[TEXTURE_SOFA] =            LoadTexture("images/map/sofa.png");
+    textures[TEXTURE_CRATE] =           LoadTexture("images/map/crate.png");
+
 }

@@ -56,30 +56,36 @@ void MapData::AddBarrier(Barrier& b) {
     if(int(pos.x + b.getWidth()) % GRID_CELL_SIZE == 0) end_x++;
     if(int(pos.y + b.getHeight()) % GRID_CELL_SIZE == 0) end_y++;
 
+    // set the texture
+    b.setTexture(AssetManager::GetTexture(b.getTextureId()));
 
     for(int x = start_x; x <= end_x; x++) {
         for(int y = start_y; y <= end_y; y++) {
+            // add to grid
             grid[x][y].push_back(std::make_shared<Barrier>(b));
         }
     }
 }
 
-void MapData::AddTrap(Trap& b) {
-    auto pos = b.getPosition();
+void MapData::AddTrap(Trap& t) {
+    auto pos = t.getPosition();
     
     int start_x = getGridKey(pos.x);
     int start_y = getGridKey(pos.y);
-    int end_x = getGridKey(pos.x + b.getWidth());
-    int end_y = getGridKey(pos.y + b.getHeight());
+    int end_x = getGridKey(pos.x + t.getWidth());
+    int end_y = getGridKey(pos.y + t.getHeight());
 
     // edge case: when barrier border is on the edge of a cell, expand the object territory
-    if(int(pos.x + b.getWidth()) % GRID_CELL_SIZE == 0) end_x++;
-    if(int(pos.y + b.getHeight()) % GRID_CELL_SIZE == 0) end_y++;
+    if(int(pos.x + t.getWidth()) % GRID_CELL_SIZE == 0) end_x++;
+    if(int(pos.y + t.getHeight()) % GRID_CELL_SIZE == 0) end_y++;
 
+    // set the texture
+    t.setTexture(AssetManager::GetTexture(t.getTextureId()));
 
     for(int x = start_x; x <= end_x; x++) {
         for(int y = start_y; y <= end_y; y++) {
-            grid[x][y].push_back(std::make_shared<Trap>(b));
+            // add to grid
+            grid[x][y].push_back(std::make_shared<Trap>(t));
         }
     }
 }
