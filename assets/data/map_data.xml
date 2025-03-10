@@ -289,7 +289,7 @@
             <position x="1457" y="637" />
             <size w="150" h="114" />
             <texture id="10" />
-            <type name="ice" />
+            <type name="water" />
         </trap>
         <!-- sand trap -->
         <trap>

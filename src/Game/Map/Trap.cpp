@@ -33,6 +33,11 @@ void Trap::render(SDL_Renderer* renderer) {
         SDL_RenderFillRect(renderer, &rect);
         SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
     }
+    else {
+        SDL_Rect rect = {static_cast<int>(position.x - rc::localPlayerPos.x + rc::windowCenter.x), 
+                         static_cast<int>(position.y - rc::localPlayerPos.y + rc::windowCenter.y), 
+                         size.x, size.y};
+    }
 }
 
 
