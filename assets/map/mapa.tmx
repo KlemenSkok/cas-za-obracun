@@ -553,7 +553,7 @@
   <object id="62" name="sofa" gid="4" x="1655" y="946" width="200" height="90"/>
   <object id="63" name="site" gid="4" x="88" y="1025" width="320" height="744"/>
   <object id="64" name="site" gid="4" x="2648" y="1025" width="320" height="744"/>
-  <object id="65" name="flag" gid="4" x="1478" y="140" width="100" height="60"/>
+  <object id="65" name="flag" gid="4" x="1480" y="140" width="100" height="60"/>
   <object id="66" name="pillar" gid="4" x="1271" y="710" width="60" height="60"/>
   <object id="67" name="pillar" gid="4" x="1499" y="710" width="60" height="60"/>
   <object id="68" name="pillar" gid="4" x="1740" y="710" width="60" height="60"/>
@@ -566,8 +566,8 @@
   <object id="76" name="player_1" gid="4" x="1162" y="740" width="32" height="32"/>
   <object id="77" name="player_2" gid="4" x="1940" y="775" width="32" height="32"/>
   <object id="78" name="player_2" gid="4" x="1928" y="666" width="32" height="32"/>
-  <object id="79" name="trap_ice" gid="4" x="1457" y="637" width="150" height="114"/>
-  <object id="80" name="trap_sand" gid="4" x="1003" y="726" width="138" height="94"/>
-  <object id="81" name="trap_sand" gid="4" x="1946" y="626" width="151" height="98"/>
+  <object id="79" name="trap_ice" gid="4" x="1433" y="647" width="194" height="132"/>
+  <object id="80" name="trap_sand" gid="4" x="991" y="748" width="243" height="138"/>
+  <object id="81" name="trap_sand" gid="4" x="1838" y="685" width="243" height="141"/>
  </objectgroup>
 </map>

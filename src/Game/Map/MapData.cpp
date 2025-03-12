@@ -440,10 +440,10 @@ bool MapData::CheckCollision(LocalPlayer& player, PointF& correctedPos) {
                 }
                 else if(object->getType() == MapObjType::TRAP) {
                     if(
-                        correctedPos.x >= object->getPosition().x &&
-                        correctedPos.x <= object->getPosition().x + object->getWidth() &&
-                        correctedPos.y >= object->getPosition().y &&
-                        correctedPos.y <= object->getPosition().y + object->getHeight()
+                        correctedPos.x > object->getPosition().x &&
+                        correctedPos.x < object->getPosition().x + object->getWidth() &&
+                        correctedPos.y > object->getPosition().y &&
+                        correctedPos.y < object->getPosition().y + object->getHeight()
                     ) 
                     {
                         auto trap = dynamic_cast<Trap*>(object.get());
@@ -512,10 +512,10 @@ bool MapData::CheckCollision(RemotePlayer& player, PointF& correctedPos) {
                     }
                     else if(object->getType() == MapObjType::TRAP) {
                         if(
-                            correctedPos.x >= object->getPosition().x &&
-                            correctedPos.x <= object->getPosition().x + object->getWidth() &&
-                            correctedPos.y >= object->getPosition().y &&
-                            correctedPos.y <= object->getPosition().y + object->getHeight()
+                            correctedPos.x > object->getPosition().x &&
+                            correctedPos.x < object->getPosition().x + object->getWidth() &&
+                            correctedPos.y > object->getPosition().y &&
+                            correctedPos.y < object->getPosition().y + object->getHeight()
                         ) 
                         {
                             auto trap = dynamic_cast<Trap*>(object.get());

@@ -10,7 +10,7 @@ void Barrier::render(SDL_Renderer* renderer) {
     if(texture == nullptr) {
         SDL_Color tmp_c;
         SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 255);
+        SDL_SetRenderDrawColor(renderer, 0x87, 0x7d, 0x61, 255);
         
         SDL_Rect rect;
         rect.x = static_cast<int>(position.x - rc::localPlayerPos.x + rc::windowCenter.x);
@@ -19,6 +19,8 @@ void Barrier::render(SDL_Renderer* renderer) {
         rect.h = size.y;
         
         SDL_RenderFillRect(renderer, &rect);
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 255);
+        SDL_RenderDrawRect(renderer, &rect);
         SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
     }
     else {

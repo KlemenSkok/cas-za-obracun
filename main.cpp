@@ -8,8 +8,8 @@
 #include <iostream>
 
 
-#define SERVER_IP "192.168.64.112"
-//#define SERVER_IP "192.168.64.69"
+//#define SERVER_IP "192.168.64.112"
+#define SERVER_IP "192.168.64.69"
 #define SERVER_PORT 42069
 
 

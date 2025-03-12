@@ -37,6 +37,7 @@ void Trap::render(SDL_Renderer* renderer) {
         SDL_Rect rect = {static_cast<int>(position.x - rc::localPlayerPos.x + rc::windowCenter.x), 
                          static_cast<int>(position.y - rc::localPlayerPos.y + rc::windowCenter.y), 
                          size.x, size.y};
+        SDL_RenderCopy(renderer, texture, nullptr, &rect);
     }
 }
 
@@ -44,7 +45,7 @@ void Trap::render(SDL_Renderer* renderer) {
 void Trap::setTrapType(char* t) {
 
     //std::cout << "Setting trap type: " << t << ".\n";
-    if(!strcmp(t, "ice")) {
+    if(!strcmp(t, "water")) {
         this->friction_k = 0.1f;
         this->acceleration_k = 0.1f;
         this->max_speed = PLAYER_MAX_SPEED;
