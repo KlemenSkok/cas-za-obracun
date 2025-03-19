@@ -24,7 +24,7 @@ SDL_Texture* AssetManager::LoadTexture(const char* fileName) {
         Logger::warn(("Failed to load texture: " + path).c_str());
     }
     else {
-        Logger::info(("Texture loaded: " + path).c_str());
+        //Logger::info(("Texture loaded: " + path).c_str());
     }
 
     return texture;
@@ -66,5 +66,10 @@ void AssetManager::Initialize() {
 
     textures[TEXTURE_WATER_TRAP] =      LoadTexture("images/map/water_trap.png");
     textures[TEXTURE_SAND_TRAP] =       LoadTexture("images/map/sand_trap.png");
+
+    // load GUI textures
+    textures[TEXTURE_ARROW_NEUTRAL] =   LoadTexture("images/GUI/components/arrow_neutral.png");
+    textures[TEXTURE_ARROW_BLUE] =   LoadTexture("images/GUI/components/arrow_blue.png");
+    textures[TEXTURE_ARROW_RED] =   LoadTexture("images/GUI/components/arrow_red.png");
 
 }

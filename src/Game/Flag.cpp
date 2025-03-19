@@ -118,6 +118,9 @@ void Flag::updatePosition(const PointF& p) {
     this->position.y = p.y - this->size.y / 2.0f;
 }
 
+Point Flag::getSize() const {
+    return this->size;
+}
 
 void Flag::importData(const data_packets::FlagData& data) {
     this->dataBuffer.push(data);

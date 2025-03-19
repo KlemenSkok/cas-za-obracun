@@ -53,5 +53,6 @@ public:
 
     void setPosition(const PointF&);
     void updatePosition(const PointF&);
+    Point getSize() const;
 
 };

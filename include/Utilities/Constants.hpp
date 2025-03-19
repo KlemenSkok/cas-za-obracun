@@ -121,3 +121,8 @@
 #define TEXTURE_FLAG            24
 #define TEXTURE_SITE_1          25
 #define TEXTURE_SITE_2          26
+
+#define TEXTURE_ARROW_BLUE      50
+#define TEXTURE_ARROW_RED       51
+#define TEXTURE_ARROW_NEUTRAL   52
+

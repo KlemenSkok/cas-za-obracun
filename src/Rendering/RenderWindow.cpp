@@ -8,6 +8,8 @@
 #include "Containers.hpp"
 #include "UI/UIManager.hpp"
 
+#include <cmath>
+
 
 std::unordered_map<uint8_t, SDL_Texture*> RenderWindow::screens;
 SDL_Texture* RenderWindow::screen_victory;
@@ -69,7 +71,7 @@ void RenderWindow::renderWindow() {
 
 /**
  @brief Render game state relative to the player's position.
- * Thus, the remote players' position equals (player's position - remote player's position) + window center
+ * Thus, the remote players' positions equal to (player's position - remote player's position) + window center
  */
 void RenderWindow::renderGameState() {
 
@@ -106,6 +108,10 @@ void RenderWindow::renderGameState() {
     // render flag
     Game::flag->render(Window::renderer);
 
+    // render UI overlay
+    RenderWindow::renderGameUI();
+    
+
     // present changes
     Window::Present();
 
@@ -135,5 +141,37 @@ void RenderWindow::renderCurrentScreen() {
 
     // present changes
     Window::Present();
+
+}
+
+void RenderWindow::renderGameUI() {
+    // draw the arrow pointing to the flag
+    // calculate the angle between the player and the flag
+    SDL_Texture* arrow = AssetManager::GetTexture(TEXTURE_ARROW_NEUTRAL);
+
+    float angle = atan2(Game::flag->getPosition().y - Game::player->getPosition().y, Game::flag->getPosition().x - Game::player->getPosition().x);
+    angle = angle * 180 / M_PI + 90;
+
+    // get the arrow render position
+    SDL_Rect dest = {0, 0, 150, 50};
+    dest.x = static_cast<int>(rc::windowCenter.x + (Game::flag->getPosition().x - rc::localPlayerPos.x + Game::flag->getSize().x / 2) / 2.0f - dest.w / 2.0f);
+    dest.y = static_cast<int>(rc::windowCenter.y + (Game::flag->getPosition().y - rc::localPlayerPos.y + Game::flag->getSize().y / 2) / 2.0f - dest.h / 2.0f);
+
+    // snap the position to the window borders
+    if(dest.x < 0) {
+        dest.x = 0;
+    }
+    if(dest.y < 0) {
+        dest.y = 0;
+    }
+    if(dest.x + dest.w > Window::Width()) {
+        dest.x = Window::Width() - dest.w;
+    }
+    if(dest.y + dest.h > Window::Height()) {
+        dest.y = Window::Height() - dest.h;
+    }
+
+    // render the arrow
+    SDL_RenderCopyEx(Window::renderer, arrow, NULL, &dest, angle, NULL, SDL_FLIP_NONE);
 
 }

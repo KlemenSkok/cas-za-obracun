@@ -30,5 +30,6 @@ public:
 
     static void renderCurrentScreen();
     static void renderGameState();
+    static void renderGameUI();
 
 };
