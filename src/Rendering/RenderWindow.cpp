@@ -9,6 +9,7 @@
 #include "UI/UIManager.hpp"
 
 #include <cmath>
+#include <algorithm>
 
 
 std::unordered_map<uint8_t, SDL_Texture*> RenderWindow::screens;
@@ -145,33 +146,62 @@ void RenderWindow::renderCurrentScreen() {
 }
 
 void RenderWindow::renderGameUI() {
-    // draw the arrow pointing to the flag
-    // calculate the angle between the player and the flag
-    SDL_Texture* arrow = AssetManager::GetTexture(TEXTURE_ARROW_NEUTRAL);
 
-    float angle = atan2(Game::flag->getPosition().y - Game::player->getPosition().y, Game::flag->getPosition().x - Game::player->getPosition().x);
-    angle = angle * 180 / M_PI + 90;
+    PointF flagPos = Game::flag->getPosition();
+    Point flagSize = Game::flag->getSize();
 
-    // get the arrow render position
-    SDL_Rect dest = {0, 0, 150, 50};
-    dest.x = static_cast<int>(rc::windowCenter.x + (Game::flag->getPosition().x - rc::localPlayerPos.x + Game::flag->getSize().x / 2) / 2.0f - dest.w / 2.0f);
-    dest.y = static_cast<int>(rc::windowCenter.y + (Game::flag->getPosition().y - rc::localPlayerPos.y + Game::flag->getSize().y / 2) / 2.0f - dest.h / 2.0f);
+    float dx = flagPos.x - rc::localPlayerPos.x;
+    float dy = flagPos.y - rc::localPlayerPos.y;
 
-    // snap the position to the window borders
-    if(dest.x < 0) {
-        dest.x = 0;
+    if((std::abs(dx + flagSize.x / 2) > rc::windowCenter.x) || 
+        (std::abs(dy + flagSize.y / 2) > rc::windowCenter.y))
+    {
+        // only render the arrow if the flag is outside the window
+        
+        // draw the arrow pointing to the flag
+        // calculate the angle between the player and the flag
+        SDL_Texture* arrow = AssetManager::GetTexture(TEXTURE_ARROW_NEUTRAL);
+        
+        float angle = atan2(Game::flag->getPosition().y - Game::player->getPosition().y, Game::flag->getPosition().x - Game::player->getPosition().x);
+        angle = angle * 180 / M_PI;
+        
+        // get the arrow render position
+        SDL_Rect dest = {0, 0, 50, 50};
+        dest.x = static_cast<int>(rc::windowCenter.x + (dx + Game::flag->getSize().x / 2) / 2.0f - dest.w / 2.0f);
+        dest.y = static_cast<int>(rc::windowCenter.y + (dy + Game::flag->getSize().y / 2) / 2.0f - dest.h / 2.0f);
+
+        if(angle >= -45.0f && angle < 45.0f) {
+            // Right edge
+            dest.x = Window::Width() - dest.w;
+            dest.y = rc::localPlayerPos.y + dy * (Window::Width() / std::abs(dx));
+            std::cout << "Right edge\n";
+        }
+        else if(angle > -135.0f && angle <= -45.0f) {
+            // Top edge
+            dest.y = 0;
+            dest.x = rc::windowCenter.x + (dx + Game::flag->getSize().x / 2) / 2.0f - dest.w / 2.0f;
+            std::cout << "Top edge\n";
+        }
+        else if(angle >= 135.0f || angle < -135.0f) {
+            // Left edge
+            dest.x = 0;
+            dest.y = rc::localPlayerPos.y + dy * (Window::Width() / std::abs(dx));
+            std::cout << "Left edge\n";
+        }
+        else {
+            // Bottom edge
+            dest.y = Window::Height() - dest.h;
+            dest.x = rc::windowCenter.x + (dx + Game::flag->getSize().x / 2) / 2.0f - dest.w / 2.0f;
+            std::cout << "Bottom edge\n";
+        }
+        
+        // Snap the arrow to the window edges
+        dest.x = std::clamp((int)dest.x, 0, Window::Width() - dest.w);
+        dest.y = std::clamp((int)dest.y, 0, Window::Height() - dest.h);
+        
+        
+        // render the arrow
+        SDL_RenderCopyEx(Window::renderer, arrow, NULL, &dest, angle + 90, NULL, SDL_FLIP_NONE);
     }
-    if(dest.y < 0) {
-        dest.y = 0;
-    }
-    if(dest.x + dest.w > Window::Width()) {
-        dest.x = Window::Width() - dest.w;
-    }
-    if(dest.y + dest.h > Window::Height()) {
-        dest.y = Window::Height() - dest.h;
-    }
-
-    // render the arrow
-    SDL_RenderCopyEx(Window::renderer, arrow, NULL, &dest, angle, NULL, SDL_FLIP_NONE);
-
+    
 }
