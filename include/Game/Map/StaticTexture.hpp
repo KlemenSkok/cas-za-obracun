@@ -1,13 +1,25 @@
 
-// Barrier.cpp
+// StaticTexture.hpp
 
-#include "Game/Map/Barrier.hpp"
+#pragma once
+
+#include "MapObject.hpp"
 #include "Rendering/RenderingContext.hpp"
 
 
+class StaticTexture : public MapObject {
 
-void Barrier::render(SDL_Renderer* renderer) {
+public:
 
+    StaticTexture() :
+        MapObject(MapObjType::TEXTURE) {}
+
+    void render(SDL_Renderer* renderer) override;
+
+};
+
+void StaticTexture::render(SDL_Renderer* renderer) {
+    
     if(texture == nullptr) {
         SDL_Color tmp_c;
         SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
@@ -18,7 +30,7 @@ void Barrier::render(SDL_Renderer* renderer) {
         rect.y = static_cast<int>(position.y - rc::localPlayerPos.y + rc::windowCenter.y);
         rect.w = size.x;
         rect.h = size.y;
-        
+
         SDL_RenderFillRect(renderer, &rect);
         SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 255);
         SDL_RenderDrawRect(renderer, &rect);

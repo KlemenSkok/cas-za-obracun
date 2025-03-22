@@ -10,7 +10,8 @@
 
 enum class MapObjType: uint8_t {
     BARRIER = 0,
-    TRAP
+    TRAP,
+    TEXTURE
 };
 
 
@@ -21,6 +22,7 @@ protected:
     PointF position;
     Point size;
 
+    // rendering
     int texture_id;
     SDL_Texture* texture;
 
@@ -29,7 +31,8 @@ protected:
 
 public:
 
-    MapObject(MapObjType t) : type(t) {}
+    MapObject(MapObjType t) : 
+        type(t) {}
     MapObjType getType() const;
 
     virtual void render(SDL_Renderer*) = 0;

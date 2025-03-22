@@ -5,15 +5,15 @@
 
 
 
-
+// for logging into the console
 #define DEBUG
 
 
 // global constants
 
 #define GAME_TITLE "Čas za obracun" // očitno šimniki ne delajo problemov
-#define INITIAL_WINDOW_WIDTH 800
-#define INITIAL_WINDOW_HEIGHT 600
+#define INITIAL_WINDOW_WIDTH 960
+#define INITIAL_WINDOW_HEIGHT 540
 
 #define TICK_RATE 60 // [Hz]
 #define GAME_LOOP_DELAY 1000 / TICK_RATE // [ms]
