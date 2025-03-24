@@ -82,7 +82,22 @@ void RenderWindow::renderGameState() {
 
     // clear the screen
     Window::Clear();
-    
+
+    {
+        // render the floor
+        SDL_Rect src = {0, 0, 100, 100};
+        int src_w, src_h;
+        SDL_Texture* texture = AssetManager::GetTexture(TEXTURE_FLOOR);
+        for(auto& rect : MapData::floorTiles) {
+            SDL_Rect dest = {static_cast<int>(rect.x - rc::localPlayerPos.x + rc::windowCenter.x), static_cast<int>(rect.y - rc::localPlayerPos.y + rc::windowCenter.y), rect.w, rect.h};
+            SDL_QueryTexture(texture, NULL, NULL, &src_w, &src_h);
+            // scale the texture to the destination rectangle
+            src.w = src_h * dest.w / dest.h;
+            src.h = src_w * dest.h / dest.w;
+            SDL_RenderCopy(Window::renderer, texture, &src, &dest);
+        }
+    }
+
     // render the map
     for(auto& [x, y_map] : MapData::grid) {
         for(auto& [y, objects] : y_map) {

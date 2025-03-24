@@ -13,6 +13,7 @@
 
 std::unordered_map<uint16_t, std::unordered_map<uint16_t, std::vector<std::shared_ptr<MapObject>>>> MapData::grid;
 std::unordered_map<uint8_t, std::shared_ptr<Site>> MapData::sites;
+std::vector<SDL_Rect> MapData::floorTiles;
 
 
 
@@ -308,6 +309,64 @@ int parseTrapNode(tinyxml2::XMLNode* node, Trap& s) {
 
 
 /**
+ * @brief Read a single Trap node from the XML file
+ * 
+ * @param node The node to read from 
+ * @param b The Trap object to write to
+ * @return 0 on success, 1 on failure
+ */
+int parseTileNode(tinyxml2::XMLNode* node, SDL_Rect& t) {
+    using namespace tinyxml2;
+    
+    PointF pos;
+    Point size;
+    int err = 0;
+
+    // parse barrier data
+    // position
+    XMLElement* n = node->FirstChildElement("position");
+    if(n == nullptr) {
+        Logger::warn((std::string("Missing trap <position> data (line ") + std::to_string(node->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+    err = n->QueryFloatAttribute("x", &pos.x);
+    err += n->QueryFloatAttribute("y", &pos.y);
+    if(err != 0) {
+        Logger::warn((std::string("Failed to parse trap <position> (line ") + std::to_string(n->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+    
+    // dimensions
+    n = node->FirstChildElement("size");
+    if(n == nullptr) {
+        Logger::warn((std::string("Missing trap <size> data (line ") + std::to_string(node->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+    err = n->QueryIntAttribute("w", &size.x);
+    err += n->QueryIntAttribute("h", &size.y);
+    if(err != 0) {
+        Logger::warn((std::string("Failed to parse trap <size> (line ") + std::to_string(n->GetLineNum()) + ").").c_str());
+        return EXIT_FAILURE;
+    }
+
+    
+    // boxes in the file have origin in the bottom left corner
+    // we need to adjust the position to the top left corner
+    //pos.y -= size.y;
+
+
+    t.x = pos.x;
+    t.y = pos.y;
+    t.w = size.x;
+    t.h = size.y;
+
+    //std::cout << "Tile: " << t.x << ", " << t.y << ", " << t.w << ", " << t.h << std::endl;
+
+    return  EXIT_SUCCESS;
+}
+
+
+/**
  * @brief Attempt to load map data from an XML file.
  * 
  * @param filename Name of the XML file to load.
@@ -378,6 +437,20 @@ int MapData::LoadMap(const char* filename) {
             Trap t;
             if(parseTrapNode(node, t) == 0) {
                 AddTrap(t);
+            }
+        }
+    }
+
+    XMLNode* tiles = rootHandle.FirstChildElement("floor").FirstChildElement("tile").ToNode();
+    if(tiles == nullptr) {
+        throw std::runtime_error("Failed to find floor tiles in the map data.");
+    }
+    else {
+        // extract floor tiles
+        for(XMLNode* node = tiles; node != nullptr; node = node->NextSiblingElement("tile")) {
+            SDL_Rect t;
+            if(parseTileNode(node, t) == 0) {
+                floorTiles.push_back(t);
             }
         }
     }

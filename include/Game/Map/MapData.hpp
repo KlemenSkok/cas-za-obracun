@@ -27,6 +27,7 @@ public:
 
     static std::unordered_map<uint16_t, std::unordered_map<uint16_t, std::vector<std::shared_ptr<MapObject>>>> grid;
     static std::unordered_map<uint8_t, std::shared_ptr<Site>> sites;
+    static std::vector<SDL_Rect> floorTiles;
 
     static void InitializeGrid();
     static void AddBarrier(Barrier&);

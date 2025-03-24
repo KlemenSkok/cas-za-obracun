@@ -53,7 +53,7 @@ void AssetManager::Initialize() {
     textures[TEXTURE_PROJECTILE_1] =    LoadTexture("images/projectile1.png");
     textures[TEXTURE_PROJECTILE_2] =    LoadTexture("images/projectile2.png");
 
-    // map components
+    // load map components
     textures[TEXTURE_SITE_1] =          LoadTexture("images/map/site_team_1.png");
     textures[TEXTURE_SITE_2] =          LoadTexture("images/map/site_team_2.png");
 
@@ -63,6 +63,7 @@ void AssetManager::Initialize() {
     textures[TEXTURE_SOFA] =            LoadTexture("images/map/sofa.png");
     textures[TEXTURE_CRATE] =           LoadTexture("images/map/crate.png");
     textures[TEXTURE_DOUBLE_CRATE] =    LoadTexture("images/map/double_crate.png");
+    textures[TEXTURE_FLOOR] =           LoadTexture("images/map/floor_tile.png");
 
     textures[TEXTURE_WATER_TRAP] =      LoadTexture("images/map/water_trap.png");
     textures[TEXTURE_SAND_TRAP] =       LoadTexture("images/map/sand_trap.png");

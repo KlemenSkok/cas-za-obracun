@@ -110,6 +110,7 @@
 #define TEXTURE_SOFA            4
 #define TEXTURE_CRATE           5
 #define TEXTURE_DOUBLE_CRATE    6
+#define TEXTURE_FLOOR           7
 
 #define TEXTURE_WATER_TRAP      10
 #define TEXTURE_SAND_TRAP       11
