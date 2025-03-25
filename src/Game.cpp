@@ -69,13 +69,36 @@ void Game::Cleanup() {
     AssetManager::Clear();
     SocketHandler::Stop();
 
-    SDLNet_UDP_Close(SocketHandler::getSocket());
 }
 
-void Game::setServerIP(const char* ip, uint16_t port) {
-    if(SDLNet_ResolveHost(&Game::server_info.addr, ip, port) == -1) {
-        throw std::runtime_error("Failed to resolve host.");
+void Game::setServerIP(int argc, char *argv[]) {
+
+    // no arguments passed, use default values
+    if(argc == 1) {
+        if(SDLNet_ResolveHost(&Game::server_info.addr, DEFAULT_SERVER_IP, DEFAULT_SERVER_PORT) == -1) {
+            throw std::runtime_error("Failed to resolve host.");
+        }
     }
+    else if(argc == 3) {
+        int port = 0;
+        try {
+            port = std::stoi(argv[2]);
+        }
+        catch(std::invalid_argument &e) {
+            throw std::runtime_error("Invalid port number.");
+        }
+        catch(std::out_of_range &e) {
+            throw std::runtime_error("Port number out of range.");
+        }
+
+        if(SDLNet_ResolveHost(&Game::server_info.addr, argv[1], port) == -1) {
+            throw std::runtime_error("Failed to resolve host.");
+        }
+    }
+    else {
+        throw std::runtime_error("Invalid number of arguments.");
+    }
+
     Logger::info(("Server IP resolved: " + formatIP(Game::server_info.addr.host) + ":" + std::to_string(SDLNet_Read16(&Game::server_info.addr.port))).c_str());
 
     SDLNet_UDP_Bind(SocketHandler::getSocket(), Game::server_info.channel, &Game::server_info.addr);

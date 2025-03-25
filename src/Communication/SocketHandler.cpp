@@ -111,7 +111,7 @@ void SocketHandler::Start() {
 void SocketHandler::Stop() noexcept {
     SocketHandler::_running = false;
     SocketHandler::_shutdown = true;
-
+    
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
@@ -222,6 +222,8 @@ void SocketHandler::Work(UDPsocket socket) noexcept {
     SDLNet_FreePacket(recieve_packet);
     SDLNet_FreePacket(send_packet);
     SDLNet_UDP_Close(socket);
+    socket = nullptr;
+    
     Logger::info("Socket handler stopped.");
 
 }

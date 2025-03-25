@@ -8,9 +8,6 @@
 #include <iostream>
 
 
-//#define SERVER_IP "192.168.64.112"
-#define SERVER_IP "192.168.64.69"
-#define SERVER_PORT 42069
 
 
 int main(int argc, char *argv[]) {
@@ -21,7 +18,7 @@ int main(int argc, char *argv[]) {
 
     try {
         Game::Setup();
-        Game::setServerIP(SERVER_IP, SERVER_PORT);
+        Game::setServerIP(argc, argv);
     }
     catch(std::runtime_error &e) {
         Logger::error(e.what());

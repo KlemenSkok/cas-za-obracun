@@ -66,7 +66,7 @@ public:
     static void Update(int deltaTime);
     static void Render();
     static void Cleanup();
-    static void setServerIP(const char* ip, uint16_t port);
+    static void setServerIP(int argc, char *argv[]);
 
     static void resetConnection();
     static void resetGameState();
