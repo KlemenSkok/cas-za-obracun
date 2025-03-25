@@ -1,0 +1,13 @@
+{
+    "name": "cas-za-obracun",
+    "version": "1.0.0",
+    "dependencies": [
+        "sdl2",
+        "sdl2-image",
+        "sdl2-ttf",
+        "sdl2-net",
+        "spdlog"
+    ],
+    "default-features": [],
+    "builtin-baseline": "670f6dddaafc59c5dfe0587a130d59a35c48ea38"
+}

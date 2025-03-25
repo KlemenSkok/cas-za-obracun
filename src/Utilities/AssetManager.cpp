@@ -36,13 +36,15 @@ SDL_Texture* AssetManager::GetTexture(int id) {
     return textures[id];
 }
 
+
 void AssetManager::Clear() {
     for(auto& pair : AssetManager::textures) {
-        SDL_DestroyTexture(pair.second);
+        if(pair.second != nullptr) {
+            SDL_DestroyTexture(pair.second);
+        }
     }
     AssetManager::textures.clear();
 }
-
 
 
 void AssetManager::Initialize() {

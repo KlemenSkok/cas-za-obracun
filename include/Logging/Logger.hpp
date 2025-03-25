@@ -5,7 +5,7 @@
 #include <iostream>
 
 #ifdef SPDLOG
-#define SPDLOG_HEADER_ONLY
+//#define SPDLOG_HEADER_ONLY
 #include <spdlog/spdlog.h>
 #endif
 

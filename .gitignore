@@ -10,3 +10,7 @@ server_info.txt
 
 *.tiled-session
 *.tiled-project
+
+# vcpkg files
+vcpkg_installed/
+CMakeUserPresets.json
