@@ -8,8 +8,6 @@
 #include <iostream>
 
 
-
-
 int main(int argc, char *argv[]) {
 
     if (!SDLUtils::initialize()) {
