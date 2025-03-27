@@ -160,6 +160,9 @@ void RenderWindow::renderCurrentScreen() {
 
 }
 
+
+void renderScore(int s1, int s2, int myTeam);
+
 void RenderWindow::renderGameUI() {
 
     //
@@ -234,6 +237,45 @@ void RenderWindow::renderGameUI() {
     }
     SDL_RenderFillRect(Window::renderer, &hb_fill);
     
+    SDL_SetRenderDrawColor(Window::renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
+
+
+    //
+    // RENDER SCORE
+    //
+
+    renderScore(Game::scores[0], Game::scores[1], Game::player->getTeamNumber());
+
+}
+
+
+void renderScore(int s1, int s2, int myTeam) {
+
+    // render the score box and numbers
+    static auto prevScore = std::make_pair(0, 0);
+    
+    // _______________
+    // \             /
+    //  \___________/ 
+
+    const SDL_Vertex verticesLeft[] = {
+        {Window::Width() / 2.0f - SCOREBOX_WIDTH / 2.0f - 30, 0.0f},
+        {Window::Width() / 2.0f - SCOREBOX_WIDTH / 2.0f, SCOREBOX_HEIGHT},
+        {Window::Width() / 2.0f + SCOREBOX_WIDTH / 2.0f + 30, 0.0f}
+    };
+    const SDL_Vertex verticesRight[] = {
+        {Window::Width() / 2.0f + SCOREBOX_WIDTH / 2.0f + 30, 0.0f},
+        {Window::Width() / 2.0f + SCOREBOX_WIDTH / 2.0f, SCOREBOX_HEIGHT},
+        {Window::Width() / 2.0f - SCOREBOX_WIDTH / 2.0f, SCOREBOX_HEIGHT}
+    };
+
+    SDL_Color tmp_c;
+    SDL_GetRenderDrawColor(Window::renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
+    SDL_SetRenderDrawColor(Window::renderer, 0, 0, 0, 255);
+
+    SDL_RenderGeometry(Window::renderer, nullptr, verticesLeft, 3, nullptr, 0);
+    SDL_RenderGeometry(Window::renderer, nullptr, verticesRight, 3, nullptr, 0);
+
     SDL_SetRenderDrawColor(Window::renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
 
 }

@@ -139,3 +139,8 @@
 
 #define HEALTHBAR_WIDTH 300 // [px]
 #define HEALTHBAR_HEIGHT 30 // [px]
+
+// -- SCORE BOX -- //
+
+#define SCOREBOX_WIDTH 100 // [px]
+#define SCOREBOX_HEIGHT 50 // [px]
