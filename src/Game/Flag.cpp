@@ -86,6 +86,7 @@ void Flag::release() {
     this->_isCaptured = false;
     this->_isHome = false;
     this->carrierID = 0;
+    this->carrierTeam = 0;
 }
 
 void Flag::reset() {
@@ -105,6 +106,14 @@ bool Flag::isHome() const {
 
 uint16_t Flag::getCarrierID() const {
     return this->carrierID;
+}
+
+uint8_t Flag::getCarrierTeam() const {
+    return this->carrierTeam;
+}
+
+void Flag::setCarrierTeam(uint8_t team) {
+    this->carrierTeam = team;
 }
 
 void Flag::setPosition(const PointF& p) {

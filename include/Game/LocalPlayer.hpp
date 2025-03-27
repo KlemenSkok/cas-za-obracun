@@ -51,6 +51,7 @@ public:
     float getDirection() const;
     PointF getPosition() const;
     uint8_t getTeamNumber() const;
+    uint8_t getPosture() const;
 
     void captureFlag();
     void dropFlag();

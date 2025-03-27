@@ -192,6 +192,10 @@ uint8_t LocalPlayer::getTeamNumber() const {
     return this->teamNumber;
 }
 
+uint8_t LocalPlayer::getPosture() const {
+    return this->posture;
+}
+
 void LocalPlayer::captureFlag() {
     this->hasFlag = true;
 }

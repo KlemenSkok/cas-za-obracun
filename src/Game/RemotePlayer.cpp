@@ -230,3 +230,7 @@ void RemotePlayer::setNextAcceleration(float ak) {
 void RemotePlayer::setNextSpeedCap(float s) {
     this->nextSpeedCap = s;
 }
+
+uint8_t RemotePlayer::getTeamNumber() const {
+    return this->teamNumber;
+}

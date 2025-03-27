@@ -244,6 +244,19 @@ void PacketHandler::processFlagUpdates(PacketData& d) {
     f.deserialize(d, offset);
     f.recv_ts = SDL_GetTicks();
 
+    // set carrier team
+    if(Game::flag->getCarrierID() == Game::client_id) {
+        Game::flag->setCarrierTeam(Game::player->getTeamNumber());
+    }
+    else {
+        if(Game::remote_players.find(Game::flag->getCarrierID()) != Game::remote_players.end()) {
+            Game::flag->setCarrierTeam(Game::remote_players[Game::flag->getCarrierID()]->getTeamNumber());
+        }
+        else {
+            Game::flag->setCarrierTeam(0);
+        }
+    }
+
     // import data
     if(force) {
         Game::flag->forceImportData(f);

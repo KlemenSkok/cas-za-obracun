@@ -14,6 +14,7 @@ class Flag : public GameObject {
 
     PointF homePosition;
     uint16_t carrierID;
+    uint8_t carrierTeam;
     bool _isHome;
     bool _isCaptured;
 
@@ -49,7 +50,10 @@ public:
 
     bool isCaptured() const;
     bool isHome() const;
+
     uint16_t getCarrierID() const;
+    uint8_t getCarrierTeam() const;
+    void setCarrierTeam(uint8_t team);
 
     void setPosition(const PointF&);
     void updatePosition(const PointF&);

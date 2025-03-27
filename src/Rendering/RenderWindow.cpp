@@ -162,6 +162,10 @@ void RenderWindow::renderCurrentScreen() {
 
 void RenderWindow::renderGameUI() {
 
+    //
+    // RENDER THE ARROW TO THE FLAG
+    //
+
     PointF flagPos = Game::flag->getPosition();
     Point flagSize = Game::flag->getSize();
 
@@ -172,7 +176,7 @@ void RenderWindow::renderGameUI() {
         (std::abs(dy) > rc::windowCenter.y))
     {
         // only render the arrow if the flag is outside the window
-        SDL_Texture* arrow = AssetManager::GetTexture(TEXTURE_ARROW_NEUTRAL);
+        SDL_Texture* arrow = AssetManager::GetTexture(Game::flag->getCarrierTeam() == 1 ? TEXTURE_ARROW_BLUE : Game::flag->getCarrierTeam() == 2 ? TEXTURE_ARROW_RED : TEXTURE_ARROW_NEUTRAL);
 
         float angle = atan2(dy, dx) * 180 / M_PI;
 
@@ -208,5 +212,28 @@ void RenderWindow::renderGameUI() {
         // render the arrow
         SDL_RenderCopyEx(Window::renderer, arrow, NULL, &dest, angle + 90, NULL, SDL_FLIP_NONE);
     }
+
+    //
+    // RENDER HEALTHBAR
+    //
+
+    SDL_Rect hb_outline = {Window::Width() / 2 - HEALTHBAR_WIDTH / 2, Window::Height() - HEALTHBAR_HEIGHT * 2, HEALTHBAR_WIDTH, HEALTHBAR_HEIGHT};
+    SDL_Rect hb_fill = {hb_outline.x + 3, hb_outline.y + 3, (HEALTHBAR_WIDTH - 6) * Game::player->getPosture() / 100, HEALTHBAR_HEIGHT - 6};
+
+    SDL_Color tmp_c;
+    SDL_GetRenderDrawColor(Window::renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
+    SDL_SetRenderDrawColor(Window::renderer, 0, 0, 0, 255);
+    SDL_RenderFillRect(Window::renderer, &hb_outline);
+    SDL_SetRenderDrawColor(Window::renderer, 255, 0, 0, 255);
+
+    if(Game::player->getPosture() > 50) {
+        SDL_SetRenderDrawColor(Window::renderer, 0, 255, 0, 255);
+    }
+    else if(Game::player->getPosture() > 25) {
+        SDL_SetRenderDrawColor(Window::renderer, 255, 255, 0, 255);
+    }
+    SDL_RenderFillRect(Window::renderer, &hb_fill);
+    
+    SDL_SetRenderDrawColor(Window::renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
 
 }

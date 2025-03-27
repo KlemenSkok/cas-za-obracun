@@ -196,6 +196,7 @@ void Game::Update(int deltaTime) {
         // update the flag's position
         // override the flag's position with the player's position to cancel out the interpolation
         Game::flag->updatePosition(Game::player->position);
+        Game::flag->setCarrierTeam(Game::player->getTeamNumber());
         Game::player->captureFlag();
     }
     else {

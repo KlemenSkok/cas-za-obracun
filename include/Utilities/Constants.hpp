@@ -130,3 +130,12 @@
 #define TEXTURE_ARROW_RED       51
 #define TEXTURE_ARROW_NEUTRAL   52
 
+
+//
+// UI COMPONENTS
+//
+
+// -- HEALTHBAR -- //
+
+#define HEALTHBAR_WIDTH 300 // [px]
+#define HEALTHBAR_HEIGHT 30 // [px]

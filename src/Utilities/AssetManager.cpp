@@ -41,6 +41,7 @@ void AssetManager::Clear() {
     for(auto& pair : AssetManager::textures) {
         if(pair.second != nullptr) {
             SDL_DestroyTexture(pair.second);
+            pair.second = nullptr;
         }
     }
     AssetManager::textures.clear();

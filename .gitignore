@@ -14,3 +14,14 @@ server_info.txt
 # vcpkg files
 vcpkg_installed/
 CMakeUserPresets.json
+
+# non-compressed release files
+# ignore all subdirs
+releases/*
+# allow all compressed files
+!releases/*.zip/
+!releases/*.7z/
+!releases/*.rar/
+!releases/*.tar/
+!releases/*.tar.gz/
+!releases/*.tgz/

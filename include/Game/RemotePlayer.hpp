@@ -59,4 +59,6 @@ public:
     void setNextAcceleration(float);
     void setNextSpeedCap(float);
 
+    uint8_t getTeamNumber() const;
+
 };
