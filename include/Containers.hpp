@@ -156,17 +156,20 @@ void PacketData::getByOffset(T& target, size_t size, size_t offset) {
     if constexpr (sizeof(T) == 1) {
         // For 1-byte types, no need for endianness conversion
         target = static_cast<T>(data[offset]);
-    } else if constexpr (sizeof(T) == 2) {
+    }
+    else if constexpr (sizeof(T) == 2) {
         // Use SDLNet_Read16 for 2-byte types
         Uint16 network_order;
         std::memcpy(&network_order, &data[offset], sizeof(Uint16));
         target = SDLNet_Read16(&network_order);
-    } else if constexpr (sizeof(T) == 4) {
+    }
+    else if constexpr (sizeof(T) == 4) {
         // Use SDLNet_Read32 for 4-byte types
         Uint32 network_order;
         std::memcpy(&network_order, &data[offset], sizeof(Uint32));
         target = SDLNet_Read32(&network_order);
-    } else {
+    }
+    else {
         throw std::runtime_error("Unsupported type size for PacketData::getByOffset.");
     }
 }
@@ -184,19 +187,22 @@ void PacketData::append(T data) {
     if constexpr (sizeof(T) == 1) {
         // For 1-byte types, no need for endianness conversion
         this->data.push_back(static_cast<Uint8>(data));
-    } else if constexpr (sizeof(T) == 2) {
+    }
+    else if constexpr (sizeof(T) == 2) {
         // Use SDLNet_Write16 for 2-byte types
         Uint16 network_order;
         SDLNet_Write16(data, &network_order);
         this->data.insert(this->data.end(), reinterpret_cast<Uint8*>(&network_order),
                           reinterpret_cast<Uint8*>(&network_order) + sizeof(Uint16));
-    } else if constexpr (sizeof(T) == 4) {
+    }
+    else if constexpr (sizeof(T) == 4) {
         // Use SDLNet_Write32 for 4-byte types
         Uint32 network_order;
         SDLNet_Write32(data, &network_order);
         this->data.insert(this->data.end(), reinterpret_cast<Uint8*>(&network_order),
                           reinterpret_cast<Uint8*>(&network_order) + sizeof(Uint32));
-    } else {
+    }
+    else {
         throw std::runtime_error("Unsupported type size for PacketData::append.");
     }
 }
