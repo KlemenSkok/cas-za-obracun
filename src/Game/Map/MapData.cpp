@@ -460,7 +460,7 @@ int MapData::LoadMap(const char* filename) {
 }
 
 /**
- * @brief Check for collision between the local player and the map barriers.
+ * @brief Check for collision between the local player and map barriers.
  * 
  * @param player Player object to check collision for. Used to identify the overload for the LocalPlayer class.
  * @param correctedPos The position to check for collision. If a collision is detected, this will be updated to the corrected position.
