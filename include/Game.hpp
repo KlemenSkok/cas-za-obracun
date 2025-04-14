@@ -69,7 +69,6 @@ public:
     static void setServerIP(int argc, char *argv[]);
 
     static void resetConnection();
-    static void resetGameState();
 
     static void processNewPackets();
     static void manageConnection();
