@@ -129,6 +129,8 @@
 #define TEXTURE_ARROW_BLUE      50
 #define TEXTURE_ARROW_RED       51
 #define TEXTURE_ARROW_NEUTRAL   52
+#define TEXTURE_ROUND_WON       53
+#define TEXTURE_ROUND_LOST      54
 
 
 //

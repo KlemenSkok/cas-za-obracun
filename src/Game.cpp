@@ -50,7 +50,7 @@ void Game::Setup() {
     // open the game window
     Window::Open();
     // open fonts
-    Fonts::primaryFont = Fonts::LoadFont(ASSETS_PATH"fonts/CourierPrime-Regular.ttf", 50);
+    Fonts::primaryFont = Fonts::LoadFont(ASSETS_PATH"fonts/CourierPrime-Regular.ttf", 100);
     // initialize the asset manager
     AssetManager::Initialize();
     // load all textures
@@ -269,15 +269,9 @@ void Game::processNewPackets() {
                         Game::client_id = 0;
                         Game::session_id = 0;
                         break;
-                    case FLAG_KEEPALIVE:
-                        // just update timestamp of the last keepalive message
-                        break;
                     case FLAG_DATA:
                         // process the data and update local game state
                         PacketHandler::processPacket(data);
-                        break;
-                    case FLAG_PUSH:
-                        // send back data to the server
                         break;
                     default:
                         Logger::info(("A packet was ignored: " + std::string((char*)data.getRawData().get())).c_str());
@@ -333,6 +327,13 @@ void Game::manageConnection() {
                 lastPacketTime = std::chrono::steady_clock::now();
                 
                 //Logger::info("Keepalive message sent.");
+                if(gui::currentScreen == RenderState::MAIN_MENU && current_state == GameState::GAME_FINISHED) {
+                    // exit
+                    //Game::_running = false;
+                    //Game::server_info.connection_state = ConnectionState::DISCONNECTED;
+                    // do tle more pridt
+                    std::cout << "Game finished." << std::endl;
+                }
             }
             break;
             case ConnectionState::DISCONNECTING:
@@ -366,5 +367,4 @@ void Game::resetConnection() {
     Game::projectiles.clear();
     Game::remote_players.clear();
     Game::flag->reset();
-    EventHandler::LockKeyboard();
 }

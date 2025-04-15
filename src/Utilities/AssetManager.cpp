@@ -75,5 +75,7 @@ void AssetManager::Initialize() {
     textures[TEXTURE_ARROW_NEUTRAL] =   LoadTexture("images/GUI/components/arrow_neutral.png");
     textures[TEXTURE_ARROW_BLUE] =      LoadTexture("images/GUI/components/arrow_blue.png");
     textures[TEXTURE_ARROW_RED] =       LoadTexture("images/GUI/components/arrow_red.png");
+    textures[TEXTURE_ROUND_WON] =       LoadTexture("images/GUI/components/round_won.png");
+    textures[TEXTURE_ROUND_LOST] =      LoadTexture("images/GUI/components/round_lost.png");
 
 }

@@ -165,6 +165,9 @@ void renderScore(int s1, int s2, int myTeam);
 
 void RenderWindow::renderGameUI() {
 
+    static SDL_Texture* tex_roundWon = AssetManager::GetTexture(TEXTURE_ROUND_WON);
+    static SDL_Texture* tex_roundLost = AssetManager::GetTexture(TEXTURE_ROUND_LOST);
+
     //
     // RENDER THE ARROW TO THE FLAG
     //
@@ -246,13 +249,35 @@ void RenderWindow::renderGameUI() {
 
     renderScore(Game::scores[0], Game::scores[1], Game::player->getTeamNumber());
 
+
+    //
+    // RENDER STATUS MESSAGES
+    //
+    if(Game::current_state == GameState::ROUND_ENDING) {
+        if(Game::last_winner == Game::player->getTeamNumber()) {
+            SDL_Rect dest = {Window::Width() / 2 - 200, Window::Height() / 2 - 60, 400, 120};
+            SDL_RenderCopy(Window::renderer, tex_roundWon, NULL, &dest);
+        }
+        else {
+            SDL_Rect dest = {Window::Width() / 2 - 200, Window::Height() / 2 - 60, 400, 120};
+            SDL_RenderCopy(Window::renderer, tex_roundLost, NULL, &dest);
+        }
+    }
+    else if(Game::current_state == GameState::WAITING_NEXT_ROUND) {
+        int secondsLeft = int(GameState::WAITING_NEXT_ROUND) - std::round((SDL_GetTicks() - Game::last_state_change) / 1000.0f);
+
+        SDL_Rect dest = {Window::Width() / 2 - 35, SCOREBOX_HEIGHT + 10, 70, 120};
+        SDL_Color white = {255, 255, 255, 255};
+        SDL_Texture* timerTexture = Fonts::createDigitTexture(Window::renderer, Fonts::primaryFont, secondsLeft, white);
+        SDL_RenderCopy(Window::renderer, timerTexture, NULL, &dest);
+        SDL_DestroyTexture(timerTexture);
+    }
+
 }
 
 void renderScore(int s1, int s2, int myTeam) {
 
     // render the score box and numbers
-    static auto prevScore = std::make_pair(0, 0);
-    
     // _______________
     // \             /
     //  \___________/ 
