@@ -73,7 +73,7 @@ void AssetManager::Initialize() {
 
     // load GUI textures
     textures[TEXTURE_ARROW_NEUTRAL] =   LoadTexture("images/GUI/components/arrow_neutral.png");
-    textures[TEXTURE_ARROW_BLUE] =   LoadTexture("images/GUI/components/arrow_blue.png");
-    textures[TEXTURE_ARROW_RED] =   LoadTexture("images/GUI/components/arrow_red.png");
+    textures[TEXTURE_ARROW_BLUE] =      LoadTexture("images/GUI/components/arrow_blue.png");
+    textures[TEXTURE_ARROW_RED] =       LoadTexture("images/GUI/components/arrow_red.png");
 
 }

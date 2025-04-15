@@ -20,11 +20,18 @@ namespace SDLUtils {
             return false;
         }
 
+        // init SDL_ttf
+        if(TTF_Init() != 0) {
+            Logger::error((std::string("TTF_Init Error: ") + TTF_GetError()).c_str());
+            return false;
+        }
+
         return true;
     }
 
     void cleanup() {
         SDLNet_Quit();
+        TTF_Quit();
         SDL_Quit();
     }
 }
@@ -76,6 +83,60 @@ namespace Window {
     }
 
 }
+
+namespace Fonts {
+
+    TTF_Font *primaryFont;
+
+    TTF_Font* LoadFont(const char* fileName, int size) {
+        TTF_Font* font = TTF_OpenFont(fileName, size);
+        if(font == nullptr) {
+            Logger::error((std::string("TTF_OpenFont Error: ") + TTF_GetError()).c_str());
+            return nullptr;
+        }
+        return font;
+    }
+
+    void Clear() {
+        if(primaryFont != nullptr) {
+            TTF_CloseFont(primaryFont);
+            primaryFont = nullptr;
+        }
+    }
+    
+    // Load a digit texture (0–9)
+    SDL_Texture* createDigitTexture(SDL_Renderer* renderer, TTF_Font* font, int digit, SDL_Color color) {
+        if (digit < 0 || digit > 9) {
+            std::cerr << "Invalid digit: " << digit << std::endl;
+            return nullptr;
+        }
+    
+        char digitChar = '0' + digit;
+        return createCharTexture(renderer, font, digitChar, color);
+    }
+
+    // Generic character texture creator
+    SDL_Texture* createCharTexture(SDL_Renderer* renderer, TTF_Font* font, char character, SDL_Color color) {
+        std::string text(1, character);  // single character string
+
+        SDL_Surface* surface = TTF_RenderText_Blended(font, text.c_str(), color);
+        if (!surface) {
+            std::cerr << "TTF_RenderText_Blended Error: " << TTF_GetError() << std::endl;
+            return nullptr;
+        }
+
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_FreeSurface(surface);
+
+        if (!texture) {
+            std::cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
+        }
+
+        return texture;
+    }
+
+}
+
 
 std::string formatIP(Uint32 ip) {
     std::string out;

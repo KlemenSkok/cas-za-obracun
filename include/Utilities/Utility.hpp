@@ -5,6 +5,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_net.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 
 
@@ -31,6 +32,20 @@ namespace Window {
 
     int Width();
     int Height();
+}
+
+// namespace for dealing with tff fonts
+namespace Fonts {
+    extern TTF_Font *primaryFont;
+
+    TTF_Font* LoadFont(const char* fileName, int size);
+    void Clear();
+    
+    // Load a digit texture (0–9)
+    SDL_Texture* createDigitTexture(SDL_Renderer* renderer, TTF_Font* font, int digit, SDL_Color color);
+    // Generic character texture creator
+    SDL_Texture* createCharTexture(SDL_Renderer* renderer, TTF_Font* font, char character, SDL_Color color);
+
 }
 
 // game info constants

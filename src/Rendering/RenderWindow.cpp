@@ -277,4 +277,29 @@ void renderScore(int s1, int s2, int myTeam) {
 
     SDL_SetRenderDrawColor(Window::renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
 
+    // render score numbers
+    SDL_Color red = {255, 0, 0, 255};
+    SDL_Color blue = {0, 0, 255, 255};
+    SDL_Color white = {255, 255, 255, 255};
+
+    SDL_Color leftColor = (myTeam == 1) ? blue : red;
+    SDL_Color rightColor = (myTeam == 1) ? red : blue;
+
+    SDL_Texture* leftTexture = Fonts::createDigitTexture(Window::renderer, Fonts::primaryFont, (myTeam == 1) ? s1 : s2, leftColor);
+    SDL_Texture* rightTexture = Fonts::createDigitTexture(Window::renderer, Fonts::primaryFont, (myTeam == 1) ? s2 : s1, rightColor);
+    SDL_Texture* middleSeparator = Fonts::createCharTexture(Window::renderer, Fonts::primaryFont, ':', white);
+
+
+    SDL_Rect middleRect = {rc::windowCenter.x - 15, SCOREBOX_HEIGHT / 2 - 25, 30, 50};
+    SDL_Rect leftRect = {middleRect.x - 30, middleRect.y, 30, 50};
+    SDL_Rect rightRect = {middleRect.x + middleRect.w, middleRect.y, 30, 50};
+
+    SDL_RenderCopy(Window::renderer, leftTexture, NULL, &leftRect);
+    SDL_RenderCopy(Window::renderer, middleSeparator, NULL, &middleRect);
+    SDL_RenderCopy(Window::renderer, rightTexture, NULL, &rightRect);
+    
+    SDL_DestroyTexture(leftTexture);
+    SDL_DestroyTexture(rightTexture);
+    SDL_DestroyTexture(middleSeparator);
+    
 }

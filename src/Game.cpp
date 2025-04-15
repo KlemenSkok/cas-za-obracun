@@ -49,6 +49,8 @@ void Game::Setup() {
 
     // open the game window
     Window::Open();
+    // open fonts
+    Fonts::primaryFont = Fonts::LoadFont(ASSETS_PATH"fonts/CourierPrime-Regular.ttf", 50);
     // initialize the asset manager
     AssetManager::Initialize();
     // load all textures
@@ -56,7 +58,7 @@ void Game::Setup() {
 
     // Attempt to load the map data
     try {
-        MapData::LoadMap("../../assets/data/map_data.xml");
+        MapData::LoadMap(ASSETS_PATH"data/map_data.xml");
     }
     catch (std::exception &e) {
         throw std::runtime_error(std::string("Failed to load map data: ") + e.what());
@@ -65,6 +67,8 @@ void Game::Setup() {
 
 void Game::Cleanup() {
     Logger::info("Cleaning up...");
+
+    Fonts::Clear();
 
     AssetManager::Clear();
     SocketHandler::Stop();
