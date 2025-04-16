@@ -84,18 +84,58 @@ void RenderWindow::renderGameState() {
     Window::Clear();
 
     {
-        // render the floor
-        SDL_Rect src = {0, 0, 100, 100};
-        int src_w, src_h;
-        SDL_Texture* texture = AssetManager::GetTexture(TEXTURE_FLOOR);
-        for(auto& rect : MapData::floorTiles) {
-            SDL_Rect dest = {static_cast<int>(rect.x - rc::localPlayerPos.x + rc::windowCenter.x), static_cast<int>(rect.y - rc::localPlayerPos.y + rc::windowCenter.y), rect.w, rect.h};
-            SDL_QueryTexture(texture, NULL, NULL, &src_w, &src_h);
-            // scale the texture to the destination rectangle
-            src.w = src_h * dest.w / dest.h;
-            src.h = src_w * dest.h / dest.w;
-            SDL_RenderCopy(Window::renderer, texture, &src, &dest);
+        constexpr int tileSize = 150;
+        static SDL_Texture* floor_texture = AssetManager::GetTexture(TEXTURE_FLOOR);
+        int tex_w, tex_h;
+        SDL_QueryTexture(floor_texture, NULL, NULL, &tex_w, &tex_h);
+
+        for (auto& rect : MapData::floorTiles) {
+            int screen_x = static_cast<int>(rect.x - rc::localPlayerPos.x + rc::windowCenter.x);
+            int screen_y = static_cast<int>(rect.y - rc::localPlayerPos.y + rc::windowCenter.y);
+
+            SDL_Rect dest;
+            dest.x = screen_x;
+            dest.y = screen_y;
+            dest.w = rect.w;
+            dest.h = rect.h;
+
+            if (rect.w == tileSize && rect.h == tileSize) {
+                // Full tile — stretch full texture to 150x150
+                SDL_RenderCopy(Window::renderer, floor_texture, NULL, &dest);
+            } else {
+                // Partial tile — crop the matching area from a 150x150-stretched texture
+                SDL_Rect src;
+                src.x = 0;
+                src.y = 0;
+                src.w = tex_w * rect.w / tileSize;
+                src.h = tex_h * rect.h / tileSize;
+
+                SDL_RenderCopy(Window::renderer, floor_texture, &src, &dest);
+            }
         }
+
+        // render the floor borders (hardcoded)
+        static SDL_Rect floor_borders[4] = {
+            {415, 515, 36, 335},
+            {1085, 515, 36, 335},
+            {1935, 515, 36, 335},
+            {2605, 515, 36, 335},
+        };
+        static SDL_Texture* floor_border_texture = AssetManager::GetTexture(TEXTURE_FLOOR_BORDER);
+
+        for (auto& rect : floor_borders) {
+            int screen_x = static_cast<int>(rect.x - rc::localPlayerPos.x + rc::windowCenter.x);
+            int screen_y = static_cast<int>(rect.y - rc::localPlayerPos.y + rc::windowCenter.y);
+
+            SDL_Rect dest;
+            dest.x = screen_x;
+            dest.y = screen_y;
+            dest.w = rect.w;
+            dest.h = rect.h;
+
+            SDL_RenderCopy(Window::renderer, floor_border_texture, NULL, &dest);
+        }
+
     }
 
     // render the map

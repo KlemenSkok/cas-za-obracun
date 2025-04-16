@@ -450,7 +450,25 @@ int MapData::LoadMap(const char* filename) {
         for(XMLNode* node = tiles; node != nullptr; node = node->NextSiblingElement("tile")) {
             SDL_Rect t;
             if(parseTileNode(node, t) == 0) {
-                floorTiles.push_back(t);
+
+                // fill the big rectangle with the tile textures
+                constexpr int tileSize = 150;
+                for(int i = 0; i < t.w; i += tileSize) {
+                    for(int j = 0; j < t.h; j += tileSize) {
+                        SDL_Rect tile = {t.x + i, t.y + j, tileSize, tileSize};
+
+                        // edge cases
+                        if(i + tileSize > t.w) {
+                            tile.w = t.w - i;
+                        }
+                        if(j + tileSize > t.h) {
+                            tile.h = t.h - j;
+                        }
+
+                        floorTiles.push_back(tile);
+                    }
+                }
+
             }
         }
     }

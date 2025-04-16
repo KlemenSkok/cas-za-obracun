@@ -67,6 +67,7 @@ void AssetManager::Initialize() {
     textures[TEXTURE_CRATE] =           LoadTexture("images/map/crate.png");
     textures[TEXTURE_DOUBLE_CRATE] =    LoadTexture("images/map/double_crate.png");
     textures[TEXTURE_FLOOR] =           LoadTexture("images/map/floor_tile.png");
+    textures[TEXTURE_FLOOR_BORDER] =    LoadTexture("images/map/floor_border.png");
 
     textures[TEXTURE_WATER_TRAP] =      LoadTexture("images/map/water_trap.png");
     textures[TEXTURE_SAND_TRAP] =       LoadTexture("images/map/sand_trap.png");

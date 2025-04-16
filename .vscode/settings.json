@@ -69,5 +69,11 @@
         "thread": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp"
+    },
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
     }
 }
