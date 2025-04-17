@@ -59,9 +59,12 @@ namespace gui {
             case RenderState::GAME_OVER:
                 // process the game over menu input
                 if(key == 1) {
-                    // return to the main menu
+                    // return to the main menu and exit
+                    SDL_Event e;
+                    e.type = SDL_QUIT;
+                    e.quit.timestamp = SDL_GetTicks();
+                    SDL_PushEvent(&e);
                     currentScreen = RenderState::MAIN_MENU;
-                    expectsInput = true;
                 }
                 break;
         }

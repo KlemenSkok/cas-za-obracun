@@ -50,33 +50,34 @@ void AssetManager::Clear() {
 
 void AssetManager::Initialize() {
     // load textures
-    textures[TEXTURE_PLAYER_1] =        LoadTexture("images/player1.png");
-    textures[TEXTURE_PLAYER_2] =        LoadTexture("images/player2.png");
-    textures[TEXTURE_FLAG] =            LoadTexture("images/flag.png");
-    textures[TEXTURE_PROJECTILE_1] =    LoadTexture("images/projectile1.png");
-    textures[TEXTURE_PROJECTILE_2] =    LoadTexture("images/projectile2.png");
+    textures[TEXTURE_PLAYER_1] =            LoadTexture("images/player1.png");
+    textures[TEXTURE_PLAYER_2] =            LoadTexture("images/player2.png");
+    textures[TEXTURE_FLAG] =                LoadTexture("images/flag.png");
+    textures[TEXTURE_PROJECTILE_1] =        LoadTexture("images/projectile1.png");
+    textures[TEXTURE_PROJECTILE_2] =        LoadTexture("images/projectile2.png");
 
     // load map components
-    textures[TEXTURE_SITE_1] =          LoadTexture("images/map/site_team_1.png");
-    textures[TEXTURE_SITE_2] =          LoadTexture("images/map/site_team_2.png");
+    textures[TEXTURE_SITE_1] =              LoadTexture("images/map/site_team_1.png");
+    textures[TEXTURE_SITE_2] =              LoadTexture("images/map/site_team_2.png");
 
-    textures[TEXTURE_WALL] =            LoadTexture("images/map/wall.png");
-    textures[TEXTURE_WALL_PILLAR] =     LoadTexture("images/map/wall_pillar.png");
-    textures[TEXTURE_PILLAR] =          LoadTexture("images/map/pillar.png");
-    textures[TEXTURE_SOFA] =            LoadTexture("images/map/sofa.png");
-    textures[TEXTURE_CRATE] =           LoadTexture("images/map/crate.png");
-    textures[TEXTURE_DOUBLE_CRATE] =    LoadTexture("images/map/double_crate.png");
-    textures[TEXTURE_FLOOR] =           LoadTexture("images/map/floor_tile.png");
-    textures[TEXTURE_FLOOR_BORDER] =    LoadTexture("images/map/floor_border.png");
+    textures[TEXTURE_WALL] =                LoadTexture("images/map/wall.png");
+    textures[TEXTURE_WALL_PILLAR] =         LoadTexture("images/map/wall_pillar.png");
+    textures[TEXTURE_PILLAR] =              LoadTexture("images/map/pillar.png");
+    textures[TEXTURE_SOFA] =                LoadTexture("images/map/sofa.png");
+    textures[TEXTURE_CRATE] =               LoadTexture("images/map/crate.png");
+    textures[TEXTURE_DOUBLE_CRATE] =        LoadTexture("images/map/double_crate.png");
+    textures[TEXTURE_FLOOR] =               LoadTexture("images/map/floor_tile.png");
+    textures[TEXTURE_FLOOR_BORDER] =        LoadTexture("images/map/floor_border.png");
 
-    textures[TEXTURE_WATER_TRAP] =      LoadTexture("images/map/water_trap.png");
-    textures[TEXTURE_SAND_TRAP] =       LoadTexture("images/map/sand_trap.png");
+    textures[TEXTURE_WATER_TRAP] =          LoadTexture("images/map/water_trap.png");
+    textures[TEXTURE_SAND_TRAP] =           LoadTexture("images/map/sand_trap.png");
 
-    // load GUI textures
-    textures[TEXTURE_ARROW_NEUTRAL] =   LoadTexture("images/GUI/components/arrow_neutral.png");
-    textures[TEXTURE_ARROW_BLUE] =      LoadTexture("images/GUI/components/arrow_blue.png");
-    textures[TEXTURE_ARROW_RED] =       LoadTexture("images/GUI/components/arrow_red.png");
-    textures[TEXTURE_ROUND_WON] =       LoadTexture("images/GUI/components/round_won.png");
-    textures[TEXTURE_ROUND_LOST] =      LoadTexture("images/GUI/components/round_lost.png");
+    // load GUI textures    
+    textures[TEXTURE_ARROW_NEUTRAL] =       LoadTexture("images/GUI/components/arrow_neutral.png");
+    textures[TEXTURE_ARROW_BLUE] =          LoadTexture("images/GUI/components/arrow_blue.png");
+    textures[TEXTURE_ARROW_RED] =           LoadTexture("images/GUI/components/arrow_red.png");
+    textures[TEXTURE_ROUND_WON] =           LoadTexture("images/GUI/components/round_won.png");
+    textures[TEXTURE_ROUND_LOST] =          LoadTexture("images/GUI/components/round_lost.png");
+    textures[TEXTURE_WAITING_FOR_PLAYERS] = LoadTexture("images/GUI/components/waiting_for_players.png");
 
 }

@@ -107,31 +107,32 @@
 // TEXTURE IDS
 //
 
-#define TEXTURE_WALL            1
-#define TEXTURE_WALL_PILLAR     2
-#define TEXTURE_PILLAR          3
-#define TEXTURE_SOFA            4
-#define TEXTURE_CRATE           5
-#define TEXTURE_DOUBLE_CRATE    6
-#define TEXTURE_FLOOR           7
-#define TEXTURE_FLOOR_BORDER    8
-
-#define TEXTURE_WATER_TRAP      10
-#define TEXTURE_SAND_TRAP       11
-
-#define TEXTURE_PLAYER_1        20
-#define TEXTURE_PLAYER_2        21
-#define TEXTURE_PROJECTILE_1    22
-#define TEXTURE_PROJECTILE_2    23
-#define TEXTURE_FLAG            24
-#define TEXTURE_SITE_1          25
-#define TEXTURE_SITE_2          26
-
-#define TEXTURE_ARROW_BLUE      50
-#define TEXTURE_ARROW_RED       51
-#define TEXTURE_ARROW_NEUTRAL   52
-#define TEXTURE_ROUND_WON       53
-#define TEXTURE_ROUND_LOST      54
+#define TEXTURE_WALL                1
+#define TEXTURE_WALL_PILLAR         2
+#define TEXTURE_PILLAR              3
+#define TEXTURE_SOFA                4
+#define TEXTURE_CRATE               5
+#define TEXTURE_DOUBLE_CRATE        6
+#define TEXTURE_FLOOR               7
+#define TEXTURE_FLOOR_BORDER        8
+    
+#define TEXTURE_WATER_TRAP          10
+#define TEXTURE_SAND_TRAP           11
+    
+#define TEXTURE_PLAYER_1            20
+#define TEXTURE_PLAYER_2            21
+#define TEXTURE_PROJECTILE_1        22
+#define TEXTURE_PROJECTILE_2        23
+#define TEXTURE_FLAG                24
+#define TEXTURE_SITE_1              25
+#define TEXTURE_SITE_2              26
+    
+#define TEXTURE_ARROW_BLUE          50
+#define TEXTURE_ARROW_RED           51
+#define TEXTURE_ARROW_NEUTRAL       52
+#define TEXTURE_ROUND_WON           53
+#define TEXTURE_ROUND_LOST          54
+#define TEXTURE_WAITING_FOR_PLAYERS 55
 
 
 //

@@ -207,6 +207,7 @@ void RenderWindow::renderGameUI() {
 
     static SDL_Texture* tex_roundWon = AssetManager::GetTexture(TEXTURE_ROUND_WON);
     static SDL_Texture* tex_roundLost = AssetManager::GetTexture(TEXTURE_ROUND_LOST);
+    static SDL_Texture* tex_WaitingPlayers = AssetManager::GetTexture(TEXTURE_WAITING_FOR_PLAYERS);
 
     //
     // RENDER THE ARROW TO THE FLAG
@@ -311,6 +312,14 @@ void RenderWindow::renderGameUI() {
         SDL_Texture* timerTexture = Fonts::createDigitTexture(Window::renderer, Fonts::primaryFont, secondsLeft, white);
         SDL_RenderCopy(Window::renderer, timerTexture, NULL, &dest);
         SDL_DestroyTexture(timerTexture);
+    }
+    else if(Game::current_state == GameState::WAITING_FOR_PLAYERS) {
+        SDL_Rect dest = {Window::Width() / 2 - 200, Window::Height() / 2 - 60, 400, 120};
+        SDL_Rect x;
+        SDL_QueryTexture(tex_WaitingPlayers, NULL, NULL, &x.w, &x.h);
+        dest.w = x.w * dest.h / x.h;
+        
+        SDL_RenderCopy(Window::renderer, tex_WaitingPlayers, NULL, &dest);
     }
 
 }
