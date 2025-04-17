@@ -314,10 +314,14 @@ void RenderWindow::renderGameUI() {
         SDL_DestroyTexture(timerTexture);
     }
     else if(Game::current_state == GameState::WAITING_FOR_PLAYERS) {
-        SDL_Rect dest = {Window::Width() / 2 - 200, Window::Height() / 2 - 60, 400, 120};
+        SDL_Rect dest = {Window::Width() / 2 - 200, Window::Height() / 2 - 60, 0, 50};
         SDL_Rect x;
         SDL_QueryTexture(tex_WaitingPlayers, NULL, NULL, &x.w, &x.h);
         dest.w = x.w * dest.h / x.h;
+        // middle of the screen
+        dest.x = rc::windowCenter.x - dest.w / 2;
+        dest.y = (rc::windowCenter.y - dest.h / 2) / 2;
+        
         
         SDL_RenderCopy(Window::renderer, tex_WaitingPlayers, NULL, &dest);
     }

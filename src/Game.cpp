@@ -116,7 +116,7 @@ void Game::setServerIP(int argc, char *argv[]) {
 void Game::Initialize() {
 
     // set all starting values
-    Game::player = std::make_shared<LocalPlayer>(100, 100, 0);
+    Game::player = std::make_shared<LocalPlayer>(1534, 228, 0);
     Game::flag = std::make_shared<Flag>(GAME_FLAG_HOME_POS_X, GAME_FLAG_HOME_POS_Y);
     flag->setTexture(AssetManager::GetTexture(TEXTURE_FLAG));
 

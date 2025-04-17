@@ -12,7 +12,7 @@ namespace gui {
 
     void updateState(GameState game_state, ConnectionState connection_state) {
         // decide what to render based on the game state
-        switch(game_state) {
+    switch(game_state) {
             case GameState::NONE:
                 // render the main menu
                 currentScreen = RenderState::MAIN_MENU;
