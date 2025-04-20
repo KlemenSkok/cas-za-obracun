@@ -325,15 +325,6 @@ void Game::manageConnection() {
                 PacketHandler::appendToLocalQueue(m, Game::server_info.channel);
                 //addMessageToQueue(m, Game::server_info.channel);
                 lastPacketTime = std::chrono::steady_clock::now();
-                
-                //Logger::info("Keepalive message sent.");
-                if(gui::currentScreen == RenderState::MAIN_MENU && current_state == GameState::GAME_FINISHED) {
-                    // exit
-                    //Game::_running = false;
-                    //Game::server_info.connection_state = ConnectionState::DISCONNECTED;
-                    // do tle more pridt
-                    std::cout << "Game finished." << std::endl;
-                }
             }
             break;
             case ConnectionState::DISCONNECTING:

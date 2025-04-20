@@ -11,8 +11,6 @@
 
 
 void Projectile::update(float deltaTime) {
-    //position.x += velocity.x * deltaTime;
-    //position.y += velocity.y * deltaTime;
 
     this->direction += PROJECTILE_ANGULAR_VELOCITY * deltaTime;;
 
@@ -64,23 +62,12 @@ void Projectile::render(SDL_Renderer* renderer) {
         SDL_GetRenderDrawColor(renderer, &tmp_c.r, &tmp_c.g, &tmp_c.b, &tmp_c.a);
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0xFF, 255);
         
-        // old
-        //DrawFillCircleF(renderer, position.x, position.y, this->radius);
-        
         PointF pos = {rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x), rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y)};
         DrawFillCircleF(renderer, pos.x, pos.y, this->radius);
         
         SDL_SetRenderDrawColor(renderer, tmp_c.r, tmp_c.g, tmp_c.b, tmp_c.a);
     }
     else {
-        /* SDL_Rect dest = {static_cast<int>(rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x)), 
-            static_cast<int>(rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y) - this->radius), 
-            0, static_cast<int>(3.0f * this->radius)};
-
-        Point t_size;
-        SDL_QueryTexture(this->texture, nullptr, nullptr, &t_size.x, &t_size.y);
-        dest.w = dest.h * t_size.y / t_size.x; */
-
         SDL_Rect dest = {static_cast<int>(rc::windowCenter.x + (this->position.x - rc::localPlayerPos.x)), 
             static_cast<int>(rc::windowCenter.y + (this->position.y - rc::localPlayerPos.y) - this->radius), 
             static_cast<int>(3.0f * this->radius), 0};

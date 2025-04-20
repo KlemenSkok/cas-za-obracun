@@ -360,8 +360,6 @@ int parseTileNode(tinyxml2::XMLNode* node, SDL_Rect& t) {
     t.w = size.x;
     t.h = size.y;
 
-    //std::cout << "Tile: " << t.x << ", " << t.y << ", " << t.w << ", " << t.h << std::endl;
-
     return  EXIT_SUCCESS;
 }
 

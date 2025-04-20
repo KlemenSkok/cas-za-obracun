@@ -145,7 +145,6 @@ void EventHandler::HandleEvents() {
             sendUpdates = true;
 
             // to dela, ko je igralec v srediscu
-            //* ok
             float dx = rc::windowCenter.x - posx;
             float dy = rc::windowCenter.y - posy;
             constexpr float multiplier = 180 / M_PI;

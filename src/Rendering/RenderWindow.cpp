@@ -100,10 +100,10 @@ void RenderWindow::renderGameState() {
             dest.h = rect.h;
 
             if (rect.w == tileSize && rect.h == tileSize) {
-                // Full tile — stretch full texture to 150x150
+                // full tile
                 SDL_RenderCopy(Window::renderer, floor_texture, NULL, &dest);
             } else {
-                // Partial tile — crop the matching area from a 150x150-stretched texture
+                // partial tile
                 SDL_Rect src;
                 src.x = 0;
                 src.y = 0;
@@ -114,7 +114,7 @@ void RenderWindow::renderGameState() {
             }
         }
 
-        // render the floor borders (hardcoded)
+        // floor borders
         static SDL_Rect floor_borders[4] = {
             {415, 515, 36, 335},
             {1085, 515, 36, 335},
@@ -212,7 +212,6 @@ void RenderWindow::renderGameUI() {
     //
     // RENDER THE ARROW TO THE FLAG
     //
-
     PointF flagPos = Game::flag->getPosition();
     Point flagSize = Game::flag->getSize();
 
@@ -263,7 +262,6 @@ void RenderWindow::renderGameUI() {
     //
     // RENDER HEALTHBAR
     //
-
     SDL_Rect hb_outline = {Window::Width() / 2 - HEALTHBAR_WIDTH / 2, Window::Height() - HEALTHBAR_HEIGHT * 2, HEALTHBAR_WIDTH, HEALTHBAR_HEIGHT};
     SDL_Rect hb_fill = {hb_outline.x + 3, hb_outline.y + 3, (HEALTHBAR_WIDTH - 6) * Game::player->getPosture() / 100, HEALTHBAR_HEIGHT - 6};
 
@@ -287,7 +285,6 @@ void RenderWindow::renderGameUI() {
     //
     // RENDER SCORE
     //
-
     renderScore(Game::scores[0], Game::scores[1], Game::player->getTeamNumber());
 
 

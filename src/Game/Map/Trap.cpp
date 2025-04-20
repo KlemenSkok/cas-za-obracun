@@ -44,7 +44,6 @@ void Trap::render(SDL_Renderer* renderer) {
 
 void Trap::setTrapType(char* t) {
 
-    //std::cout << "Setting trap type: " << t << ".\n";
     if(!strcmp(t, "water")) {
         this->friction_k = 0.1f;
         this->acceleration_k = 0.1f;
