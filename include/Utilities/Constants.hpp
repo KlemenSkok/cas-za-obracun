@@ -4,14 +4,12 @@
 #pragma once
 
 
-
-// for logging into the console
-//#define DEBUG
+#define DEBUG
 
 
 // global constants
 
-#define GAME_TITLE "Čas za obracun" // očitno šimniki ne delajo problemov
+#define GAME_TITLE "Čas za obracun"
 #define INITIAL_WINDOW_WIDTH 960
 #define INITIAL_WINDOW_HEIGHT 540
 
@@ -27,7 +25,7 @@
 
 // CONNECTION CONSTANTS
 
-#define DEFAULT_SERVER_IP "skok.cc"
+#define DEFAULT_SERVER_IP "192.168.64.69"
 #define DEFAULT_SERVER_PORT 55000
 
 #define CONNECTION_REQUEST_INTERVAL 1000 // [ms]

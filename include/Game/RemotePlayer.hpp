@@ -38,11 +38,13 @@ public:
 
     RemotePlayer(const data_packets::PlayerData& data) : 
         GameObject(data.position.x, data.position.y), 
+        velocity({ 0.0f, 0.0f }),
+        acceleration({ 0.0f, 0.0f }),
         direction(data.direction), 
         teamNumber(data.teamNumber), 
         lastUpdateTime(SDL_GetTicks()),
-        nextAcceleration_k(1.0f),
         nextFriction_k(1.0f),
+        nextAcceleration_k(1.0f),
         nextSpeedCap(PLAYER_MAX_SPEED)
     {
         decodeKeyStates(data.keyStates, this->keyStates);

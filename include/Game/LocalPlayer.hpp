@@ -34,11 +34,15 @@ class LocalPlayer : public GameObject {
 public:
     LocalPlayer(float x, float y, float direction) : 
         GameObject(x, y), 
+        velocity({0.0f, 0.0f}),
+        acceleration({0.0f, 0.0f}),
         direction(direction), 
+        posture(100),
+        teamNumber(0),
         lastUpdateTime(SDL_GetTicks()), 
         hasFlag(false), 
-        nextAcceleration_k(1.0f),
         nextFriction_k(1.0f),
+        nextAcceleration_k(1.0f),
         nextSpeedCap(PLAYER_MAX_SPEED) {}
 
     void update(float deltaTime) override;

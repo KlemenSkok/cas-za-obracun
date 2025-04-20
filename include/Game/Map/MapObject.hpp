@@ -32,7 +32,9 @@ protected:
 public:
 
     MapObject(MapObjType t) : 
-        type(t) {}
+        type(t),
+        position({ 0.0f, 0.0f }),
+        size({ 0, 0 }) {}
     MapObjType getType() const;
 
     virtual void render(SDL_Renderer*) = 0;

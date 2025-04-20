@@ -15,7 +15,7 @@ class Trap : public MapObject {
 public:
 
     Trap();
-
+    
     void render(SDL_Renderer* renderer) override;
 
     void setTrapType(char*);

@@ -12,7 +12,6 @@
 class Projectile : public GameObject {
 
     PointF velocity;
-    PointF acceleration;
     float direction;
 
     uint8_t radius = 10;

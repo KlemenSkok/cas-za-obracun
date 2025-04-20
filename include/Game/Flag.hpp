@@ -30,6 +30,7 @@ public:
         homePosition(GAME_FLAG_HOME_POS), 
         size(GAME_FLAG_SIZE), 
         carrierID(0), 
+        carrierTeam(0),
         _isHome(true), 
         _isCaptured(false),
         lastUpdateTime(SDL_GetTicks()) 

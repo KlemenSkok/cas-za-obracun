@@ -9,14 +9,15 @@
 
 class Site : public GameObject {
 
-    PointF position;
     Point size;
     uint8_t teamNumber;
     
 public:
 
     Site() : 
-        GameObject(0, 0) {}
+        GameObject(0, 0),
+        size({ 0, 0 }),
+        teamNumber(0) {}
 
     void update(float deltaTime) override;
     void render(SDL_Renderer*) override;

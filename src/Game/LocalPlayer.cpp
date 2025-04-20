@@ -139,19 +139,19 @@ void LocalPlayer::importData(const data_packets::PlayerData& data) {
 
     // interpolate direction
     this->direction = lerpAngle(this->direction, data.direction, 0.3f);
-
+    
     if(data.keyStates != encodeKeyStates(EventHandler::keyStates)) {
         if(data.recv_ts < PacketHandler::lastSentPacketTime) {
             // the recent player update was probably not received by the server
             // resend the update
             PacketHandler::sendPlayerUpdate();
-            std::cout << "Correction!\n";
+            //std::cout << "Correction!\n";
         }
     }
 
     float errorX = std::abs(this->position.x - data.position.x);
     float errorY = std::abs(this->position.y - data.position.y);
-
+    
     // If the position is off by too much, smoothly correct it
     if (errorX > POSITION_OFFSET_TOLERANCE || errorY > POSITION_OFFSET_TOLERANCE) {
         const float correctionFactor = 0.1f; // Adjust between 0.1 (slow correction) and 1.0 (instant)
