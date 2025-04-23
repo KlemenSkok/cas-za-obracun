@@ -4,7 +4,7 @@
 #pragma once
 
 
-#define DEBUG
+//#define DEBUG
 
 
 // global constants
@@ -24,8 +24,12 @@
 
 
 // CONNECTION CONSTANTS
-
+#ifdef DEBUG
 #define DEFAULT_SERVER_IP "192.168.64.69"
+#else
+#define DEFAULT_SERVER_IP "skok.cc"
+#endif
+
 #define DEFAULT_SERVER_PORT 55000
 
 #define CONNECTION_REQUEST_INTERVAL 1000 // [ms]
